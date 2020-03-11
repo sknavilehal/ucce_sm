@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <link href="{{url_for('static', filename='css/cui-standard.min.css')}}" rel="stylesheet" type="text/css">
+    <style>
+        a {
+            cursor: pointer
+        }
+    </style>
+</head>
+
+<body class="cui" data-theme="light">
+    <header class="header">
+        <div class="container">
+            <div class="header-panels">
+                <div class="header-panel">
+                    <a class="header__logo" href="http://www.cisco.com" target="_blank">
+                        <span class="icon-cisco"></span>
+                    </a>
+                    <div class="header__title">SIP Packet Analysis</div>
+                </div>
+                <div class="header-panel header-panel--center">
+                    <div class="header-item">
+                        <ul id="tabsheader" class="tabs">
+                            <li id="tabsheader-1" class="tab active">
+                                <a tabindex="0">
+                                    <div class="tab__heading">Dashboard</div>
+                                </a>
+                            </li>
+                            <li id="tabsheader-2" class="tab">
+                                <a tabindex="0">
+                                    <div class="tab__heading">Charts</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="row base-margin-bottom">
+
+        <div id="diagram" style="position: relative;top:100px;left:30px;bottom: 100px" layout-align="center center">
+        </div>
+    </div>
+    <div class="col-6" style="position: absolute;left:700px;top:100px">
+        <pre style="font-size:0.9em;" id="msg">
+                </pre>
+    </div>
+</body>
+
+<script type="text/javascript">
+    var m
+    //for the cappi id gets the svg code of its sequence diagram and messages
+    $.ajax({
+        type: 'GET',
+        url: "/api/GUID/" + "{{guid}}",
+        success: function (re) {
+            var s = re.svg
+            //parse the svg string and convert it to HTML DOM
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(s, "image/svg+xml");
+            var all = doc.getElementsByTagName("a");
+            var svg = doc.getElementsByTagName("svg");
+
+            for (var i = 0, max = all.length; i < max; i++) {
+                //remove the href elements to prevent hover
+                msg_id = all[i].getAttribute("xlink:title")
+                console.log(msg_id)
+                // all[i].removeAttribute("xlink:title")
+                all[i].removeAttribute("xlink:href")
+                all[i].removeAttribute("href")
+                //add onclick function
+                all[i].setAttribute("style", "text-decoration:none")
+                all[i].setAttribute("onclick", "get_msgs(\"" + msg_id + "\")")
+            }
+
+            document.getElementById("diagram").innerHTML = ""
+            document.getElementById("diagram").appendChild(doc.documentElement)
+        }
+    });
+    function get_msgs(id) {
+        $.ajax({
+            type: 'GET',
+            url: "/api/message/"+id,
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function (data) {
+                console.log(data)
+                msg = data.msg_text
+                document.getElementById("msg").textContent = msg
+            }
+        });
+    }
+
+</script>
+
+</html>
