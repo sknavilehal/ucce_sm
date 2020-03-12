@@ -7,7 +7,7 @@ def parse_guid(line):
         guid = guid[:-1]
     return guid
 
-def parse_system(line):
+def parse_tofro(line):
     idx = line.lower().find("publish")
     idx = max(line.lower().find("process"), idx)
     system = line[idx:].split()[2]
@@ -19,29 +19,35 @@ def parse_ss(line):
     ss = subsystem.group(1) + "_SS"
     return ss
 
-def parse_cvp_addr(line):
-    cvp = line.split()[1]
-    cvp = cvp[:-1]
-    return cvp
-
 def parse_status(line):
     parts = re.split(r'[\[\]]', line)
-    if parts[-2] == "0":
-        status = parts[-4].upper()
+    if "process" in parts[3].lower() or "publish" in parts[3].lower():
+        status = parts[5]
     else:
-        status = parts[-2].upper()
+        status = parts[3]
     return status
+
+def rename_ucce(msg):
+    if msg["to"] == "UCCE": msg["to"] = "ICM"
+    if msg["from"] == "UCCE": msg["from"] = "ICM"
+
+def filter_msg(msg):
+    if msg["from"] == "ICM_SS" and msg["to"] == "IVR_SS" or msg["from"] == "IVR_SS" and msg["to"] == "ICM_SS":
+        return True
+    else: return False
 
 def parse_ged_msg(ged_msg):
     msg = {}
-    #cvp = parse_cvp_addr(ged_msg)
     msg["guid"] = parse_guid(ged_msg)
     if "publishing to " in ged_msg.lower():
-        msg["to"] = parse_system(ged_msg)
+        msg["to"] = parse_tofro(ged_msg)
         msg["from"] = parse_ss(ged_msg)
     elif "processing from " in ged_msg.lower():
         msg["to"] = parse_ss(ged_msg)
-        msg["from"] = parse_system(ged_msg)
+        msg["from"] = parse_tofro(ged_msg)
+        if filter_msg(msg): return {}
+    
+    rename_ucce(msg)
     msg["status"] = parse_status(ged_msg)
     msg["text"] = ged_msg
     msg["type"] = "ged"
