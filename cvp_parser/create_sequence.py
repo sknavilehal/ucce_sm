@@ -26,6 +26,7 @@ def create_sequence(filename, cvp, guids):
                 if "sdp" in msg.keys():
                     text = text + " W/ SDP"
 
+                if msg["exchange"]["text"] == "ACK": dest = msg["exchange"]["addr"]
                 if src == cvp: src = "SIP_SS"
                 if dest == cvp: dest = "SIP_SS"
                 src = src.replace('-', '_')

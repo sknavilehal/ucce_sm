@@ -215,7 +215,6 @@
             input_file.click();
         };
         input_file.onchange = function () {
-            var ins = document.getElementById('input_file').files.length;
             file_name.innerHTML = ""
             for (var x = 0; x < ins; x++) {
                 name = document.getElementById('input_file').files[x].name
@@ -229,6 +228,7 @@
     function upload() {
         document.getElementById("loading").innerHTML = "Loading..."
         var form_data = new FormData();
+        var ins = document.getElementById('input_file').files.length;
         form_data.append("file", document.getElementById('input_file').files[0]);
 
         $.ajax({
