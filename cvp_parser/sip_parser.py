@@ -3,13 +3,13 @@ from .sdp_parser import sdp_parser
 from pprint import pprint
 
 def parse_from(line):
-    m = re.search(r'sip:([@0-9a-zA-Z\.]+)[>;:]?',line)
+    m = re.search(r'sip:([@0-9a-zA-Z\.\-]+)[>;:]?',line)
     parts = m.group(1).split('@')
 
     return {"ext":parts[0], "addr":parts[-1]}
 
 def parse_to(line):
-    m = re.search(r'sip:([@0-9a-zA-Z\.]+)[>;:]?', line)
+    m = re.search(r'sip:([@0-9a-zA-Z\.\-]+)[>;:]?', line)
     parts = m.group(1).split('@')
 
     return {"ext":parts[0], "addr":parts[-1]}

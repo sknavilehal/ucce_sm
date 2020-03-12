@@ -8,7 +8,6 @@ db = client["CVP"]
 
 def create_sequence(filename, cvp, guids):
     for guid in guids.keys():
-
         sequence = "@startuml\n"
         src = dest = text = ""
         for msg in guids[guid]:
@@ -29,11 +28,11 @@ def create_sequence(filename, cvp, guids):
 
                 if src == cvp: src = "SIP_SS"
                 if dest == cvp: dest = "SIP_SS"
+                src = src.replace('-', '_')
+                dest = dest.replace('-', '_')
 
             else:
                 src, dest = msg["from"], msg["to"]
-                if src == "UCCE": src = "ICM"
-                if dest == "UCCE": dest = "ICM"
                 text = msg["status"]
 
             id = hashlib.sha1(msg["text"].encode()).hexdigest()
