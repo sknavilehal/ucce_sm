@@ -2,6 +2,7 @@ import os
 import logging
 from flask_cors import CORS
 from flask_pymongo import PyMongo
+from bson.objectid import ObjectId
 from cvp_parser.parser_main import parser_main
 from flask import Flask, jsonify, Blueprint, render_template, request
 from plantweb.render import render
@@ -36,7 +37,7 @@ def get_GUID(id):
 
 @app.route("/api/message/<string:id>")
 def get_message(id):
-    msg_text = mongo.db.msgs.find_one({"_id": id}, {"text":1})
+    msg_text = mongo.db.msgs.find_one({"_id": ObjectId(id)}, {"text":1})
     msg_text = msg_text["text"]
 
     return {"msg_text": msg_text}

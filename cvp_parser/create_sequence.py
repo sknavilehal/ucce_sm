@@ -1,4 +1,3 @@
-import hashlib
 import os
 from pymongo import MongoClient
 from plantweb.render import render
@@ -36,12 +35,9 @@ def create_sequence(filename, cvp, guids):
                 src, dest = msg["from"], msg["to"]
                 text = msg["status"]
 
-            id = hashlib.sha1(msg["text"].encode()).hexdigest()
-            text = " : [[{"+id+"} " + text + "]]\n"
-            sequence += src + " -> " + dest +text
-
-            msg["_id"] = id
-            db.msgs.insert_one(msg)
+            id = db.msgs.insert_one(msg)
+            text = " : [[{"+str(id.inserted_id)+"} " + text + "]]\n"
+            sequence += src + " -> " + dest +text  
         
         sequence += "@enduml"
 

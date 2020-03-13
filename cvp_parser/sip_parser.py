@@ -76,7 +76,6 @@ def parse_sip_msg(sip_msg):
     msg["type"] = "sip"
     msg["via"] = via
     msg["text"] = sip_msg
-    msg["text"] = sip_msg
     msg["error_code"] = parse_error_code(msg["exchange"]["text"])
 
     if content_len > 0:
