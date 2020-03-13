@@ -16,8 +16,8 @@ def GUIDS(legtoguid, msgs):
                 guids[guid].append(parsed_msg)
         else:
             parsed_msg = parse_ged_msg(msg[1])
-            guid = parsed_msg["guid"]
-            if guid in guid_set:
+            if parsed_msg and parsed_msg["guid"] in guid_set:
+                guid = parsed_msg["guid"]
                 guids[guid].append(parsed_msg)
 
     return guids

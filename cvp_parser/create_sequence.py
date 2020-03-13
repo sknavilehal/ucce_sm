@@ -1,4 +1,3 @@
-import hashlib
 import os
 from pymongo import MongoClient
 from plantweb.render import render
@@ -8,7 +7,6 @@ db = client["CVP"]
 
 def create_sequence(filename, time1,cvp, guids):
     for guid in guids.keys():
-
         sequence = "@startuml\n"
         src = dest = text = ""
         for msg in guids[guid]:
@@ -27,21 +25,19 @@ def create_sequence(filename, time1,cvp, guids):
                 if "sdp" in msg.keys():
                     text = text + " W/ SDP"
 
+                if msg["exchange"]["text"] == "ACK": dest = msg["exchange"]["addr"]
                 if src == cvp: src = "SIP_SS"
                 if dest == cvp: dest = "SIP_SS"
+                src = src.replace('-', '_')
+                dest = dest.replace('-', '_')
 
             else:
                 src, dest = msg["from"], msg["to"]
-                if src == "UCCE": src = "ICM"
-                if dest == "UCCE": dest = "ICM"
                 text = msg["status"]
 
-            id = hashlib.sha1(msg["text"].encode()).hexdigest()
-            text = " : [[{"+id+"} " + text + "]]\n"
-            sequence += src + " -> " + dest +text
-
-            msg["_id"] = id
-            db.msgs.insert_one(msg)
+            id = db.msgs.insert_one(msg)
+            text = " : [[{"+str(id.inserted_id)+"} " + text + "]]\n"
+            sequence += src + " -> " + dest +text  
         
         sequence += "@enduml"
 

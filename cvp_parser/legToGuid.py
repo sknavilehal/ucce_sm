@@ -16,17 +16,19 @@ def parse_callid(line):
 def legToGuid(lines):
     messages=[]
     msg=""
-    call_id = None; ged = ignore_sip_msg = ignore_ged_msg = False
+    call_id = None; ignore_ged_msg = ignore_sip_msg = True
     legtoguid = {}
+    #ignored_logs = {"UserCB:", "TransactionManagement:"} 
+    filtered_logs = {"Sending", "BEGINING PROCESSING NEW MESSAGE"}
     for line in lines:
         if " %" in line and line.split("%")[1].split()[0][-1]==":":
             if call_id and not ignore_sip_msg:
                 messages.append(("sip", msg.strip()))
-            elif ged and not ignore_ged_msg:
+            elif not ignore_ged_msg:
                 messages.append(("ged", msg.strip()))
             msg=""
             call_id = None
-            ged = ignore_sip_msg = ignore_ged_msg = False
+            ignore_ged_msg = ignore_sip_msg = True
 
         if "guid" in line.lower() and "legid" in line.lower():
             guid, legid = parse_ids(line)
@@ -34,11 +36,12 @@ def legToGuid(lines):
         
         if "Call-ID: " in line:
             call_id = parse_callid(line)
-        if "processMessage()" in line:
-            ignore_sip_msg = True
+        for log in filtered_logs:
+            if log in line:
+                ignore_sip_msg = False
         
         if "publishing to " in line.lower() or "processing from " in line.lower():
-            ged = True
+            ignore_ged_msg = False
 
         msg=msg+"\n"+line
     
