@@ -5,6 +5,7 @@ from flask_pymongo import PyMongo
 from cvp_parser.parser_main import parser_main
 from flask import Flask, jsonify, Blueprint, render_template, request
 from plantweb.render import render
+from datetime import date,datetime
 
 app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb://localhost:27017/CVP"
@@ -18,6 +19,14 @@ CORS(app)
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/statistics")
+def statistics():
+    return render_template("statistics.html")
+
+@app.route("/files")
+def files():
+    return render_template("files.html")
 
 @app.route("/api/GUIDs/<string:filename>")
 def get_GUIDs(filename):
@@ -43,11 +52,23 @@ def get_message(id):
 
 @app.route("/uploads", methods=["POST"])
 def uploads():
+    print(request.files)
     file = request.files['file']
+    print(file)
+    print(file.filename)
+    # Textual month, day and year
+    today = date.today()	
+    d2 = today.strftime("%B %d, %Y")
+    #print("d2 =", d2)
+    now = datetime.now()
+
+    current_time = now.strftime("%H:%M:%S")
+    #print("Current Time =", current_time)
+    time1=d2+" "+current_time
     unique_files=mongo.db.GUIDs.distinct("filename")
     if ( file.filename in unique_files):
         return "Exists",400
-    parser_main(file)
+    parser_main(file,time1)
     return render_template("index.html"), 200
 
 @app.route('/diagram/<string:ID>',methods=["GET"])
@@ -57,4 +78,5 @@ def diagram(ID):
 @app.route("/api/files")
 def getfilenames():
     unique_files=mongo.db.GUIDs.distinct("filename")
+    print(unique_files)
     return jsonify(unique_files),200

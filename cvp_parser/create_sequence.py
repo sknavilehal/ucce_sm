@@ -6,7 +6,7 @@ from plantweb.render import render
 client = MongoClient("mongodb://localhost:27017/")
 db = client["CVP"]
 
-def create_sequence(filename, cvp, guids):
+def create_sequence(filename, time1,cvp, guids):
     for guid in guids.keys():
 
         sequence = "@startuml\n"
@@ -48,7 +48,8 @@ def create_sequence(filename, cvp, guids):
         doc = {
             "_id": guid,
             "filename": os.path.basename(filename),
-            "sequence": sequence
+            "sequence": sequence,
+            "time":time1
         }
         db.GUIDs.insert_one(doc)
 

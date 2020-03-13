@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!--import stylesheet in flask format-->
+    <link href="{{url_for('static', filename='css/cui-standard.min.css')}}" rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.material.min.js"></script>
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.1.0/material.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/dataTables.material.min.css" />
+    <style>
+        .red {
+            background-color: rgb(247, 210, 210) !important;
+        }
+
+        .maroon {
+            background-color: rgb(248, 169, 169) !important;
+        }
+
+        #example tbody tr:hover {
+            background-color: rgb(166, 224, 247);
+
+        }
+    </style>
+    <meta charset="utf-8">
+    <script>
+        //get list of files in database
+        $.ajax({
+            type: 'GET',
+            url: "/api/files",
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function (data) {
+                //populate the dropdown
+                var t = document.getElementById("drop")
+                t.innerHTML = ""
+                for (i = 0; i < data.length; i++) {
+                    var node = document.createElement("a")
+                    node.innerHTML = data[i]
+                    node.setAttribute("onclick", "get_table(\"" + data[i] + "\")")
+                    node.setAttribute("class", "toggle-filename")
+                    t.appendChild(node)
+                }
+                get_table(data[0])
+            }
+        });
+
+        //get list of ccapi for the file selected in the dropdown menu
+        function get_table(filename) {
+            fetch('/api/GUIDs/' + filename)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    //add data to datatables
+                    appendData(data);
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        }
+
+        function appendData(data) {
+            var GUIDs = [];
+            for (var i = 0; i < data.length; i++) {
+                GUIDs[i] = [];
+                //for Details hyperlink to work
+                GUIDs[i] = [data[i][0], "<a href='#' id='seq_diag' onclick='seq(" + i + ")'>Details</a>"];
+            }
+            //destroy the tables content hen switching b/w files
+            if (document.getElementById("example").innerHTML != "") {
+                var table1 = $('#example').DataTable();
+                table1.destroy()
+            }
+            document.getElementById('example').innerHTML = ""
+            $('#example').DataTable({
+                data: GUIDs,
+                //add error codes
+                "createdRow": function (row, data, dataIndex) {
+                    if (data[12] > 500) {
+                        $(row).addClass('red');
+                    }
+                    else if (data[12] > 400) {
+                        $(row).addClass('maroon');
+                    }
+                },
+                //columns for database
+                columns: [
+                    { title: "ID" },
+                    { title: "Details" }
+                ]
+            });
+
+            var table = $('#example').DataTable();
+
+        }
+        //execute this when diagram for sequence is asked
+        function seq(i) {
+            var table = $('#example').DataTable();
+            data = table.rows(i).data()[0][0]
+            $.ajax({
+                type: 'GET',
+                url: '/diagram/' + data,
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (data) {
+                }
+            });
+            //open diagram in new page
+            window.open("/diagram/" + data);
+        }
+    </script>
+</head>
+
+<body class="cui" data-theme="light">...
+
+    <header class="header">
+        <div class="container">
+            <div class="header-panels">
+                <div class="header-panel">
+                    <a class="header__logo" href="http://www.cisco.com" target="_blank">
+                        <span class="icon-cisco"></span>
+                    </a>
+                    <div class="header__title">CVP Packet Analysis</div>
+                </div>
+                <div class="header-panel header-panel--center">
+                    <div class="header-item">
+                        <ul id="tabsheader" class="tabs">
+                            <li id="tabsheader-1" class="tab active">
+                                <a tabindex="0">
+                                    <div class="tab__heading">Dashboard</div>
+                                </a>
+                            </li>
+                            <li id="tabsheader-2" class="tab">
+                                <a tabindex="0">
+                                    <div class="tab__heading">Charts</div>
+                                </a>
+                            </li>
+                            <li>
+                                <button class="btn btn--small upload" id="file_choose">Choose File</button>
+                                <form id="upload_form" method="post" enctype="multipart/form-data">
+                                    <input type="file" id="input_file" name="files[]" multiple="multiple"
+                                        style="display: none;">
+                                </form>
+                            </li>
+                            <li>
+                                <p id="file_name"></p>
+                            </li>
+                            <li>
+                                <button class="btn btn--small btn--secondary active upload"
+                                    onclick="upload()">Upload</button>
+                            </li>
+                            <li>
+                                <p id="loading"></p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+    <div class="row">
+        <div class="col-lg-6 col-xl-3" style="padding: 3em;">
+            <div id="toggle" class="dropdown ignore">
+                <button id="toggle-btn" onclick="toggle()" class="btn dropdown">Files</button>
+                <div class="dropdown__menu" id="drop">
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-xl-9">
+            <div class="subheader">UPLOAD FILES</div>
+            <p></p>
+        </div>
+    </div>
+    <div class="row flex flex-around">
+        <div class="responsive-table">
+            <table id="example" class=" table table--striped mdl-data-table " width="75%" style="padding:20px;"></table>
+        </div>
+    </div>
+    <footer class="footer footer--secondary">
+        <div class="footer__links">
+            <ul class="list list--inline">
+                <li><a href="http://www.cisco.com/cisco/web/siteassets/contacts/index.html" target="_blank">Contacts</a>
+                </li>
+                <li><a href="https://secure.opinionlab.com/ccc01/o.asp?id=jBjOhqOJ" target="_blank">Feedback</a></li>
+                <li><a href="https://www.cisco.com/c/en/us/about/help.html" target="_blank">Help</a></li>
+                <li><a href="http://www.cisco.com/c/en/us/about/sitemap.html" target="_blank">Site Map</a></li>
+                <li><a href="https://www.cisco.com/c/en/us/about/legal/terms-conditions.html" target="_blank">Terms &
+                        Conditions</a></li>
+                </li>
+                <li><a href="https://www.cisco.com/c/en/us/about/legal/privacy-full.html" target="_blank">Privacy
+                        Statement</a></li>
+                <li><a href="https://www.cisco.com/c/en/us/about/legal/privacy-full.html#cookies" target="_blank">Cookie
+                        Policy</a></li>
+                <li><a href="https://www.cisco.com/c/en/us/about/legal/trademarks.html" target="_blank">Trademarks</a>
+                </li>
+            </ul>
+        </div>
+    </footer>
+</body>
+
+<script>
+    var file_info
+    //when clicked on upload cisco's button initialise how the selected files will look like
+    window.onload = function () {
+        var input_file = document.getElementById("input_file");
+        var file_name = document.getElementById("file_name");
+        var file_choose = document.getElementById("file_choose");
+        file_choose.onclick = function () {
+            input_file.click();
+        };
+        input_file.onchange = function () {
+            var ins = document.getElementById('input_file').files.length;
+            file_name.innerHTML = ""
+            for (var x = 0; x < ins; x++) {
+                name = document.getElementById('input_file').files[x].name
+                file_name.innerHTML = file_name.innerHTML + name + "<br>";
+            }
+        };
+    };
+
+    //when uploading the file
+    //initially show loading bar , remove it on success
+    function upload() {
+        document.getElementById("loading").innerHTML = "Loading..."
+        var form_data = new FormData();
+        var ins = document.getElementById('input_file').files.length;
+        form_data.append("file", document.getElementById('input_file').files[0]);
+
+        $.ajax({
+            type: 'POST',
+            url: '/uploads',
+            data: form_data,
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function (data) {
+                document.getElementById("loading").innerHTML = ""
+                alert('Success!');
+                //load the page to update the changes
+                location.reload()
+            }
+        });
+    }
+    function toggle() {
+        $("#toggle").toggleClass("active");
+    }
+</script>
+
+</html>
