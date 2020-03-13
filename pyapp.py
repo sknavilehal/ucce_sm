@@ -54,10 +54,7 @@ def get_message(id):
 
 @app.route("/uploads", methods=["POST"])
 def uploads():
-    print(request.files)
     file = request.files['file']
-    print(file)
-    print(file.filename)
     # Textual month, day and year
     today = date.today()	
     d2 = today.strftime("%B %d, %Y")
