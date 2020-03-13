@@ -47,9 +47,9 @@
 
 <script>
     //get list of files in database
-
+filename='{{filename}}'
     //get list of ccapi for the file selected in the dropdown menu
-    filename="CVP.2020-02-13.00.log"
+   // filename="CVP.2020-02-13.00.log"
     get_table(filename)
     function get_table(filename) {
         fetch('/api/GUIDs/' + filename)

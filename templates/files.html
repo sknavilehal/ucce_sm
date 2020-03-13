@@ -48,6 +48,7 @@
 {
     padding: 20px;
     background-color: white;
+    font-family: tahoma;
 }
 
 .dropzone .dz-preview.dz-file-preview .dz-image
@@ -142,7 +143,7 @@
 <script>
  var files
     $(document).ready( function () {
-       
+       files=[]
         $.ajax({
             type: 'GET',
             url: 'http://127.0.0.1:5000/api/files',
@@ -152,14 +153,20 @@
             processData: false,
             success: function(data) {
                 //alert('Success!');
-                
-                files=data
+                for(i=0;i<data.length;i++)
+                {
+                    files[i]=[]
+                    files[i]=[data[i],"<span class='icon-play-contained icon-size-20'  onclick='analyse("+i+")'  style='color:green' ></span><span class='icon-remove-contain icon-size-20' style='color:#a52727;margin-left:1rem' ></span>"]
+                }
+                console.log(files)
+                files
                 console.log(files)
                 $('#table_id').DataTable(
         {
-            data: [files],
+            data: files,
                 columns: [
                     { title: "ID" },
+                    { title: "Actions" },
                    
                 ],
                 stateSave: true
@@ -171,6 +178,15 @@
   
 
 } );
+
+function analyse(i) {
+            var table = $('#table_id').DataTable();
+            data = table.rows(i).data()[0][0]
+            //alert(data)
+            doNav('/statistics/'+data)
+            //open diagram in new page
+            //window.open("/diagram/" + data);
+        }
 </script>
 
 
