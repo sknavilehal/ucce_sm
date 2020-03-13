@@ -1,5 +1,15 @@
 import re
 
+def check_icmss_ivrss(msg):
+    if msg["from"] == "ICM_SS" and msg["to"] == "IVR_SS" or msg["from"] == "IVR_SS" and msg["to"] == "ICM_SS":
+        return True
+    else: return False
+
+def check_icm_icmss(msg):
+    if msg["from"] == "ICM" and msg["to"] == "ICM_SS" or msg["from"] == "ICM_SS" and msg["to"] == "ICM":
+        return True
+    else: return False
+
 def parse_guid(line):
     idx = line.lower().find("guid")
     guid = line[idx:].split('=')[1].strip().split()[0]
@@ -7,7 +17,7 @@ def parse_guid(line):
         guid = guid[:-1]
     return guid
 
-def parse_system(line):
+def parse_tofro(line):
     idx = line.lower().find("publish")
     idx = max(line.lower().find("process"), idx)
     system = line[idx:].split()[2]
@@ -19,30 +29,44 @@ def parse_ss(line):
     ss = subsystem.group(1) + "_SS"
     return ss
 
-def parse_cvp_addr(line):
-    cvp = line.split()[1]
-    cvp = cvp[:-1]
-    return cvp
+def parse_label(line):
+    label = line.split("Label=")[1].split()[0]
+    if label[-1] == ",": label = label[:-1]
+    return label
 
 def parse_status(line):
     parts = re.split(r'[\[\]]', line)
-    if parts[-2] == "0":
-        status = parts[-4].upper()
+    if "process" in parts[3].lower() or "publish" in parts[3].lower():
+        status = parts[5]
     else:
-        status = parts[-2].upper()
+        status = parts[3]
+    if status == "CONNECT": status += " " + parse_label(line)
     return status
+
+def rename_ucce(msg):
+    if msg["to"] == "UCCE": msg["to"] = "ICM"
+    if msg["from"] == "UCCE": msg["from"] = "ICM"
+
+def parse_dialogid(msg):
+    id = msg.split("DialogID=")[1].split()[0]
+    return id
 
 def parse_ged_msg(ged_msg):
     msg = {}
-    #cvp = parse_cvp_addr(ged_msg)
     msg["guid"] = parse_guid(ged_msg)
     if "publishing to " in ged_msg.lower():
-        msg["to"] = parse_system(ged_msg)
+        msg["to"] = parse_tofro(ged_msg)
         msg["from"] = parse_ss(ged_msg)
     elif "processing from " in ged_msg.lower():
         msg["to"] = parse_ss(ged_msg)
-        msg["from"] = parse_system(ged_msg)
+        msg["from"] = parse_tofro(ged_msg)
+        if check_icmss_ivrss(msg): return {}
+
     msg["status"] = parse_status(ged_msg)
+    rename_ucce(msg)
+
+    if check_icm_icmss(msg): msg["status"] += " : " + parse_dialogid(ged_msg)
+
     msg["text"] = ged_msg
     msg["type"] = "ged"
     msg["text"] = ged_msg
