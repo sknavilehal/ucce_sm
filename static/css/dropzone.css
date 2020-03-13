@@ -1,0 +1,29 @@
+body.cui .btn {
+    background-color: #0094eb;
+    border-color: #0175a2;
+    color: #f8f8f8;
+}
+
+.dropzone {
+    background: white;
+    border-radius: 5px;
+    border: 2px dashed rgb(0, 135, 247);
+    border-image: none;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.center {
+    max-width: 300px;
+    margin-top: 4rem;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+.dropzone .dz-preview.dz-file-preview .dz-image {
+    background: #afddf7;
+    width: 150px;
+    height: 100px;
+}

@@ -19,7 +19,7 @@ CORS(app)
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index1.html")
 
 @app.route("/statistics/<filename>")
 def statistics(filename):

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!--import stylesheet in flask format-->
+    <link href="{{url_for('static', filename='css/cui-standard.min.css')}}" rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="{{url_for('static',filename='js/styleguide.js')}}"></script>
+    <link href="{{url_for('static', filename='dropzone-5.7.0/dropzone-5.7.0/dist/min/dropzone.min.css')}}" rel="stylesheet" type="text/css">
+    <script src="{{url_for('static' ,filename='dropzone-5.7.0/dropzone-5.7.0/dist/dropzone.js')}}"></script>
+    <script src="{{url_for('static' ,filename='js/initial.js')}}"></script>
+    <link href="{{url_for('static', filename='css/dropzone.css')}}" rel="stylesheet" type="text/css">
+    {% block meta %}<meta charset="utf-8">{% endblock %}
+</head>
+
+<body class="cui" onload="initial()" data-theme="light" style="background-color: aliceblue;">...
+    <div class="row base-margin-bottom">
+        <div class="col-12">
+            <header class="header header--compressed" style="height: 6rem;">
+                <div class="container">
+                    <div class="header-panels">
+                        <div class="header-panel">
+                            <a class="header__logo" href="http://www.cisco.com" target="_blank">
+                                <span class="icon-cisco icon-size-32"></span>
+                            </a>
+                            <div class="header__title">
+                                <h1 class="header__title" style="font-size: 2.5rem;font-weight:300;">CVP Log Analysis
+                                </h1>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </header>
+        </div>
+    </div>
+    <div class="row base-margin-bottom">
+        <div class="col-12">
+            <nav id="styleguideSidebar" class="sidebar sidebar--mini sidebar--slate" role="navigation">
+                <div class="sidebar__header">
+                    <a id="sidebar-toggle" class="sidebar-toggle hidden-xs hidden-sm">
+                        <span class="icon-toggle-menu"></span>
+                    </a>
+
+                </div>
+                <ul id="rootSidebar" data-kss-ref="styleguide.homepage">
+                    <li class="sidebar__item sidebar__item--selected" id="section-gettingStarted">
+                        <a onclick="doNav('/')" title="Home">
+                            <span class="icon-home"></span>
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    <div id="visible" style="display: none;">
+                        <li class="sidebar__item">
+                            <a onclick="doNav('./files')" title="Getting Started">
+                                <span class="icon-applications"></span>
+                                <span>Files</span>
+                            </a>
+                        </li>
+                        <li class="sidebar__item">
+                            <a onclick="doNav('/statistics')" title="Getting Started">
+                                <span class="icon-data-usage"></span>
+                                <span>Statistics</span>
+                            </a>
+                        </li>
+                    </div>
+
+
+                    <li class="sidebar__item">
+                        <a onclick="doNav('./index.html')" title="Getting Started">
+                            <span class="icon-feedback"></span>
+                            <span>Feedback</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</body>
+
+</html>
