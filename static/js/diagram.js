@@ -1,4 +1,4 @@
-var flaskData = document.getElementById("flaskvar")
+//var flaskData = document.getElementById("flaskvar")
 var guid = flaskData.getAttribute("guid")
 //for the cappi id gets the svg code of its sequence diagram and messages
 $.ajax({

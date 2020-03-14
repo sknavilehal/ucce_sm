@@ -37,6 +37,7 @@ options = {
             myDropzone.processQueue();
         });
         this.on("queuecomplete", function (file) {
+           alert("gg");
             initial()});
     }
 

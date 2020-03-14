@@ -45,28 +45,28 @@
 
                 </div>
                 <ul id="rootSidebar" data-kss-ref="styleguide.homepage">
-                    <li class="sidebar__item sidebar__item--selected" id="section-gettingStarted">
+                    <li id="home" class="sidebar__item sidebar__item--selected" id="section-gettingStarted">
                         <a onclick="doNav('/')" title="Home">
                             <span class="icon-home"></span>
                             <span>Home</span>
                         </a>
                     </li>
-                    {% block nav}
+                   
                     <div id="visible" style="display: none;">
-                        <li class="sidebar__item">
+                        <li id="files" class="sidebar__item">
                             <a onclick="doNav('/files')" title="Getting Started">
                                 <span class="icon-applications"></span>
                                 <span>Files</span>
                             </a>
                         </li>
-                        <li class="sidebar__item">
+                        <li id="stat" class="sidebar__item">
                             <a id="statistics" title="Getting Started">
                                 <span class="icon-data-usage"></span>
                                 <span>Statistics</span>
                             </a>
                         </li>
                     </div>
-                    {%endblock}
+                
 
                     <li class="sidebar__item">
                         <a onclick="doNav('/')" title="Getting Started">
@@ -80,7 +80,7 @@
         </div>
     </div>
 </body>
-{%block script}
+{%block script%}
 <script type="text/javascript">
 function initial() {
     $.ajax({
@@ -132,5 +132,5 @@ $("#button").click(function (e) {
     e.preventDefault();
     uploader.processQueue();
 });</script>
-{%endblock}
+{%endblock%}
 </html>
