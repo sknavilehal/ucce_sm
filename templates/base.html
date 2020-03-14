@@ -8,7 +8,7 @@
     <script src="{{url_for('static',filename='js/styleguide.js')}}"></script>
     <link href="{{url_for('static', filename='dropzone-5.7.0/dropzone-5.7.0/dist/min/dropzone.min.css')}}" rel="stylesheet" type="text/css">
     <script src="{{url_for('static' ,filename='dropzone-5.7.0/dropzone-5.7.0/dist/dropzone.js')}}"></script>
-    <script src="{{url_for('static' ,filename='js/initial.js')}}"></script>
+    <!--<script src="{{url_for('static' ,filename='js/initial.js')}}"></script>-->
     <link href="{{url_for('static', filename='css/dropzone.css')}}" rel="stylesheet" type="text/css">
     {% block meta %}<meta charset="utf-8">{% endblock %}
 </head>
@@ -51,6 +51,7 @@
                             <span>Home</span>
                         </a>
                     </li>
+                    {% block nav}
                     <div id="visible" style="display: none;">
                         <li class="sidebar__item">
                             <a onclick="doNav('/files')" title="Getting Started">
@@ -65,7 +66,7 @@
                             </a>
                         </li>
                     </div>
-
+                    {%endblock}
 
                     <li class="sidebar__item">
                         <a onclick="doNav('/')" title="Getting Started">
@@ -79,5 +80,57 @@
         </div>
     </div>
 </body>
+{%block script}
+<script type="text/javascript">
+function initial() {
+    $.ajax({
+        type: 'GET',
+        url: '/api/files',
 
+        contentType: false,
+        cache: false,
+        processData: false,
+        success: function (data) {
+            //alert('Success!');
+            if (data.length > 0) {
+                document.getElementById("visible").style.display = "block"
+                document.getElementById("statistics").setAttribute("onclick","doNav('statistics/"+data[0]+"')")
+            }
+
+        }
+    });
+}
+
+//alert("ggg")
+options = {
+    url: '/uploads',
+    acceptedFiles: '.txt,.log',
+    addRemoveLinks: true,
+    dictDefaultMessage: 'Drag a log file here to save, or click to select one',
+    thumbnailWidth: '50px',
+    removedfile: function (file) {
+        file.previewElement.remove();
+    },
+    autoProcessQueue: false,
+    init: function () {
+
+        var myDropzone = this;
+
+        // Update selector to match your button
+        $("#upload").click(function (e) {
+            e.preventDefault();
+            myDropzone.processQueue();
+        });
+        this.on("queuecomplete", function (file) {
+            initial()});
+    }
+
+};
+
+const uploader = new Dropzone('#upload-widget', options);
+$("#button").click(function (e) {
+    e.preventDefault();
+    uploader.processQueue();
+});</script>
+{%endblock}
 </html>
