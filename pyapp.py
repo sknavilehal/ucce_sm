@@ -75,6 +75,7 @@ def uploads():
 def diagram(ID):
     return render_template("diagram.html", guid=ID)
 
+
 @app.route("/api/files")
 def getfilenames():
     unique_files=mongo.db.GUIDs.distinct("filename")
@@ -89,3 +90,7 @@ def deleteFile(filename):
     y=mongo.db.msgs.remove({"file":filename})
     unique_files=mongo.db.GUIDs.distinct("filename")
     return jsonify(unique_files),200
+
+@app.route('/filter',methods=["GET"])
+def filter():
+    return render_template("try.html")

@@ -1,93 +1,113 @@
 <html>
     <head>
         <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
         <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.10/jquery.autocomplete.min.js"></script>
+     
+
+
         <style>
-            body{
-  padding: 1em;
-  background: white;
-  color: white;
-  text-align: center;
-  font-family: "Gill sans", sans-serif;
-  width: 80%;
-  margin: 0 auto;
-}
-h1{
-  margin: 1em 0;
-  border-bottom: 1px dashed;
-  padding-bottom: 1em;
-  font-weight: lighter;
-}
-p{
-  font-style: italic;
-}
-.loader{
-  margin: 0 0 2em;
-  height: 100px;
-  width: 20%;
-  text-align: center;
-  padding: 1em;
-  margin: 0 auto 1em;
-  display: inline-block;
-  vertical-align: top;
+
+* {
+  box-sizing: border-box;
 }
 
-/*
-  Set the color of the icon
-*/
-svg path,
-svg rect{
-  fill: #00bceb;
+body {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(to bottom right, #274B74 0%, #c4e4f4 50%, #00bceb 100%);
+  font-family: "Montserrat", sans-serif;
+  overflow: hidden;
 }
+
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+input[type=text] {
+  position: absolute;
+  top:3rem;
+  padding: 15px 40px 15px 20px;
+  width: 20px;
+  color: #525252;
+  
+  font-size: 16px;
+  font-weight: 100;
+  letter-spacing: 2px;
+  border: none;
+  border-radius: 5px;
+  background: linear-gradient(to right, #FFFFFF 0%, #464747 #F9F9F9 100%);
+  transition: width 0.4s ease;
+  outline: none;
+}
+
+
+.autocomplete-suggestion
+{
+  padding: 10px 30px 10px 10px;
+  margin:0.2rem;
+  width: 400px;
+  color: #525252;
+  font-family: "Montserrat", sans-serif;
+  font-size: 13px;
+  font-weight: 100;
+  letter-spacing: 2px;
+  border: none;
+  border-radius: 5px;
+  background: white;
+  
+  outline: none;
+}
+
+.autocomplete-suggestion:hover
+{
+  cursor:pointer;
+  background:#cff1fa;
+  
+  outline: none;
+}
+
+.autocomplete-selected
+{
+  cursor:pointer;
+  background:#cff1fa;
+  
+  outline: none;
+}
+
         </style>
-     
     </head>
     <body>
-     <div class="loader loader--style6" title="5">
-  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-     width="60px" height="30px" viewBox="0 0 60 30" style="enable-background:new 0 0 50 50;" xml:space="preserve">
-    <rect x="0" y="15" width="4" height="4" fill="#333">
-      <animate attributeName="height" attributeType="XML"
-        values="4;10;4" 
-        begin="0s" dur="0.6s" repeatCount="indefinite" />
-      <animate attributeName="y" attributeType="XML"
-        values="15; 10; 15"
-        begin="0s" dur="0.6s" repeatCount="indefinite" />
-    </rect>
-    <rect x="10" y="13" width="4" height="5" fill="#333">
-      <animate attributeName="height" attributeType="XML"
-        values="5;15;5" 
-        begin="0.15s" dur="0.6s" repeatCount="indefinite" />
-      <animate attributeName="y" attributeType="XML"
-        values="15; 10; 15"
-        begin="0.15s" dur="0.6s" repeatCount="indefinite" />
-    </rect>
-    <rect x="20" y="13" width="4" height="6" fill="#333">
-      <animate attributeName="height" attributeType="XML"
-        values="5;21;5" 
-        begin="0.3s" dur="0.6s" repeatCount="indefinite" />
-      <animate attributeName="y" attributeType="XML"
-        values="13; 5; 13"
-        begin="0.3s" dur="0.6s" repeatCount="indefinite" />
-    </rect>
-    <rect x="30" y="13" width="4" height="5" fill="#333">
-        <animate attributeName="height" attributeType="XML"
-          values="5;15;5" 
-          begin="0.15s" dur="0.6s" repeatCount="indefinite" />
-        <animate attributeName="y" attributeType="XML"
-          values="15; 10; 15"
-          begin="0.15s" dur="0.6s" repeatCount="indefinite" />
-      </rect>
-      <rect x="40" y="15" width="4" height="4" fill="#333">
-        <animate attributeName="height" attributeType="XML"
-          values="4;10;4" 
-          begin="0.6s" dur="0.6s" repeatCount="indefinite" />
-        <animate attributeName="y" attributeType="XML"
-          values="15; 10; 15"
-          begin="0.6s" dur="0.6s" repeatCount="indefinite" />
-      </rect>
-  </svg>
+<div class="container">
+      <input type="text" name="country" style="width:500px" id="autocomplete"/>
+
 </div>
 </body>
-   
+   <script type="text/javascript">
+  var countries = [
+   { value: 'data' },
+   { value: 'data.msg' },
+   { value: 'data.msg.callid' },
+   { value: 'dns.sequence' },
+   { value: 'dns.sequence.jj' }
+];
+let re  = /and\s|or\s|&&\s|\|\|\s/gi;
+$('#autocomplete').autocomplete({
+    lookup: countries,
+    delimiter:re,
+    onSelect: function (suggestion) {
+       // alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+        
+    },
+    beforeRender: function (container) {
+      console.log(document.getElementById("autocomplete").value)
+    }
+});
+</script>
 </html>
