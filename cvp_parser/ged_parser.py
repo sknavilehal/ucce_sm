@@ -48,7 +48,7 @@ def rename_ucce(msg):
     if msg["from"] == "UCCE": msg["from"] = "ICM"
 
 def parse_dialogid(msg):
-    id = msg.split("DialogID=")[1].split()[0]
+    id = msg.lower().split("dialogid=")[1].split()[0]
     return id
 
 def parse_ged_msg(ged_msg):
