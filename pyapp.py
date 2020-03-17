@@ -84,13 +84,12 @@ def getfilenames():
 
 @app.route("/api/filter", methods=["POST"])
 def callFilter():
-    query_text = request.get_json()["query"]
-    query = query_parser(query_text)
+    filter = request.get_json()["filter"]
+    query = query_parser(filter)
     print(query)
-    cursor = mongo.db.msgs.find(query)
-    guids = [res["guid"] for res in cursor]
+    guids = mongo.db.msgs.distinct("guid",query)
 
-    return {"guids": guids}
+    return {"guids": guids, "query":str(query)}
 
 @app.route("/api/delete/<filename>")
 def deleteFile(filename):
