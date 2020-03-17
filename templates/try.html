@@ -28,13 +28,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+ 
 }
 
 input[type=text] {
   position: absolute;
   top:3rem;
   padding: 15px 40px 15px 20px;
-  width: 20px;
+  
   color: #525252;
   
   font-size: 16px;
@@ -46,6 +47,25 @@ input[type=text] {
   transition: width 0.4s ease;
   outline: none;
 }
+
+input[type=button] {
+  position: absolute;
+  top:3rem;
+  right:15rem;
+  padding: 15px 40px 15px 20px;
+  width: 100px;
+  color: #525252;
+  
+  font-size: 16px;
+  font-weight: 100;
+  letter-spacing: 2px;
+  border: none;
+  border-radius: 5px;
+  background: linear-gradient(to right, #FFFFFF 0%, #464747 #F9F9F9 100%);
+  transition: width 0.4s ease;
+  outline: none;
+}
+
 
 
 .autocomplete-suggestion
@@ -65,6 +85,11 @@ input[type=text] {
   outline: none;
 }
 
+#submit:hover
+{
+cursor:pointer;
+background-color: gainsboro;
+}
 .autocomplete-suggestion:hover
 {
   cursor:pointer;
@@ -85,7 +110,8 @@ input[type=text] {
     </head>
     <body>
 <div class="container">
-      <input type="text" name="country" style="width:500px" id="autocomplete"/>
+      <input type="text"  name="country" style="width:500px" id="autocomplete"/>
+      <input type="button" id="submit" name="Submit"  style="width:100px" value="Submit"/>
 
 </div>
 </body>
@@ -108,6 +134,20 @@ $('#autocomplete').autocomplete({
     beforeRender: function (container) {
       console.log(document.getElementById("autocomplete").value)
     }
+});
+
+$('#submit').click(function()
+{
+  //alert("ggg")
+  var p=document.getElementById("autocomplete").value
+  console.log(p)
+ /* $.post("/api/filter",
+  {
+    "query":
+  },
+  function(data, status){
+    alert("Data: " + data + "\nStatus: " + status);
+  });*/
 });
 </script>
 </html>

@@ -94,3 +94,7 @@ def deleteFile(filename):
 @app.route('/filter',methods=["GET"])
 def filter():
     return render_template("try.html")
+
+@app.route('/api/filter',methods=["POST"])
+def filter_api():
+    return "pp",200
