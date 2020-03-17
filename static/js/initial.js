@@ -1,4 +1,4 @@
-
+document.getElementById("body").setAttribute("onload","initial()")
 
 function initial() {
     $.ajax({
