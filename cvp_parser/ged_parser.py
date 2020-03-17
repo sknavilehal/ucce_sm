@@ -51,10 +51,38 @@ def parse_dialogid(msg):
     id = msg.lower().split("dialogid=")[1].split()[0]
     return id
 
+#Function to parse all the attributes from the ged message
+def parse_attributes(ged_msg, msg):
+    words = ged_msg.split(" ")
+
+    for word in words :
+
+        #Checking for words which have "key=value" format. 
+        #Note: If the value is an empty string then adding it the same way it exists.
+        if "=" in word:
+            attribute = word.split("=")  #attribute[0] becomes key and attribute[1] becomes value
+
+            #Error case where value is ending with a ',' or '}'
+            if attribute[1] != '' and attribute[1][-1] in [',','}']  :
+                attribute[1]=attribute[1][:-1]
+
+            #Error case where key is starting a '{'
+            if attribute[0][0] in ['{','_']:
+                attribute[0] = attribute[0][1:]
+
+            #Error case where splitting by ' ' wasn't sufficient and gave the format - 'randomtext,key=value'
+            if ',' in attribute[0]:
+                attribute[0] = attribute[0].split(',')[-1]
+
+            #If the attribute is not in the dictionary then add it 
+            if attribute[0] not in msg.keys():
+                msg[attribute[0]] = attribute[1]
+
 def parse_ged_msg(filename,ged_msg):
     msg = {}
     msg["guid"] = parse_guid(ged_msg)
     msg["file"]=filename
+    
     if "publishing to " in ged_msg.lower():
         msg["to"] = parse_tofro(ged_msg)
         msg["from"] = parse_ss(ged_msg)
@@ -67,6 +95,9 @@ def parse_ged_msg(filename,ged_msg):
     rename_ucce(msg)
 
     if check_icm_icmss(msg): msg["status"] += " : " + parse_dialogid(ged_msg)
+
+    #Sending the ged message line to parse the attributes from it.
+    parse_attributes(ged_msg, msg)
 
     msg["text"] = ged_msg
     msg["type"] = "ged"

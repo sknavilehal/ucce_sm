@@ -4,6 +4,7 @@ from flask_cors import CORS
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from cvp_parser.parser_main import parser_main
+from cvp_parser.query_parser import query_parser
 from flask import Flask, jsonify, Blueprint, render_template, request
 from plantweb.render import render
 from datetime import date,datetime
@@ -82,7 +83,14 @@ def getfilenames():
     print(unique_files)
     return jsonify(unique_files),200
 
+@app.route("/api/filter", methods=["POST"])
+def callFilter():
+    filter = request.get_json()["filter"]
+    query = query_parser(filter)
+    print(query)
+    guids = mongo.db.msgs.distinct("guid",query)
 
+    return {"guids": guids, "query":str(query)}
 
 @app.route("/api/delete/<filename>")
 def deleteFile(filename):
