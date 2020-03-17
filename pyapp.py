@@ -93,12 +93,12 @@ def callFilter():
 
 @app.route("/api/signature", methods=["POST"])
 def signatureEntry():
-    filter = request.get_json()["filter"]
+    call_filter = request.get_json()["filter"]
     signature = request.get_json()["signature"]
     try:
-        id = mongo.db.signatures.insert_one({"_id":filter, "signature":signature})
+        id = mongo.db.signatures.insert_one({"_id":signature, "filter":call_filter})
     except Exception:
-        return "filter already exists", 400
+        return "signature already exists", 400
     return id.inserted_id, 200
 
 @app.route("/api/delete/<filename>")
