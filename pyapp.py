@@ -31,6 +31,10 @@ def statistics(filename):
 def files():
     return render_template("files.html")
 
+@app.route("/signatures")
+def signatures():
+    return render_template("signatures.html")
+
 @app.route("/api/GUIDs/<string:filename>")
 def get_GUIDs(filename):
     cursor = mongo.db.GUIDs.find({"filename":filename})
@@ -86,6 +90,8 @@ def getfilenames():
 @app.route("/api/filter", methods=["POST"])
 def callFilter():
     filter = request.get_json()["filter"]
+    print(filter)
+    #filter="'DNIS':'67801' and 'ANI':'2001' and 'rckey':'0'"
     query = query_parser(filter)
     print(query)
     guids = mongo.db.msgs.distinct("guid",query)
@@ -103,6 +109,3 @@ def deleteFile(filename):
 def filter():
     return render_template("try.html")
 
-@app.route('/api/filter',methods=["POST"])
-def filter_api():
-    return "pp",200

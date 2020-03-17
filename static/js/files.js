@@ -78,5 +78,5 @@ function analyse(i) {
 
     function filter(i)
     {
-        window.open('/filter')
+        doNav('/signatures')
     }
