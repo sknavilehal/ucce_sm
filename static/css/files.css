@@ -1,0 +1,19 @@
+
+.center
+{
+    max-width: 600px;
+    margin-top: 4rem;
+  margin-left: auto;
+  margin-right: auto;
+   
+   
+}
+
+.dataTables_wrapper
+{
+    padding: 20px;
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: white;
+    font-family: tahoma;
+}
+

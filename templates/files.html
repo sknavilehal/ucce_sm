@@ -1,36 +1,18 @@
 {% extends "base.html" %}
 {% block meta %}
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
-  
+<link href="{{url_for('static', filename='css/files.css')}}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
-
 <style>
-
-    .center
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current
     {
-        max-width: 600px;
-        margin-top: 4rem;
-      margin-left: auto;
-      margin-right: auto;
-       
-       
+      color:black !important;
+      background:#a6d1f5;
+      border:  1px solid #0087f7
     }
-    
-    .dataTables_wrapper
-    {
-        padding: 20px;
-        background-color: white;
-        font-family: tahoma;
-    }
-    
-    
-        </style>
-        {% endblock %}
-
-
-                    
-                    
-              {%block content%}
+    </style>
+{% endblock %}
+ {%block content%}
             <div class="row base-margin-bottom " style="margin-left: 10rem;">
                 <div class="col-12 center">
                     <table id="table_id" style="width:80%" class=" hover order-column row-border">
@@ -39,66 +21,9 @@
                 </div>
             </div>
             {%endblock%}
-      
-    
+
 </body>
 {%block script%}
-<script>
- var files
-    $(document).ready( function () {
-        document.getElementById("visible").style.display = "block"
-        document.getElementById("home").classList.remove("sidebar__item--selected")
-        document.getElementById("files").classList.add("sidebar__item--selected")
-       files=[]
-        $.ajax({
-            type: 'GET',
-            url: '/api/files',
-            
-            contentType: false,
-            cache: false,
-            processData: false,
-            success: function(data) {
-                //alert('Success!');
-                if(data.length>0)
-                {
-                    //document.getElementById("visible").style.display="block"
-                    document.getElementById("statistics").setAttribute("onclick","doNav('statistics/"+data[0]+"')")
-                }
-                for(i=0;i<data.length;i++)
-                {
-                    files[i]=[]
-                    files[i]=[data[i],"<span class='icon-play-contained icon-size-20'  onclick='analyse("+i+")'  style='color:green' ></span><span class='icon-remove-contain icon-size-20' style='color:#a52727;margin-left:1rem' ></span>"]
-                }
-                console.log(files)
-                files
-                console.log(files)
-                $('#table_id').DataTable(
-        {
-            data: files,
-                columns: [
-                    { title: "ID" },
-                    { title: "Actions" },
-                   
-                ],
-                stateSave: true
-                } ); 
-               
-            }
-        });
-     
-  
-
-} );
-
-function analyse(i) {
-            var table = $('#table_id').DataTable();
-            data = table.rows(i).data()[0][0]
-            //alert(data)
-            doNav('/statistics/'+data)
-            //open diagram in new page
-            //window.open("/diagram/" + data);
-        }
-</script>
-
+<script src="{{url_for('static',filename='js/files.js')}}"></script>
 {%endblock%}
 </html>

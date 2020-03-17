@@ -51,11 +51,12 @@ def parse_error_code(line):
     if m: return int(m.group(0))
     else: return 0
 
-def parse_sip_msg(sip_msg):
+def parse_sip_msg(filename,sip_msg):
     line = '\n'.join(sip_msg.splitlines()[0:2])
     msg = {}
     via = []
     msg["exchange"] = parse_exchange(line)
+    msg["file"]=filename
     lines = sip_msg.splitlines()
     #msg["error_code"] = 0
 

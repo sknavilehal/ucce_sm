@@ -1,3 +1,5 @@
+
+
 function initial() {
     $.ajax({
         type: 'GET',
@@ -16,6 +18,7 @@ function initial() {
         }
     });
 }
+
 //alert("ggg")
 options = {
     url: '/uploads',
@@ -37,7 +40,6 @@ options = {
             myDropzone.processQueue();
         });
         this.on("queuecomplete", function (file) {
-           alert("gg");
             initial()});
     }
 
