@@ -5,7 +5,7 @@ from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from cvp_parser.parser_main import parser_main
 from cvp_parser.query_parser import query_parser
-from flask import Flask, jsonify, Blueprint, render_template, request
+from flask import Flask, jsonify, Blueprint, render_template, request, Response
 from plantweb.render import render
 from datetime import date,datetime
 
@@ -90,6 +90,16 @@ def callFilter():
     guids = mongo.db.msgs.distinct("guid",query)
 
     return {"guids": guids, "query":str(query)}
+
+@app.route("/api/signature", methods=["POST"])
+def signatureEntry():
+    filter = request.get_json()["filter"]
+    signature = request.get_json()["signature"]
+    try:
+        id = mongo.db.signatures.insert_one({"_id":filter, "signature":signature})
+    except Exception:
+        return "filter already exists", 400
+    return id.inserted_id, 200
 
 @app.route("/api/delete/<filename>")
 def deleteFile(filename):
