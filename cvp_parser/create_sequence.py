@@ -5,9 +5,9 @@ from plantweb.render import render
 client = MongoClient("mongodb://localhost:27017/")
 db = client["CVP"]
 
-def create_sequence(filename, time1,cvp, guids):
+def create_sequence(filename,cvp, guids):
     for guid in guids.keys():
-        sequence = "@startuml\n"
+        sequence = "@startuml\nskinparam sequence {\nLifeLineBorderColor black\nParticipantBorderColor #00bceb\nParticipantBackgroundColor white\nParticipantFontName Consolas\nParticipantFontSize 17\nParticipantFontColor black\n}\n"
         src = dest = text = ""
         for msg in guids[guid]:
             if msg["type"] == "sip":
@@ -45,7 +45,7 @@ def create_sequence(filename, time1,cvp, guids):
             "_id": guid,
             "filename": os.path.basename(filename),
             "sequence": sequence,
-            "time":time1
+            
         }
         db.GUIDs.insert_one(doc)
 

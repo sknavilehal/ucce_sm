@@ -51,9 +51,10 @@ def parse_dialogid(msg):
     id = msg.lower().split("dialogid=")[1].split()[0]
     return id
 
-def parse_ged_msg(ged_msg):
+def parse_ged_msg(filename,ged_msg):
     msg = {}
     msg["guid"] = parse_guid(ged_msg)
+    msg["file"]=filename
     if "publishing to " in ged_msg.lower():
         msg["to"] = parse_tofro(ged_msg)
         msg["from"] = parse_ss(ged_msg)

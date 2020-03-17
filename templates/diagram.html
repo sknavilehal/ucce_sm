@@ -2,98 +2,138 @@
 <html>
 
 <head>
-    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <!--import stylesheet in flask format-->
     <link href="{{url_for('static', filename='css/cui-standard.min.css')}}" rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <meta id="flaskvar" guid="{{guid}}">
+
+    <script src="{{url_for('static',filename='js/styleguide.js')}}"></script>
+    <link href="{{url_for('static', filename='dropzone-5.7.0/dropzone-5.7.0/dist/min/dropzone.min.css')}}" rel="stylesheet" type="text/css">
+    <script src="{{url_for('static' ,filename="dropzone-5.7.0/dropzone-5.7.0/dist/dropzone.js")}}"></script>
+    <script src="{{url_for('static' ,filename='js/diagram.js')}}"></script>
+    <link href="{{url_for('static', filename='css/diagram.css')}}" rel="stylesheet" type="text/css">
+    <meta charset="utf-8">
     <style>
-        a {
-            cursor: pointer
-        }
+      
+       
+
+
     </style>
 </head>
 
-<body class="cui" data-theme="light">
-    <header class="header">
-        <div class="container">
-            <div class="header-panels">
-                <div class="header-panel">
-                    <a class="header__logo" href="http://www.cisco.com" target="_blank">
-                        <span class="icon-cisco"></span>
-                    </a>
-                    <div class="header__title">SIP Packet Analysis</div>
-                </div>
-                <div class="header-panel header-panel--center">
-                    <div class="header-item">
-                        <ul id="tabsheader" class="tabs">
-                            <li id="tabsheader-1" class="tab active">
-                                <a tabindex="0">
-                                    <div class="tab__heading">Dashboard</div>
-                                </a>
-                            </li>
-                            <li id="tabsheader-2" class="tab">
-                                <a tabindex="0">
-                                    <div class="tab__heading">Charts</div>
-                                </a>
-                            </li>
-                        </ul>
+<body class="cui" data-theme="light" style="background-color: aliceblue;">...
+    <div class="row base-margin-bottom">
+        <div class="col-12">
+            <header class="header header--compressed" style="height: 6rem;">
+                <div class="container">
+                    <div class="header-panels">
+                        <div class="header-panel">
+                            <a class="header__logo" href="http://www.cisco.com" target="_blank">
+                                <span class="icon-cisco icon-size-32"  ></span>
+                            </a>
+                            <div class="header__title">
+                                <h1 class="header__title" style="font-size: 2.5rem;font-weight:300;">CVP Log Analysis - {{guid}}</h1> </div>
+                        </div>
                     </div>
+                </div>
+            </header>
+        </div>
+    </div>
+    <div class="row base-margin-bottom">
+        <div class="col-12">
+            <nav id="styleguideSidebar" class="sidebar sidebar--mini sidebar--slate" role="navigation">
+                <div class="sidebar__header">
+                    <a id="sidebar-toggle" class="sidebar-toggle hidden-xs hidden-sm">
+                        <span class="icon-toggle-menu"></span>
+                    </a>
+                    
+                </div>
+                <ul id="rootSidebar" data-kss-ref="styleguide.homepage">
+                    <li class="sidebar__item sidebar__item--selected" id="section-gettingStarted">
+                        <a onclick="doNav('/diagram/{{guid}}')"  title="Home">
+                            <span class="icon-analysis"></span>
+                            <span>Diagram</span>
+                        </a>
+                    </li>
+                    <li class="sidebar__item " id="section-gettingStarted">
+                        <a onclick="doNav('/')"  title="Home">
+                            <span class="icon-info-outline"></span>
+                            <span>Information</span>
+                        </a>
+                    </li>
+ 
+                </ul>
+            </nav>
+            <div class="row base-margin-bottom"  style="margin-left: 10rem;" >
+                <div class="col-12 center">
+                    <div id="diagram" width="75%" style="padding:20px;">
+                        <svg id="svg1" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                        width="60px" height="30px" viewBox="0 0 60 30" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+                       <rect x="0" y="15" width="4" height="4" fill="#333">
+                         <animate attributeName="height" attributeType="XML"
+                           values="4;10;4" 
+                           begin="0s" dur="0.6s" repeatCount="indefinite" />
+                         <animate attributeName="y" attributeType="XML"
+                           values="15; 10; 15"
+                           begin="0s" dur="0.6s" repeatCount="indefinite" />
+                       </rect>
+                       <rect x="10" y="13" width="4" height="5" fill="#333">
+                         <animate attributeName="height" attributeType="XML"
+                           values="5;15;5" 
+                           begin="0.15s" dur="0.6s" repeatCount="indefinite" />
+                         <animate attributeName="y" attributeType="XML"
+                           values="15; 10; 15"
+                           begin="0.15s" dur="0.6s" repeatCount="indefinite" />
+                       </rect>
+                       <rect x="20" y="13" width="4" height="6" fill="#333">
+                         <animate attributeName="height" attributeType="XML"
+                           values="5;21;5" 
+                           begin="0.3s" dur="0.6s" repeatCount="indefinite" />
+                         <animate attributeName="y" attributeType="XML"
+                           values="13; 5; 13"
+                           begin="0.3s" dur="0.6s" repeatCount="indefinite" />
+                       </rect>
+                       <rect x="30" y="13" width="4" height="5" fill="#333">
+                           <animate attributeName="height" attributeType="XML"
+                             values="5;15;5" 
+                             begin="0.15s" dur="0.6s" repeatCount="indefinite" />
+                           <animate attributeName="y" attributeType="XML"
+                             values="15; 10; 15"
+                             begin="0.15s" dur="0.6s" repeatCount="indefinite" />
+                         </rect>
+                         <rect x="40" y="15" width="4" height="4" fill="#333">
+                           <animate attributeName="height" attributeType="XML"
+                             values="4;10;4" 
+                             begin="0.6s" dur="0.6s" repeatCount="indefinite" />
+                           <animate attributeName="y" attributeType="XML"
+                             values="15; 10; 15"
+                             begin="0.6s" dur="0.6s" repeatCount="indefinite" />
+                         </rect>
+                     </svg></div> 
+
+                </div>                
+            </div>
+        </div>
+    </div>   
+
+    <div class="modal modal--small hide" id="modal-small">
+        <div class="modal__dialog">
+            <div class="modal__content">
+                <a class="modal__close" onclick="closeModal('modal-small')"><span class="icon-close"></span></a>
+                <div class="modal__header">
+                    <div class="modal__title" id="title"></div>
+                </div>
+                <div class="modal__body">
+                   <p  id="msg" style="font-family:Tahoma;font-size: 1.2rem;">ffff</p>
+                </div>
+                <div class="modal__footer">
+                    <button class="btn" onclick="closeModal('modal-small')">Ok</button>
                 </div>
             </div>
         </div>
-    </header>
-    <div class="row base-margin-bottom">
-
-        <div id="diagram" style="position: relative;top:100px;left:30px;bottom: 100px" layout-align="center center">
-        </div>
-    </div>
-    <div class="col-6" style="position: absolute;left:700px;top:100px">
-        <pre style="font-size:0.9em;" id="msg">
-                </pre>
-    </div>
+      </div>
 </body>
-
 <script type="text/javascript">
-    var m
-    //for the cappi id gets the svg code of its sequence diagram and messages
-    $.ajax({
-        type: 'GET',
-        url: "/api/GUID/" + "{{guid}}",
-        success: function (re) {
-            var s = re.svg
-            //parse the svg string and convert it to HTML DOM
-            var parser = new DOMParser();
-            var doc = parser.parseFromString(s, "image/svg+xml");
-            var all = doc.getElementsByTagName("a");
-            var svg = doc.getElementsByTagName("svg");
-
-            for (var i = 0, max = all.length; i < max; i++) {
-                //remove the href elements to prevent hover
-                msg_id = all[i].getAttribute("xlink:title")
-                // all[i].removeAttribute("xlink:title")
-                all[i].removeAttribute("xlink:href")
-                all[i].removeAttribute("href")
-                //add onclick function
-                all[i].setAttribute("style", "text-decoration:none")
-                all[i].setAttribute("onclick", "get_msgs(\"" + msg_id + "\")")
-            }
-
-            document.getElementById("diagram").innerHTML = ""
-            document.getElementById("diagram").appendChild(doc.documentElement)
-        }
-    });
-    function get_msgs(id) {
-        $.ajax({
-            type: 'GET',
-            url: "/api/message/"+id,
-            contentType: false,
-            cache: false,
-            processData: false,
-            success: function (data) {
-                msg = data.msg_text
-                document.getElementById("msg").textContent = msg
-            }
-        });
-    }
-
 </script>
 
 </html>
