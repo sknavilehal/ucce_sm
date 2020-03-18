@@ -14,10 +14,6 @@ app.config["MONGO_URI"] = "mongodb://localhost:27017/CVP"
 mongo = PyMongo(app)
 CORS(app)
 
-#gunicorn_logger = logging.getLogger('gunicorn.error')
-#app.logger.handlers = gunicorn_logger.handlers
-#app.logger.setLevel(gunicorn_logger.level)
-
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -57,15 +53,7 @@ def get_message(id):
 @app.route("/uploads", methods=["POST"])
 def uploads():
     file = request.files['file']
-    # Textual month, day and year
-    today = date.today()	
-    d2 = today.strftime("%B %d, %Y")
-    #print("d2 =", d2)
-    now = datetime.now()
 
-    current_time = now.strftime("%H:%M:%S")
-    #print("Current Time =", current_time)
-    time1=d2+" "+current_time
     unique_files=mongo.db.GUIDs.distinct("filename")
     if ( file.filename in unique_files):
         return "Exists",400
@@ -84,15 +72,15 @@ def getfilenames():
 
 @app.route("/api/filter", methods=["POST"])
 def callFilter():
-    filter = request.get_json()["filter"]
-    query = query_parser(filter)
+    call_filter = request.get_json()["filter"]
+    query = query_parser(call_filter)
     print(query)
     guids = mongo.db.msgs.distinct("guid",query)
 
     return {"guids": guids, "query":str(query)}
 
 @app.route("/api/signature", methods=["POST"])
-def signatureEntry():
+def storeSignatute():
     call_filter = request.get_json()["filter"]
     signature = request.get_json()["signature"]
     try:
@@ -101,9 +89,28 @@ def signatureEntry():
         return "signature already exists", 400
     return id.inserted_id, 200
 
+@app.route("/api/signatures")
+def getSignatures():
+    cursor = mongo.db.signatures.find({})
+    result = [[res["_id"], res["filter"]] for res in cursor]
+
+    return jsonify(result)
+
+@app.route("/api/match/<string:ID>")
+def matchSigntures(ID):
+    signatures = []
+    cursor = mongo.db.signatures.find({})
+    filters = [(res["_id"],res["filter"]) for res in cursor]
+    for call_filter in filters:
+        query = query_parser(call_filter[1])
+        query["guid"] = ID
+        if mongo.db.msgs.find_one(query, {"_id":1}):
+            signatures.append(call_filter[0])
+    return jsonify(signatures)
+
 @app.route("/api/delete/<filename>")
 def deleteFile(filename):
-    x=mongo.db.GUIDs.remove({"filename":filename})
+    x=mongo.db.GUIDs.remove({"filename":filename})  
     y=mongo.db.msgs.remove({"file":filename})
     unique_files=mongo.db.GUIDs.distinct("filename")
     return jsonify(unique_files),200
