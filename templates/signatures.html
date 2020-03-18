@@ -13,29 +13,8 @@
       background:#a6d1f5;
       border:  1px solid #0087f7
     }
-    <style>
+  
 
-* {
-  box-sizing: border-box;
-}
-
-body {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  background: linear-gradient(to bottom right, #274B74 0%, #c4e4f4 50%, #00bceb 100%);
-  font-family: "Montserrat", sans-serif;
-  overflow: hidden;
-}
-
-.container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
- 
-}
 
 input[type=text] {
   position: absolute;
@@ -43,7 +22,7 @@ input[type=text] {
   padding: 15px 40px 15px 20px;
   
   color: #525252;
-  
+  font-family: "Montserrat", sans-serif;
   font-size: 16px;
   font-weight: 100;
   letter-spacing: 2px;
@@ -57,17 +36,17 @@ input[type=text] {
 input[type=button] {
   position: absolute;
   top:3rem;
- left:30rem;
+ left:55rem;
   padding: 15px 40px 15px 20px;
   width: 100px;
   color: #525252;
-  
+  font-family: "Montserrat", sans-serif;
   font-size: 16px;
   font-weight: 100;
   letter-spacing: 2px;
   border: none;
   border-radius: 5px;
-  background: linear-gradient(to right, #FFFFFF 0%, #464747 #F9F9F9 100%);
+  background:#00d0ff;
   transition: width 0.4s ease;
   outline: none;
 }
@@ -119,16 +98,18 @@ background-color: gainsboro;
             <div class="row base-margin-bottom " style="margin-left: 10rem;">
                 <div class="col-12 center">
                     
-<div class="container">
+
     <input type="text"  name="country" style="width:500px" id="autocomplete"/>
-    <input type="button" id="submit" name="Submit"  style="width:100px" value="Submit"/>
+    <input type="button" id="submit" name="Submit"  style="width:100px;" value="Submit"/>
     <div class="output" style="background-color: white;">
       <p id="out"></p>
     </div>
+    <div class="center">
 <table id="table_id" style="width:80%" class=" hover order-column row-border">
+</div>
                    
                 </table>
-                </div>
+                
             </div>
             {%endblock%}
 
@@ -136,7 +117,7 @@ background-color: gainsboro;
 {%block script%}
 <script src="{{url_for('static',filename='js/signatures.js')}}"></script>
 <script type="text/javascript">
- 
+ document.getElementById("table_id").innerHTML=""
     var countries = [
       { value: 'data' },
       { value: 'data.msg' },
@@ -168,6 +149,14 @@ background-color: gainsboro;
      var person = {
                filter: p
            }
+           if (document.getElementById("table_id").innerHTML!="") {
+                var table1 = $('#table_id').DataTable();
+                table1.destroy();
+                document.getElementById("table_id").innerHTML=""
+
+              //  console.log(document.getElementById("table_id").innerHTML.length)
+           }
+           //console.log(document.getElementById("table_id").innerHTML)
    
      $.ajax({
                url: 'http://127.0.0.1:8000/api/filter',
@@ -184,6 +173,11 @@ background-color: gainsboro;
                 files[i]=[]
                 files[i]=[data.guids[i]]
             }
+            /* if (document.getElementById("table_id").innerHTML != "") {
+                var table1 = $('#table_id').DataTable();
+                table1.destroy()
+            }*/
+            //document.getElementById('table_id').innerHTML = ""
             $('#table_id').DataTable(
     {scrollY:        '50vh',
         scrollCollapse: true,
@@ -193,7 +187,7 @@ background-color: gainsboro;
                 
                
             ],
-            stateSave: true
+           
             } ); 
                    
                },

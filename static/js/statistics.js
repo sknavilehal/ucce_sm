@@ -26,7 +26,7 @@ get_table(filename)
                 //for Details hyperlink to work
                 GUIDs[i] = [data[i][0], "<a href='#' id='seq_diag' onclick='seq(" + i + ")'>Details</a>"];
             }
-            //destroy the tables content hen switching b/w files
+            //destroy the tables content when switching b/w files
             if (document.getElementById("example").innerHTML != "") {
                 var table1 = $('#example').DataTable();
                 table1.destroy()
