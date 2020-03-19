@@ -116,4 +116,3 @@ def deleteFile(filename):
 @bp.route('/filters/<filename>',methods=["GET"])
 def filter(filename):
     return render_template("filter.html",filename=filename)
-
