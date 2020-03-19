@@ -5,6 +5,26 @@ from plantweb.render import render
 client = MongoClient("mongodb://localhost:27017/")
 db = client["CVP"]
 
+r_to_color = {
+    '1': " -[#black]> ",
+    '2': " -[#green]> ",
+    '3': " -[#yellow]> ",
+    '4': " -[#red]> ",
+    'B': " -[#orange]> ",
+    'I': " -[#blue]> ",
+    'R': " -[#blue]> ",
+    'P': " -[#blue]> ",
+    'C': " -[#blue]> ",
+    'O': " -[#blue]> ",
+    'N': " -[#blue]> ",
+    'S': " -[#blue]> ",
+    'M': " -[#blue]> ",
+    'U': " -[#blue]> ",
+    'A': " -[#blue]> ",
+    'E': " -[#blue]> ",
+    'D': " -[#blue]> "
+}
+
 def create_sequence(filename,cvp, guids):
     for guid in guids.keys():
         sequence = "@startuml\nskinparam sequence {\nLifeLineBorderColor black\nParticipantBorderColor #00bceb\nParticipantBackgroundColor white\nParticipantFontName Consolas\nParticipantFontSize 17\nParticipantFontColor black\n}\n"
@@ -35,9 +55,10 @@ def create_sequence(filename,cvp, guids):
                 src, dest = msg["from"], msg["to"]
                 text = msg["status"]
 
+            code = text[0]
             id = db.msgs.insert_one(msg)
             text = " : [[{"+str(id.inserted_id)+"} " + text + "]]\n"
-            sequence += src + " -> " + dest +text  
+            sequence += src + r_to_color.get(code," -[#black]> ") + dest +text  
         
         sequence += "@enduml"
 
