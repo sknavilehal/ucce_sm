@@ -1,38 +1,23 @@
 {% extends "base.html" %}
-{% block meta %} 
+{% block css %}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 <link href="{{url_for('static', filename='css/statistics.css')}}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block meta %}
 <meta id="flaskvar" filename="{{filename}}">
-<style>
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current
-    {
-      color:black !important;
-      background:#a6d1f5;
-      border:  1px solid #0087f7
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover
-    {
-      color:white !important;
-      background:#1a58a7;
-      border:  1px solid #0087f7
-    }
-</style>
 {% endblock %}
 {%block content%}
+<div class="row base-margin-bottom" style="margin-left: 10rem;">
+	<div style="position: absolute;left:10rem;top:3rem;">
+		<p style="font-size: 2rem;">File:"{{filename}}"</p>
+	</div>
 
-<div class="row base-margin-bottom"  style="margin-left: 10rem;">  
-  <div style="position: absolute;left:10rem;top:3rem;max-width: ;">
-    <p style="font-size: 2rem;">File:"{{filename}}"</p></div>
-        
-                <div class="col-12 center">
-                   <table id="example" class=" table table--striped mdl-data-table " width="75%" style="padding:20px;"></table>
-                </div>
+	<div class="col-12 center">
+		<table id="example" class=" table table--striped mdl-data-table " width="75%" style="padding:20px;"></table>
+	</div>
 </div>
 {% endblock %}
-</body>
 {%block script%}
 <script src="{{url_for('static',filename='js/statistics.js')}}"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 {%endblock%}
-</html>

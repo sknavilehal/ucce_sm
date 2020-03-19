@@ -1,4 +1,4 @@
-document.getElementById("body").setAttribute("onload","initial()")
+document.getElementById("body").setAttribute("onload", "initial()")
 
 function initial() {
     $.ajax({
@@ -12,9 +12,8 @@ function initial() {
             //alert('Success!');
             if (data.length > 0) {
                 document.getElementById("visible").style.display = "block"
-                document.getElementById("statistics").setAttribute("onclick","doNav('statistics/"+data[0]+"')")
+                document.getElementById("statistics").setAttribute("onclick", "doNav('statistics/" + data[0] + "')")
             }
-
         }
     });
 }
@@ -40,7 +39,8 @@ options = {
             myDropzone.processQueue();
         });
         this.on("queuecomplete", function (file) {
-            initial()});
+            initial()
+        });
     }
 
 };
