@@ -72,7 +72,8 @@ def getfilenames():
 def callFilter():
     call_filter = request.get_json()["filter"]
     query = query_parser(call_filter)
-    print(query)
+    if not query:
+        return "Invalid filter condition", 400
     guids = mongo.db.msgs.distinct("guid",query)
 
     return {"guids": guids, "query":str(query)}
