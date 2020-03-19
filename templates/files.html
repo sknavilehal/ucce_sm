@@ -4,26 +4,26 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 <style>
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current
-    {
-      color:black !important;
-      background:#a6d1f5;
-      border:  1px solid #0087f7
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: black !important;
+        background: #a6d1f5;
+        border: 1px solid #0087f7
     }
-    </style>
+</style>
 {% endblock %}
- {%block content%}
-            <div class="row base-margin-bottom " style="margin-left: 10rem;">
-                <div class="col-12 center">
-                    <table id="table_id" style="width:80%" class=" hover order-column row-border">
-                   
-                </table>
-                </div>
-            </div>
-            {%endblock%}
+{%block content%}
+<div class="row base-margin-bottom " style="margin-left: 10rem;">
+    <div class="col-12 center">
+        <table id="table_id" style="width:80%" class=" hover order-column row-border">
+
+        </table>
+    </div>
+</div>
+{%endblock%}
 
 </body>
 {%block script%}
 <script src="{{url_for('static',filename='js/files.js')}}"></script>
 {%endblock%}
+
 </html>
