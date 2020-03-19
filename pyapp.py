@@ -27,6 +27,10 @@ def statistics(filename):
 def files():
     return render_template("files.html")
 
+@app.route("/signatures")
+def signatures():
+    return render_template("signatures.html")
+
 @app.route("/api/GUIDs/<string:filename>")
 def get_GUIDs(filename):
     cursor = mongo.db.GUIDs.find({"filename":filename})
@@ -63,6 +67,7 @@ def uploads():
 @app.route('/diagram/<string:ID>',methods=["GET"])
 def diagram(ID):
     return render_template("diagram.html", guid=ID)
+
 
 @app.route("/api/files")
 def getfilenames():
@@ -114,3 +119,8 @@ def deleteFile(filename):
     y=mongo.db.msgs.remove({"file":filename})
     unique_files=mongo.db.GUIDs.distinct("filename")
     return jsonify(unique_files),200
+
+@app.route('/filter',methods=["GET"])
+def filter():
+    return render_template("try.html")
+

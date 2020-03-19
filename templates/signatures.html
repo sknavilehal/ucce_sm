@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+{% block meta %}
+<link href="{{url_for('static', filename='css/signatures.css')}}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+<link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.10/jquery.autocomplete.min.js"></script>
+
+<style>
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current
+    {
+      color:black !important;
+      background:#a6d1f5;
+      border:  1px solid #0087f7
+    }
+  
+
+
+#filter {
+  position: relative;
+  top:5rem;
+  left:5rem;
+  
+  
+  
+}
+
+#submit {
+  position: relative;
+ top:2rem;
+  left:45rem;
+  
+}
+
+#after
+{
+  position: relative;
+  left:5rem;
+  top:5rem
+}
+
+
+.autocomplete-suggestion
+{
+  padding: 10px 30px 10px 10px;
+  margin:0.2rem;
+  width: 400px;
+  color: #525252;
+  font-family: "Montserrat", sans-serif;
+  font-size: 13px;
+  font-weight: 100;
+  letter-spacing: 2px;
+  border: none;
+  border-radius: 5px;
+  background: white;
+  
+  outline: none;
+}
+
+#submit:hover
+{
+cursor:pointer;
+background-color: gainsboro;
+}
+.autocomplete-suggestion:hover
+{
+  cursor:pointer;
+  background:#cff1fa;
+  
+  outline: none;
+}
+
+.autocomplete-selected
+{
+  cursor:pointer;
+  background:#cff1fa;
+  
+  outline: none;
+}
+
+        </style>
+    </style>
+{% endblock %}
+ {%block content%}
+            <div class="row base-margin-bottom " style="margin-left: 10rem;">
+                <div class="col-6">
+                    
+                  <div class="form-group input--icon" id="filter">
+                    <div class="form-group__text">
+                        <input type="search"  style="background-color: white;width:35rem" name="country"  id="autocomplete" required>
+                        
+                        <button type="button" class="link" tabindex="-1">
+                            <span class="icon-search"></span>
+                        </button>
+                    </div>
+                </div>
+    
+<button id="submit" name="Submit" class="btn">Filter</button>
+<br>
+<p id="entered_query"></p>
+<div id="after" >
+<button id="new" name="Submit" class="btn">Create new Signature</button>
+<button id="existing" name="Submit" class="btn">Add to existing Signature</button>
+</div>
+    
+                   
+               
+                
+            </div>
+            <div class="col-6">
+              <div class="center">
+                <table id="table_id" style="width:80%" class=" hover order-column row-border"> </table>
+                </div>
+            </div>
+
+
+            <div class="modal modal--small hide" id="modal-small">
+              <div class="modal__dialog">
+                  <div class="modal__content">
+                      <a class="modal__close" onclick="closeModal('modal-small')"><span class="icon-close"></span></a>
+                      <div class="modal__header">
+                          <div class="modal__title">New Signature</div>
+                      </div>
+                      <div class="modal__body">
+                         <p class="query">
+                          <div class="form-group">
+                            <div class="form-group__text">
+                                <input id="input-state-readonly" type="text" readonly>
+                                <label for="input-state-readonly">Query</label>
+                            </div>
+                            <div class="form-group__help">
+                                <span>partner initiated customer access identifier</span>
+                            </div>
+                            <div class="form-group__text">
+                              <input id="input-state-default" type="text">
+                              <label for="input-state-default">Default</label>
+                          </div>
+               
+                        </div>
+                         </p>
+                      </div>
+                      <div class="modal__footer">
+                          <button class="btn" onclick="closeModal('modal-small')">Ok</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+            {%endblock%}
+
+</body>
+{%block script%}
+<script src="{{url_for('static',filename='js/signatures.js')}}"></script>
+<script type="text/javascript">
+
+
+function openModal (id) {
+    $('#modal-backdrop').removeClass('hide');
+    //alert(o)
+    $('#'+id).before('<div id="'+id+'-placeholder"></div>').detach().appendTo('body').removeClass('hide');
+//document.getElementById("msg").innerHTML=o
+//entById("title").innerHTML=type
+}
+function closeModal (id) {
+    $('#'+id).detach().prependTo(('#'+id+'-placeholder')).addClass('hide');
+    $('#modal-backdrop').addClass('hide');
+}
+
+$('#new').click(function()
+{
+openModal("modal-small")
+})
+ document.getElementById("table_id").innerHTML=""
+    var countries = [
+ 
+"guid" ,
+"to" ,
+"from" ,
+"status" ,
+"Thrd" ,
+"CALLGUID" ,
+"DialogId" ,
+"DialogID" ,
+"SendSeqNo" ,
+"ErrorCode",
+"text" ,
+"type" ,
+"DNIS" ,
+"ANI",
+"CED" ,
+"rckey" ,
+"rcseq" ,
+"uui" ,
+"callguid",
+"trunkGroupId" ,
+"trunkNumber" ,
+"serviceId" ,
+"calledNumber" ,
+"location" ,
+"locationpkid" ,
+"pstntrunkgroupid" ,
+"sipheader" ,
+"variables" ,
+"arrays" ,
+"Variables" ,
+"text" ,
+"label" ,
+"correlationId" ,
+"sipheader" ,
+"EventID" ,
+"CauseCode" ,
+"rcday" ,
+"uui" ,
+"whisperAnnounce" 
+   ];
+   let re  = /and\s|or\s|&&\s|\|\|\s/gi;
+   $('#autocomplete').autocomplete({
+       lookup: countries,
+       delimiter:re,
+       onSelect: function (suggestion) {
+          // alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+           
+       },
+       beforeRender: function (container) {
+         console.log(document.getElementById("autocomplete").value)
+       }
+   });
+   
+   $('#submit').click(function()
+   {
+     //alert("ggg")
+     var p=document.getElementById("autocomplete").value
+     console.log(p)
+     document.getElementById("entered_query").innerHTML=p
+     var person = {
+               filter: p
+           }
+           if (document.getElementById("table_id").innerHTML!="") {
+                var table1 = $('#table_id').DataTable();
+                table1.destroy();
+                document.getElementById("table_id").innerHTML=""
+
+              //  console.log(document.getElementById("table_id").innerHTML.length)
+           }
+           //console.log(document.getElementById("table_id").innerHTML)
+   
+     $.ajax({
+               url: 'http://127.0.0.1:8000/api/filter',
+               type: 'post',
+               dataType: 'json',
+               contentType: 'application/json',
+               success: function (data) {
+                // temp=data.guids.toString().replace(/,/g,"<br>")
+                  // document.getElementById("out").innerHTML=temp
+                  files=[]
+                  console.log(data.guids.length)
+                  for(i=0;i<data.guids.length;i++)
+            {
+                files[i]=[]
+                files[i]=[data.guids[i]]
+            }
+            /* if (document.getElementById("table_id").innerHTML != "") {
+                var table1 = $('#table_id').DataTable();
+                table1.destroy()
+            }*/
+            //document.getElementById('table_id').innerHTML = ""
+            $('#table_id').DataTable(
+    {scrollY:        '50vh',
+        scrollCollapse: true,
+        data: files,
+            columns: [
+                { title: "Filename" }
+                
+               
+            ],
+           
+            } ); 
+                   
+               },
+               data: JSON.stringify(person)
+           });
+   });
+   </script>
+{%endblock%}
+</html>
