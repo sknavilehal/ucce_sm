@@ -130,63 +130,6 @@
       </div>
 </body>
 <script type="text/javascript">
-    var m
-    //for the cappi id gets the svg code of its sequence diagram and messages
-    $.ajax({
-                    type: 'GET',
-                    url: "/api/GUID/"+"{{guid}}",
-                    success: function(re) {
-                   
-                    var s=re.svg
-                    console.log(s)
-                    m=re.msgs
-                    //parse the svg string and convert it to HTML DOM
-                    var parser = new DOMParser();
-                    var doc = parser.parseFromString(s, "image/svg+xml");
-                    console.log(doc)
-                    var all = doc.getElementsByTagName("a");
-                    var svg = doc.getElementsByTagName("svg");
-                   
-                    for(var i = 0, max = all.length; i < max; i++) 
-                    {
-                        //remove the href elements to prevent hover
-                        all[i].removeAttribute("xlink:title")
-                        all[i].removeAttribute("xlink:href")
-                        all[i].removeAttribute("href")
-                       //add onclick function
-                        all[i].setAttribute("style","text-decoration:none")
-                      all[i].setAttribute("onclick","get_msgs("+i+")")
-    
-                    }
-                    var all1 = doc.getElementsByTagName("text");
-                    for(var i = 0, max = all1.length; i < max; i++) 
-                    {
-                        //coloring
-                       
-                        all1[i].setAttribute("text-decoration","none")
-                               
-                                if(all1[i].innerHTML.search("INVITE")>=0)
-                                { all1[i].setAttribute("fill","blue") }
-                                if(all1[i].innerHTML.search("BYE")>=0)
-                                { all1[i].setAttribute("fill","orange") }
-                                if(all1[i].innerHTML.search("2")==0)
-                                all1[i].setAttribute("fill","green")
-                                if(all1[i].innerHTML.search("3")==0)
-                                all1[i].setAttribute("fill","yellow")
-                                if(all1[i].innerHTML.search("1")==0)
-                                all1[i].setAttribute("fill","black")
-                                if(all1[i].innerHTML.search("4")==0 ||all1[i].innerHTML.search("5")==0 ||all1[i].innerHTML.search("6")==0 )
-                                all1[i].setAttribute("fill","red")
-                        
-    
-                    }
-               
-                    document.getElementById("diagram").innerHTML=""
-                    document.getElementById("diagram").appendChild(doc.documentElement)
-                   
-                }
-               
-            });
     </script>
 
 </html>
