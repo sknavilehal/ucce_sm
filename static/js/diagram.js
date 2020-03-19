@@ -16,6 +16,7 @@ $.ajax({
         for (var i = 0, max = all.length; i < max; i++) {
             //remove the href elements to prevent hover
             msg_id = all[i].getAttribute("xlink:title")
+            console.log("\n\n\n", msg_id)
             // all[i].removeAttribute("xlink:title")
             all[i].removeAttribute("xlink:href")
             all[i].removeAttribute("href")
