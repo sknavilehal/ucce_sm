@@ -1,8 +1,18 @@
-from pyapp import app
+import logging
+from pyapp import bp
+from db import mongo
+from flask import Flask
 
-#gunicorn_logger = logging.getLogger('gunicorn.error')
-#app.logger.handlers = gunicorn_logger.handlers
-#app.logger.setLevel(gunicorn_logger.level)
+app = Flask(__name__)
+app.config["MONGO_URI"] = "mongodb://localhost:27017/CVP"
+mongo.init_app(app)
+
+app.register_blueprint(bp)
+
+if __name__ != "__main__":
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
 
 if __name__ == "__main__":
     app.run(debug=True,port=8000)
