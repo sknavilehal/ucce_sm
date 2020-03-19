@@ -91,6 +91,7 @@ def parse_ged_msg(filename,ged_msg):
         msg["from"] = parse_tofro(ged_msg)
         if check_icmss_ivrss(msg): return {}
 
+    msg["event"] = parse_status(ged_msg)
     msg["status"] = parse_status(ged_msg)
     rename_ucce(msg)
 

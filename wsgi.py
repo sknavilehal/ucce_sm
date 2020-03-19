@@ -2,10 +2,12 @@ import logging
 from pyapp import bp
 from db import mongo
 from flask import Flask
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb://localhost:27017/CVP"
 mongo.init_app(app)
+CORS(app)
 
 app.register_blueprint(bp)
 
