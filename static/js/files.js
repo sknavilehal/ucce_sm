@@ -21,7 +21,7 @@ $(document).ready( function () {
             for(i=0;i<data.length;i++)
             {
                 files[i]=[]
-                files[i]=[data[i],"<span class='icon-play-contained icon-size-20'  onclick='analyse("+i+")'  title='Analyse' style='cursor:pointer;color:green' ></span><span class='icon-remove-contain icon-size-20' onclick='del("+i+")' style='cursor:pointer;color:#a52727;margin-left:1rem' title ='Remove' ></span><span class='icon-filter icon-size-20'  onclick='filter("+i+")'  title='Filter' style='cursor:pointer;color:blue;margin-left:1rem' >"]
+                files[i]=[data[i],"<span class='icon-play-contained icon-size-20'  onclick='analyse("+i+")'  title='Analyse' style='cursor:pointer;color:green' ></span><span class='icon-remove-contain icon-size-20' onclick='del("+i+")' style='cursor:pointer;color:#a52727;margin-left:1rem' title ='Remove' ></span><span class='icon-filter icon-size-20'  onclick='filter("+i+")'  title='Filter' style='cursor:pointer;color:#df911b;margin-left:1rem' >"]
             }
             console.log(files)
             files

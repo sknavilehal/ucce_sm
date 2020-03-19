@@ -16,41 +16,28 @@
   
 
 
-input[type=text] {
-  position: absolute;
-  top:3rem;
-  padding: 15px 40px 15px 20px;
+#filter {
+  position: relative;
+  top:5rem;
+  left:5rem;
   
-  color: #525252;
-  font-family: "Montserrat", sans-serif;
-  font-size: 16px;
-  font-weight: 100;
-  letter-spacing: 2px;
-  border: none;
-  border-radius: 5px;
-  background: linear-gradient(to right, #FFFFFF 0%, #464747 #F9F9F9 100%);
-  transition: width 0.4s ease;
-  outline: none;
+  
+  
 }
 
-input[type=button] {
-  position: absolute;
-  top:3rem;
- left:55rem;
-  padding: 15px 40px 15px 20px;
-  width: 100px;
-  color: #525252;
-  font-family: "Montserrat", sans-serif;
-  font-size: 16px;
-  font-weight: 100;
-  letter-spacing: 2px;
-  border: none;
-  border-radius: 5px;
-  background:#00d0ff;
-  transition: width 0.4s ease;
-  outline: none;
+#submit {
+  position: relative;
+ top:2rem;
+  left:45rem;
+  
 }
 
+#after
+{
+  position: relative;
+  left:5rem;
+  top:5rem
+}
 
 
 .autocomplete-suggestion
@@ -96,37 +83,134 @@ background-color: gainsboro;
 {% endblock %}
  {%block content%}
             <div class="row base-margin-bottom " style="margin-left: 10rem;">
-                <div class="col-12 center">
+                <div class="col-6">
                     
-
-    <input type="text"  name="country" style="width:500px" id="autocomplete"/>
-    <input type="button" id="submit" name="Submit"  style="width:100px;" value="Submit"/>
-    <div class="output" style="background-color: white;">
-      <p id="out"></p>
-    </div>
-    <div class="center">
-<table id="table_id" style="width:80%" class=" hover order-column row-border">
+                  <div class="form-group input--icon" id="filter">
+                    <div class="form-group__text">
+                        <input type="search"  style="background-color: white;width:35rem" name="country"  id="autocomplete" required>
+                        
+                        <button type="button" class="link" tabindex="-1">
+                            <span class="icon-search"></span>
+                        </button>
+                    </div>
+                </div>
+    
+<button id="submit" name="Submit" class="btn">Filter</button>
+<br>
+<p id="entered_query"></p>
+<div id="after" >
+<button id="new" name="Submit" class="btn">Create new Signature</button>
+<button id="existing" name="Submit" class="btn">Add to existing Signature</button>
 </div>
+    
                    
-                </table>
+               
                 
             </div>
+            <div class="col-6">
+              <div class="center">
+                <table id="table_id" style="width:80%" class=" hover order-column row-border"> </table>
+                </div>
+            </div>
+
+
+            <div class="modal modal--small hide" id="modal-small">
+              <div class="modal__dialog">
+                  <div class="modal__content">
+                      <a class="modal__close" onclick="closeModal('modal-small')"><span class="icon-close"></span></a>
+                      <div class="modal__header">
+                          <div class="modal__title">New Signature</div>
+                      </div>
+                      <div class="modal__body">
+                         <p class="query">
+                          <div class="form-group">
+                            <div class="form-group__text">
+                                <input id="input-state-readonly" type="text" readonly>
+                                <label for="input-state-readonly">Query</label>
+                            </div>
+                            <div class="form-group__help">
+                                <span>partner initiated customer access identifier</span>
+                            </div>
+                            <div class="form-group__text">
+                              <input id="input-state-default" type="text">
+                              <label for="input-state-default">Default</label>
+                          </div>
+               
+                        </div>
+                         </p>
+                      </div>
+                      <div class="modal__footer">
+                          <button class="btn" onclick="closeModal('modal-small')">Ok</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
             {%endblock%}
 
 </body>
 {%block script%}
 <script src="{{url_for('static',filename='js/signatures.js')}}"></script>
 <script type="text/javascript">
+
+
+function openModal (id) {
+    $('#modal-backdrop').removeClass('hide');
+    //alert(o)
+    $('#'+id).before('<div id="'+id+'-placeholder"></div>').detach().appendTo('body').removeClass('hide');
+//document.getElementById("msg").innerHTML=o
+//entById("title").innerHTML=type
+}
+function closeModal (id) {
+    $('#'+id).detach().prependTo(('#'+id+'-placeholder')).addClass('hide');
+    $('#modal-backdrop').addClass('hide');
+}
+
+$('#new').click(function()
+{
+openModal("modal-small")
+})
  document.getElementById("table_id").innerHTML=""
     var countries = [
-      { value: 'data' },
-      { value: 'data.msg' },
-      { value: 'data.msg.callid' },
-      { value: 'dns.sequence' },
-      { value: 'dns.sequence.jj' },
-      {value:'DNIS'},
-      {value:'ANI'},
-      {value:'rckey'}
+ 
+"guid" ,
+"to" ,
+"from" ,
+"status" ,
+"Thrd" ,
+"CALLGUID" ,
+"DialogId" ,
+"DialogID" ,
+"SendSeqNo" ,
+"ErrorCode",
+"text" ,
+"type" ,
+"DNIS" ,
+"ANI",
+"CED" ,
+"rckey" ,
+"rcseq" ,
+"uui" ,
+"callguid",
+"trunkGroupId" ,
+"trunkNumber" ,
+"serviceId" ,
+"calledNumber" ,
+"location" ,
+"locationpkid" ,
+"pstntrunkgroupid" ,
+"sipheader" ,
+"variables" ,
+"arrays" ,
+"Variables" ,
+"text" ,
+"label" ,
+"correlationId" ,
+"sipheader" ,
+"EventID" ,
+"CauseCode" ,
+"rcday" ,
+"uui" ,
+"whisperAnnounce" 
    ];
    let re  = /and\s|or\s|&&\s|\|\|\s/gi;
    $('#autocomplete').autocomplete({
@@ -146,6 +230,7 @@ background-color: gainsboro;
      //alert("ggg")
      var p=document.getElementById("autocomplete").value
      console.log(p)
+     document.getElementById("entered_query").innerHTML=p
      var person = {
                filter: p
            }
