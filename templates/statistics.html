@@ -22,9 +22,12 @@
 {% endblock %}
 {%block content%}
 
-<div class="row base-margin-bottom"  style="margin-left: 10rem;">      
+<div class="row base-margin-bottom"  style="margin-left: 10rem;">  
+  <div style="position: absolute;left:10rem;top:3rem;max-width: ;">
+    <p style="font-size: 2rem;">File:"{{filename}}"</p></div>
+        
                 <div class="col-12 center">
-                    <table id="example" class=" table table--striped mdl-data-table " width="75%" style="padding:20px;"></table>
+                   <table id="example" class=" table table--striped mdl-data-table " width="75%" style="padding:20px;"></table>
                 </div>
 </div>
 {% endblock %}

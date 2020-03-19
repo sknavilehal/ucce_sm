@@ -113,7 +113,7 @@ def deleteFile(filename):
     unique_files=mongo.db.GUIDs.distinct("filename")
     return jsonify(unique_files),200
 
-@bp.route('/filter',methods=["GET"])
-def filter():
-    return render_template("try.html")
+@bp.route('/filters/<filename>',methods=["GET"])
+def filter(filename):
+    return render_template("filter.html",filename=filename)
 

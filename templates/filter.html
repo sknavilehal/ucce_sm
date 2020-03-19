@@ -16,35 +16,30 @@
   
 
 
-#filter {
-  position: relative;
-  top:5rem;
-  left:5rem;
-  
-  
-  
-}
 
-#submit {
-  position: relative;
- top:2rem;
-  left:45rem;
-  
-}
-
-#after
+#filter
 {
-  position: relative;
-  left:5rem;
-  top:5rem
+  position:absolute;
+  left:25rem;
+  top:6rem;
+  
 }
+
+#submit
+{
+  position:absolute;
+  right:25rem;
+  top:6rem
+}
+
+
 
 
 .autocomplete-suggestion
 {
-  padding: 10px 30px 10px 10px;
+  padding: 8px;
   margin:0.2rem;
-  width: 400px;
+  width: 50rem;
   color: #525252;
   font-family: "Montserrat", sans-serif;
   font-size: 13px;
@@ -83,11 +78,11 @@ background-color: gainsboro;
 {% endblock %}
  {%block content%}
             <div class="row base-margin-bottom " style="margin-left: 10rem;">
-                <div class="col-6">
-                    
+                <div class="col-12">
+                    <div class="container">
                   <div class="form-group input--icon" id="filter">
                     <div class="form-group__text">
-                        <input type="search"  style="background-color: white;width:35rem" name="country"  id="autocomplete" required>
+                        <input type="search"  style="background-color: white;width:55rem" name="country"  id="autocomplete" required>
                         
                         <button type="button" class="link" tabindex="-1">
                             <span class="icon-search"></span>
@@ -97,59 +92,23 @@ background-color: gainsboro;
     
 <button id="submit" name="Submit" class="btn">Filter</button>
 <br>
-<p id="entered_query"></p>
-<div id="after" >
-<button id="new" name="Submit" class="btn">Create new Signature</button>
-<button id="existing" name="Submit" class="btn">Add to existing Signature</button>
+<div class="center" style="position: absolute;top:10rem;left:35rem">
+<table id="table_id" style="width:80%" class=" hover order-column row-border"> </table>
 </div>
+           
     
-                   
+                   </div>
+
                
                 
             </div>
-            <div class="col-6">
-              <div class="center">
-                <table id="table_id" style="width:80%" class=" hover order-column row-border"> </table>
-                </div>
-            </div>
+           
 
-
-            <div class="modal modal--small hide" id="modal-small">
-              <div class="modal__dialog">
-                  <div class="modal__content">
-                      <a class="modal__close" onclick="closeModal('modal-small')"><span class="icon-close"></span></a>
-                      <div class="modal__header">
-                          <div class="modal__title">New Signature</div>
-                      </div>
-                      <div class="modal__body">
-                         <p class="query">
-                          <div class="form-group">
-                            <div class="form-group__text">
-                                <input id="input-state-readonly" type="text" readonly>
-                                <label for="input-state-readonly">Query</label>
-                            </div>
-                            <div class="form-group__help">
-                                <span>partner initiated customer access identifier</span>
-                            </div>
-                            <div class="form-group__text">
-                              <input id="input-state-default" type="text">
-                              <label for="input-state-default">Default</label>
-                          </div>
-               
-                        </div>
-                         </p>
-                      </div>
-                      <div class="modal__footer">
-                          <button class="btn" onclick="closeModal('modal-small')">Ok</button>
-                      </div>
-                  </div>
-              </div>
-          </div>
             {%endblock%}
 
 </body>
 {%block script%}
-<script src="{{url_for('static',filename='js/signatures.js')}}"></script>
+<script src="{{url_for('static',filename='js/filter.js')}}"></script>
 <script type="text/javascript">
 
 
@@ -214,6 +173,7 @@ openModal("modal-small")
    ];
    let re  = /and\s|or\s|&&\s|\|\|\s/gi;
    $('#autocomplete').autocomplete({
+     lookupLimit:5,
        lookup: countries,
        delimiter:re,
        onSelect: function (suggestion) {
@@ -230,7 +190,7 @@ openModal("modal-small")
      //alert("ggg")
      var p=document.getElementById("autocomplete").value
      console.log(p)
-     document.getElementById("entered_query").innerHTML=p
+     //document.getElementById("entered_query").innerHTML=p
      var person = {
                filter: p
            }
@@ -256,7 +216,7 @@ openModal("modal-small")
                   for(i=0;i<data.guids.length;i++)
             {
                 files[i]=[]
-                files[i]=[data.guids[i]]
+                files[i]=[data.guids[i],"<a href='#' id='seq_diag' onclick='seq(" + i + ")'>Details</a>"]
             }
             /* if (document.getElementById("table_id").innerHTML != "") {
                 var table1 = $('#table_id').DataTable();
@@ -268,8 +228,8 @@ openModal("modal-small")
         scrollCollapse: true,
         data: files,
             columns: [
-                { title: "Filename" }
-                
+            { title: "ID" },
+                    { title: "Details" } 
                
             ],
            
@@ -279,6 +239,23 @@ openModal("modal-small")
                data: JSON.stringify(person)
            });
    });
+
+   function seq(i) {
+            var table = $('#table_id').DataTable();
+            
+            data = table.rows(i).data()[0][0]
+            $.ajax({
+                type: 'GET',
+                url: '/diagram/' + data,
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (data) {
+                }
+            });
+            //open diagram in new page
+            window.open("/diagram/" + data);
+        }
    </script>
 {%endblock%}
 </html>

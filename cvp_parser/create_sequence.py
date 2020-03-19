@@ -1,7 +1,6 @@
 import os
 from pymongo import MongoClient
 from plantweb.render import render
-from .mappings import r_to_color
 
 client = MongoClient("mongodb://localhost:27017/")
 db = client["CVP"]
@@ -36,11 +35,10 @@ def create_sequence(filename,cvp, guids):
                 src, dest = msg["from"], msg["to"]
                 text = msg["status"]
 
-            code = text[0]
             id = db.msgs.insert_one(msg)
             text = " : [[{"+str(id.inserted_id)+"} " + text + "]]\n"
-            sequence += src + r_to_color.get(code," -[#black]> ") + dest +text  
-            
+            sequence += src + " -> " + dest +text  
+        
         sequence += "@enduml"
 
         doc = {

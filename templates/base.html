@@ -66,6 +66,12 @@
                                 <span>Statistics</span>
                             </a>
                         </li>
+                        <li id="filters" class="sidebar__item">
+                            <a onclick="doNav('/filters')" title="Filters">
+                                <span class="icon-filter"></span>
+                                <span>Filters</span>
+                            </a>
+                        </li>
                         <li id="sign" class="sidebar__item">
                             <a onclick="doNav('/signatures')" id="signatures" title="Signatures">
                                 <span class="icon-insights"></span>
@@ -75,12 +81,7 @@
                     </div>
                 
 
-                    <li class="sidebar__item">
-                        <a onclick="doNav('/')" title="Getting Started">
-                            <span class="icon-feedback"></span>
-                            <span>Feedback</span>
-                        </a>
-                    </li>
+
                 </ul>
             </nav>
             {% block content %}{% endblock %}
