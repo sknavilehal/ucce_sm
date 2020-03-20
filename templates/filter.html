@@ -25,8 +25,9 @@
     
 <button id="submit" name="Submit" class="btn">Filter</button>
 <button id="signature" name="Sign" class="btn">Add to Signature</button>
+<button id="list-signature" name="Sign" class="btn">List Signatures</button>
 <br>
-<div class="center" style="position: absolute;top:12rem;left:30rem">
+<div class="center" style="position: absolute;top:20rem;left:28rem">
 <table id="table_id" style="width:80%" class=" hover order-column row-border"> </table>
 </div>
 </div>
@@ -46,6 +47,57 @@
             </div>
             <div class="modal__footer">
                 <button class="btn" onclick="closeModal('modal-small')">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal modal--small hide" id="modal-small-sign">
+    <div class="modal__dialog">
+        <div class="modal__content">
+            <a class="modal__close" onclick="closeModal('modal-small-sign')"><span class="icon-close"></span></a>
+            <div class="modal__header">
+                <div class="modal__title">Add Signature</div>
+            </div>
+            <div class="modal__body">
+                <div class="form-group base-margin-bottom">
+                    <div class="form-group__text">
+                        <input id="input-state-readonly" type="text" readonly>
+                        <label for="input-state-readonly">Query</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-group__text">
+                        <input id="input-hint-default" type="text">
+                        <label for="input-hint-default">Signature</label>
+                    </div>
+                    <div class="form-group__help">
+                        <span>Enter relevant signature</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button id="add" class="btn" onclick="closeModal('modal-small-sign')">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal modal--small hide" id="modal-small-list">
+    <div class="modal__dialog">
+        <div class="modal__content">
+            <a class="modal__close" onclick="closeModal('modal-small-list')"><span class="icon-close"></span></a>
+            <div class="modal__header">
+                <div class="modal__title">Signatures</div>
+            </div>
+            <div class="modal__body">
+                
+            </div>
+            <div class="modal__footer">
+                <button id="add" class="btn" onclick="closeModal('modal-small-list')">Add</button>
             </div>
         </div>
     </div>
