@@ -13,6 +13,8 @@ function initial() {
             if (data.length > 0) {
                 document.getElementById("visible").style.display = "block"
                 document.getElementById("statistics").setAttribute("onclick", "doNav('statistics/" + data[0] + "')")
+                document.getElementById("filter").setAttribute("onclick", "doNav('filters/" + data[0] + "')")
+           
             }
         }
     });

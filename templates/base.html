@@ -63,7 +63,7 @@
                             </a>
                         </li>
                         <li id="filters" class="sidebar__item">
-                            <a onclick="doNav('/filters')" title="Filters">
+                            <a id="filter"  title="Filters">
                                 <span class="icon-filter"></span>
                                 <span>Filters</span>
                             </a>
@@ -81,5 +81,7 @@
         </div>
     </div>
 </body>
-{%block script%}{%endblock%}
+{%block script%}
+<script src="{{url_for('static' ,filename='js/initial.js')}}"></script>
+{%endblock%}
 </html>

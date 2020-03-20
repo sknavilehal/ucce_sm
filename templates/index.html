@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% block css %}
-<link href="{{url_for('static', filename='css/dropzone.css')}}" rel="stylesheet" type="text/css">
-<link href="{{url_for('static', filename='dropzone-5.7.0/dropzone-5.7.0/dist/min/dropzone.min.css')}}" rel="stylesheet"
-    type="text/css">
-{% endblock %}
+<link href="{{url_for('static', filename='dropzone-5.7.0/dropzone-5.7.0/dist/min/dropzone.min.css')}}" rel="stylesheet" type="text/css">
+    <script src="{{url_for('static' ,filename='dropzone-5.7.0/dropzone-5.7.0/dist/dropzone.js')}}"></script>
+    <!--<script src="{{url_for('static' ,filename='js/initial.js')}}"></script>-->
+    <link href="{{url_for('static', filename='css/dropzone.css')}}" rel="stylesheet" type="text/css">
+    {% endblock %}
 {% block content %}
 <div class="row base-margin-bottom" style="position: relative;left: 10rem;top:5rem;margin-right: 20rem;">
     <div class="col-6">
@@ -52,7 +53,6 @@
     </div>
 </div>
 {% block script %}
-<script src="{{url_for('static' ,filename='dropzone-5.7.0/dropzone-5.7.0/dist/dropzone.js')}}"></script>
 <script src="{{url_for('static' ,filename='js/initial.js')}}"></script>
 {% endblock %}
 {% endblock %}

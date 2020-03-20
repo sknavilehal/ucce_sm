@@ -5,6 +5,24 @@ document.getElementById("visible").style.display = "block"
 document.getElementById("home").classList.remove("sidebar__item--selected")
 document.getElementById("stat").classList.add("sidebar__item--selected")
 get_table(filename)
+
+$.ajax({
+    type: 'GET',
+    url: '/api/files',
+    contentType: false,
+    cache: false,
+    processData: false,
+    success: function(data) {
+        //alert('Success!');
+        if(data.length>0)
+        {
+            //document.getElementById("visible").style.display="block"
+            document.getElementById("statistics").setAttribute("onclick","doNav('../statistics/"+filename+"')")
+            document.getElementById("filter").setAttribute("onclick", "doNav('../filters/" + data[0] + "')")
+  
+  }
+    }
+});
 function get_table(filename) {
     fetch('/api/GUIDs/' + filename)
         .then(function (response) {
