@@ -23,7 +23,7 @@ function initial() {
 //alert("ggg")
 options = {
     url: '/uploads',
-    acceptedFiles: '.txt,.log',
+    acceptedFiles: '.txt,.log,.zip',
     addRemoveLinks: true,
     dictDefaultMessage: 'Drag a log file here to save, or click to select one',
     thumbnailWidth: '50px',
