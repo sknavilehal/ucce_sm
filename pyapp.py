@@ -73,9 +73,9 @@ def callFilter():
     call_filter = request.get_json()["filter"]
     filename = request.get_json()["filename"]
     query = query_parser(call_filter)
-    query["_id.filename"] = filename
     if not query:
-        return "Invalid filter condition", 400
+        return "Invalid call filter", 400
+    query["_id.filename"] = filename
     guids = mongo.db.msgs.distinct("guid",query)
 
     return {"guids": guids, "query":str(query)}
@@ -105,6 +105,7 @@ def matchSigntures(ID=None, filename=None):
     print(filters)
     for call_filter in filters:
         query = query_parser(call_filter[1])
+        if not query: continue
         query["guid"] = ID
         query["_id.filename"] = filename
         if mongo.db.msgs.find_one(query, {"_id":1}):
