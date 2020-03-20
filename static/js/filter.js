@@ -133,7 +133,7 @@ openModal("modal-small")
                   for(i=0;i<data.guids.length;i++)
             {
                 files[i]=[]
-                files[i]=[data.guids[i],"<a href='#' id='seq_diag' onclick='seq(" + i + ")'>Details</a>"]
+                files[i]=[data.guids[i],"<a href='#' id='seq_diag' onclick='seq(" + i + ")'>Details</a>","<a href='#' id='sign' onclick='sign("+i+")'>Signatures</a>"]
             }
             /* if (document.getElementById("table_id").innerHTML != "") {
                 var table1 = $('#table_id').DataTable();
@@ -146,7 +146,8 @@ openModal("modal-small")
         data: files,
             columns: [
             { title: "ID" },
-                    { title: "Details" } 
+                    { title: "Details" } ,
+                    {title:"Signatures"}
                
             ],
            
@@ -172,4 +173,25 @@ openModal("modal-small")
             });
             //open diagram in new page
             window.open("/diagram/" + data);
+        }
+
+
+        function sign(i) {
+            var table = $('#table_id').DataTable();
+            
+            data = table.rows(i).data()[0][0]
+
+            $.ajax({
+                type: 'GET',
+                url: '/api/match/' + data+'/'+filename,
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (data) {
+                    console.log(data)
+                }
+            });
+            //open diagram in new page
+           // window.open("/diagram/" + data);
+            openModal('modal-small')
         }

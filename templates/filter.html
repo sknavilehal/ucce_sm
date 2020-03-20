@@ -24,11 +24,31 @@
                 </div>
     
 <button id="submit" name="Submit" class="btn">Filter</button>
+<button id="signature" name="Sign" class="btn">Add to Signature</button>
 <br>
 <div class="center" style="position: absolute;top:12rem;left:30rem">
 <table id="table_id" style="width:80%" class=" hover order-column row-border"> </table>
 </div>
 </div>
+</div>
+</div>
+
+
+<div class="modal modal--small hide" id="modal-small">
+    <div class="modal__dialog">
+        <div class="modal__content">
+            <a class="modal__close" onclick="closeModal('modal-small')"><span class="icon-close"></span></a>
+            <div class="modal__header">
+                <div class="modal__title">Small Modal</div>
+            </div>
+            <div class="modal__body">
+               <p class="subtitle">This is a small width modal</p>
+            </div>
+            <div class="modal__footer">
+                <button class="btn" onclick="closeModal('modal-small')">Ok</button>
+            </div>
+        </div>
+    </div>
 </div>
 {%endblock%}
 
