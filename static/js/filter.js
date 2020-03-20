@@ -7,7 +7,7 @@ $(document).ready( function () {
     document.getElementById("home").classList.remove("sidebar__item--selected")
     document.getElementById("filters").classList.add("sidebar__item--selected")
 });
-
+console.log("message")
 $.ajax({
     type:  'GET',
     url: '/api/files',

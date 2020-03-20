@@ -104,7 +104,6 @@ def matchSigntures(ID=None, filename=None):
     signatures = []
     cursor = mongo.db.signatures.find({})
     filters = [(res["_id"],res["filter"]) for res in cursor]
-    print(filters)
     for call_filter in filters:
         query = query_parser(call_filter[1])
         if not query: continue
@@ -112,7 +111,7 @@ def matchSigntures(ID=None, filename=None):
         query["_id.filename"] = filename
         if mongo.db.msgs.find_one(query, {"_id":1}):
             signatures.append(call_filter[0])
-    return {"signatures": signatures, "query": query}
+    return {"signatures": signatures}
 
 @bp.route("/api/delete/<filename>")
 def deleteFile(filename):
