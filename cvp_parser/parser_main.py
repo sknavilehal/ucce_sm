@@ -13,5 +13,5 @@ def parser_main(file):
     
     cvp = parse_cvp_addr(contents[0])
     legtoguid, msgs = legToGuid(contents)
-    guids = GUIDS(file.filename,legtoguid, msgs)
+    guids = GUIDS(legtoguid, msgs)
     create_sequence(file.filename,cvp, guids)

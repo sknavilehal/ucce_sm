@@ -1,5 +1,6 @@
 import os
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 from plantweb.render import render
 
 client = MongoClient("mongodb://localhost:27017/")
@@ -56,17 +57,17 @@ def create_sequence(filename,cvp, guids):
                 text = msg["status"]
 
             code = text[0]
-            id = db.msgs.insert_one(msg)
-            text = " : [[{"+str(id.inserted_id)+"} " + text + "]]\n"
+            oid = str(ObjectId())
+            msg["_id"] = {"filename":os.path.basename(filename), "oid":oid}
+            db.msgs.insert_one(msg)
+            text = " : [[{"+oid+"} " + text + "]]\n"
             sequence += src + r_to_color.get(code," -[#black]> ") + dest +text  
         
         sequence += "@enduml"
 
         doc = {
-            "_id": guid,
-            "filename": os.path.basename(filename),
+            "_id": {"filename": os.path.basename(filename), "guid": guid},
             "sequence": sequence,
-            
         }
         db.GUIDs.insert_one(doc)
 

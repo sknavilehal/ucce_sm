@@ -78,10 +78,9 @@ def parse_attributes(ged_msg, msg):
             if attribute[0] not in msg.keys():
                 msg[attribute[0]] = attribute[1]
 
-def parse_ged_msg(filename,ged_msg):
+def parse_ged_msg(ged_msg):
     msg = {}
     msg["guid"] = parse_guid(ged_msg)
-    msg["file"]=filename
     
     if "publishing to " in ged_msg.lower():
         msg["to"] = parse_tofro(ged_msg)
