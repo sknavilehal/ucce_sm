@@ -97,20 +97,19 @@ def getSignatures():
 
     return jsonify(result)
 
-@bp.route("/api/match")
-def matchSigntures():
+@bp.route("/api/match/<string:ID>/<string:filename>")
+def matchSigntures(ID=None, filename=None):
     signatures = []
-    ID = request.args.get("ID", None)
-    filename = request.args.get("filename", None)
     cursor = mongo.db.signatures.find({})
     filters = [(res["_id"],res["filter"]) for res in cursor]
+    print(filters)
     for call_filter in filters:
         query = query_parser(call_filter[1])
         query["guid"] = ID
         query["_id.filename"] = filename
         if mongo.db.msgs.find_one(query, {"_id":1}):
             signatures.append(call_filter[0])
-    return jsonify(signatures)
+    return {"signatures": signatures, "query": query}
 
 @bp.route("/api/delete/<filename>")
 def deleteFile(filename):
