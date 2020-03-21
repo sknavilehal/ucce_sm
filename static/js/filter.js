@@ -40,10 +40,48 @@ function closeModal (id) {
     $('#modal-backdrop').addClass('hide');
 }
 
-$('#new').click(function()
+
+
+$('#signature').click(function()
 {
-openModal("modal-small")
-})
+    document.getElementById("input-state-readonly").value=document.getElementById("autocomplete").value
+   // console.log(document.getElementById("autocomplete").value)
+openModal('modal-small-sign')
+});
+
+$('#add').click(function()
+{
+    var p={
+        filter:document.getElementById("autocomplete").value,
+    signature:document.getElementById("input-hint-default").value}
+    $.ajax({
+        url: '/api/signature',
+        type: 'post',
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function (data) {
+          alert("Added")   
+            
+        },
+        data: JSON.stringify(p)
+    });
+});
+
+
+$('#list-signature').click(function()
+{
+   // alert("fff")
+    $.ajax({
+        url: '/api/signatures',
+        type: 'get',
+        
+        success: function (data) {
+          alert(data)   
+            
+        },
+       
+    });
+});
  document.getElementById("table_id").innerHTML=""
     var countries = [
  

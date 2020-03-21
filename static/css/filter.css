@@ -51,10 +51,17 @@ top:6rem
 #signature
 {
 position:absolute;
-right:5rem;
-top:6rem
+left:30rem;
+top:13rem;
 }
 
+
+#list-signature
+{
+position:absolute;
+right:45rem;
+top:13rem;
+}
 
 
 .autocomplete-suggestion
