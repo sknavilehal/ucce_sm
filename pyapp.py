@@ -61,7 +61,6 @@ def uploads():
 def diagram(ID):
     return render_template("diagram.html", guid=ID)
 
-
 @bp.route("/api/files")
 def getfilenames():
     unique_files=mongo.db.GUIDs.distinct("_id.filename")
@@ -72,8 +71,6 @@ def getfilenames():
 def callFilter():
     call_filter = request.get_json()["filter"]
     filename = request.get_json()["filename"]
-    print(filename)
-    print(call_filter)
     query = query_parser(call_filter)
     if not query:
         return "Invalid call filter", 400

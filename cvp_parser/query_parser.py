@@ -1,9 +1,5 @@
 import re
 import ast
-import json
-
-def en_quote(string):
-    return "'" + string + "'"
 
 def query_parser(query):
     parts = query.split(' or ')
@@ -15,13 +11,13 @@ def query_parser(query):
         for _and in ands:
             ops = re.split(r'(?:==|!=)', _and)
             try:
-                key, value = ops[0], ops[1]
+                key, value = ops[0].strip(), ops[1].strip()
             except IndexError:
                 return {}
             if "==" in _and:
-                output += en_quote(key) + ":" + en_quote(value)
+                output += key + ":" + value
             elif "!=" in _and:
-                output += en_quote(key) + ":" + "{'$ne':" + en_quote(value) + "}"
+                output += key + ":" + "{'$ne':" + value + "}"
             else: return {}    
             output += ","
 
