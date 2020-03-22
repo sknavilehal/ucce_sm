@@ -20,10 +20,12 @@ $(document).ready( function () {
                 document.getElementById("filter").setAttribute("onclick", "doNav('filters/" + data[0] + "')")
       
             }
+            console.log(data.length)
             for(i=0;i<data.length;i++)
             {
+                console.log(data[i][0])
                 files[i]=[]
-                files[i]=[data[i],"<span class='icon-play-contained icon-size-20'  onclick='analyse("+i+")'  title='Analyse' style='cursor:pointer;color:green' ></span><span class='icon-remove-contain icon-size-20' onclick='del("+i+")' style='cursor:pointer;color:#a52727;margin-left:1rem' title ='Remove' ></span><span class='icon-filter icon-size-20' onclick='filter("+i+")' style='cursor:pointer;color:#e2ae1e;margin-left:1rem' title ='Filter' ></span>"]
+                files[i]=[data[i][0],data[i][1],"<span class='icon-play-contained icon-size-20'  onclick='analyse("+i+")'  title='Analyse' style='cursor:pointer;color:green' ></span><span class='icon-remove-contain icon-size-20' onclick='del("+i+")' style='cursor:pointer;color:#a52727;margin-left:1rem' title ='Remove' ></span><span class='icon-filter icon-size-20' onclick='filter("+i+")' style='cursor:pointer;color:#e2ae1e;margin-left:1rem' title ='Filter' ></span>"]
             }
             console.log(files)
             files
@@ -33,6 +35,7 @@ $(document).ready( function () {
         data: files,
             columns: [
                 { title: "Filename" },
+                { title: "Status" },
                 { title: "Actions" },
                
             ],

@@ -1,15 +1,24 @@
 import re
+from flask import current_app as app, abort
 from .sdp_parser import sdp_parser
 
 def parse_from(line):
-    m = re.search(r'sip:([@0-9a-zA-Z\.\-]+)',line)
-    parts = m.group(1).split('@')
+    m = re.search(r'sip:(\*?[@0-9a-zA-Z\.\-]+)',line)
+    try:
+        parts = m.group(1).split('@')
+    except AttributeError:
+        app.logger.error(line)
+        parts = ['ERR_EXT', 'ERR_ADDR']
 
     return {"ext":parts[0], "addr":parts[-1]}
 
 def parse_to(line):
-    m = re.search(r'sip:([@0-9a-zA-Z\.\-]+)', line)
-    parts = m.group(1).split('@')
+    m = re.search(r'sip:(\*?[@0-9a-zA-Z\.\-]+)', line)
+    try:
+        parts = m.group(1).split('@')
+    except AttributeError:
+        app.logger.error(line)
+        parts = ['ERR_EXT', 'ERR_ADDR']
 
     return {"ext":parts[0], "addr":parts[-1]}
 
@@ -30,9 +39,15 @@ def parse_exchange(line):
     if match:
         return {"type": "response", "text":match.group(1)}
     else:
-        m = re.search(r'([A-Z]+) sip:([@\d\.a-zA-Z\-]+)', line)
-        request = m.group(1)
-        parts = m.group(2).split('@')
+        try:
+            m = re.search(r'([A-Z]+) sip:(\*?[@\d\.a-zA-Z\-]+)', line)
+            request = m.group(1)
+            parts = m.group(2).split('@')
+        except AttributeError:
+            app.logger.error(line)
+            request = 'PARSE_ERROR'
+            parts = ['ERR_EXT', 'ERR_ADDR']
+
         ext = parts[0]
         addr = parts[-1]
         return {"type": "request", "text":request,"ext":ext,"addr":addr}

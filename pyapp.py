@@ -1,13 +1,27 @@
 import os
 import logging
 from db import mongo
+from io import BytesIO
+from zipfile import ZipFile
+from threading import Thread
+from natsort import natsorted
 from bson.objectid import ObjectId
 from plantweb.render import render
 from cvp_parser.parser_main import parser_main
 from cvp_parser.query_parser import query_parser
-from flask import jsonify, Blueprint, render_template, request, Response
+from flask import jsonify, Blueprint, render_template, request, Response, current_app as app
 
 bp = Blueprint("bp", __name__)
+
+def threaded_task(filename, contents):
+    mongo.db.files.insert_one({"_id":filename, "status": "Processing..."})
+    try:
+        parser_main(filename, contents)
+        result = mongo.db.files.update({"_id":filename}, {"$set": {"status": "Processed"}})
+    except Exception:
+        result = mongo.db.files.update({"_id":filename}, {"$set": {"status": "Processing Failed"}})
+
+    return result
 
 @bp.route("/")
 def index():
@@ -51,10 +65,26 @@ def get_message(id):
 def uploads():
     file = request.files['file']
 
+    contents = BytesIO()
+    if file.filename.endswith('.zip'):
+        zipfile = ZipFile(file)
+        names = natsorted(zipfile.namelist(), key=lambda x: x.lower())
+        for name in names:
+            contents.write(zipfile.read(name))
+    elif file.filename.endswith('.log'):
+        contents.write(file.read())
+    else:
+        return "Invalid file type", 400
+
     unique_files=mongo.db.GUIDs.distinct("_id.filename")
     if ( file.filename in unique_files):
         return "Exists",400
-    parser_main(file)
+
+    thread = Thread(target=threaded_task, args=(file.filename, contents))
+    thread.daemon = True
+    thread.start()
+    
+    #parser_main(file.filename, contents)
     return render_template("index.html"), 200
 
 @bp.route('/diagram/<string:ID>',methods=["GET"])
@@ -63,9 +93,9 @@ def diagram(ID):
 
 @bp.route("/api/files")
 def getfilenames():
-    unique_files=mongo.db.GUIDs.distinct("_id.filename")
-    print(unique_files)
-    return jsonify(unique_files),200
+    cursor = mongo.db.files.find({})
+    files = [[res["_id"], res["status"]] for res in cursor]
+    return jsonify(files),200
 
 @bp.route("/api/filter", methods=["POST"])
 def callFilter():
@@ -112,8 +142,10 @@ def matchSigntures(ID=None, filename=None):
 
 @bp.route("/api/delete/<filename>")
 def deleteFile(filename):
-    mongo.db.GUIDs.remove({"_id.filename":filename})  
-    mongo.db.msgs.remove({"_id.filename":filename})
+    print(filename)
+    mongo.db.files.delete_one({"_id": filename})
+    mongo.db.GUIDs.delete_many({"_id.filename":filename})  
+    mongo.db.msgs.delete_many({"_id.filename":filename})
     unique_files=mongo.db.GUIDs.distinct("_id.filename")
     return jsonify(unique_files),200
 
