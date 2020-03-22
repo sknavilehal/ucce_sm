@@ -4,21 +4,13 @@ from .sdp_parser import sdp_parser
 
 def parse_from(line):
     m = re.search(r'sip:(\*?[@0-9a-zA-Z\.\-]+)',line)
-    try:
-        parts = m.group(1).split('@')
-    except AttributeError:
-        app.logger.error(line)
-        parts = ['ERR_EXT', 'ERR_ADDR']
+    parts = m.group(1).split('@')
 
     return {"ext":parts[0], "addr":parts[-1]}
 
 def parse_to(line):
     m = re.search(r'sip:(\*?[@0-9a-zA-Z\.\-]+)', line)
-    try:
-        parts = m.group(1).split('@')
-    except AttributeError:
-        app.logger.error(line)
-        parts = ['ERR_EXT', 'ERR_ADDR']
+    parts = m.group(1).split('@')
 
     return {"ext":parts[0], "addr":parts[-1]}
 
@@ -39,14 +31,9 @@ def parse_exchange(line):
     if match:
         return {"type": "response", "text":match.group(1)}
     else:
-        try:
-            m = re.search(r'([A-Z]+) sip:(\*?[@\d\.a-zA-Z\-]+)', line)
-            request = m.group(1)
-            parts = m.group(2).split('@')
-        except AttributeError:
-            app.logger.error(line)
-            request = 'PARSE_ERROR'
-            parts = ['ERR_EXT', 'ERR_ADDR']
+        m = re.search(r'([A-Z]+) sip:(\*?[@\d\.a-zA-Z\-]+)', line)
+        request = m.group(1)
+        parts = m.group(2).split('@')
 
         ext = parts[0]
         addr = parts[-1]
