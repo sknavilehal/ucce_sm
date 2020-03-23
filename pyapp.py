@@ -1,5 +1,6 @@
 import os
 import logging
+import traceback
 from db import mongo
 from io import BytesIO
 from zipfile import ZipFile
@@ -14,10 +15,10 @@ from flask import jsonify, Blueprint, render_template, request, Response, curren
 bp = Blueprint("bp", __name__)
 
 def threaded_task(filename, contents):
-    mongo.db.files.insert_one({"_id":filename, "status": "Processing..."})
+    mongo.db.files.insert_one({"_id":filename,"device":"unknown", "status": "Processing..."})
     try:
-        parser_main(filename, contents)
-        result = mongo.db.files.update({"_id":filename}, {"$set": {"status": "Processed"}})
+        device = parser_main(filename, contents)
+        result = mongo.db.files.update({"_id":filename},  {"$set": {"status": "Processed", "device": device}})
     except Exception:
         result = mongo.db.files.update({"_id":filename}, {"$set": {"status": "Failed"}})
 
@@ -29,7 +30,6 @@ def index():
 
 @bp.route("/statistics/<filename>")
 def statistics(filename):
-    print(filename)
     return render_template("statistics.html",filename=filename)
 
 @bp.route("/files")
@@ -48,6 +48,7 @@ def get_GUIDs(filename):
 
 @bp.route("/api/GUID/<string:id>")
 def get_GUID(id):
+    # BAD CODE: WHAT IF TWO LOG FILES HAVE SAME GUID
     sequence = mongo.db.GUIDs.find_one({"_id.guid":id},{"sequence":1})
     sequence = sequence["sequence"]
     svg = render(sequence, engine="plantuml", format="svg")
@@ -71,7 +72,7 @@ def uploads():
         names = natsorted(zipfile.namelist(), key=lambda x: x.lower())
         for name in names:
             contents.write(zipfile.read(name))
-    elif file.filename.endswith('.log'):
+    elif file.filename.endswith('.log') or file.filename.endswith('.txt'):
         contents.write(file.read())
     else:
         return "Invalid file type", 400
@@ -84,7 +85,7 @@ def uploads():
     thread.daemon = True
     thread.start()
     
-    #parser_main(file.filename, contents)
+    #   parser_main(file.filename, contents)
     return render_template("index.html"), 200
 
 @bp.route('/diagram/<string:ID>',methods=["GET"])
@@ -94,7 +95,7 @@ def diagram(ID):
 @bp.route("/api/files")
 def getfilenames():
     cursor = mongo.db.files.find({})
-    files = [[res["_id"], res["status"]] for res in cursor]
+    files = [[res["_id"], res["device"], res["status"]] for res in cursor]
     return jsonify(files),200
 
 @bp.route("/api/filter", methods=["POST"])
@@ -142,7 +143,6 @@ def matchSigntures(ID=None, filename=None):
 
 @bp.route("/api/delete/<filename>")
 def deleteFile(filename):
-    print(filename)
     mongo.db.files.delete_one({"_id": filename})
     mongo.db.GUIDs.delete_many({"_id.filename":filename})  
     mongo.db.msgs.delete_many({"_id.filename":filename})

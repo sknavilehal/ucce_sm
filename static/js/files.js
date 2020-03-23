@@ -23,13 +23,12 @@ $(document).ready(function () {
             for (i = 0; i < data.length; i++) {
                 console.log(data[i][0])
                 files[i] = []
-                console.log(data[i][1])
-                if (data[i][1] === "Processed")
-                    files[i] = [data[i][0], data[i][1], "<span class='icon-play-contained icon-size-20'  onclick='analyse(" + i + ")'  title='Analyse' style='cursor:pointer;color:green' ></span><span class='icon-remove-contain icon-size-20' onclick='del(" + i + ")' style='cursor:pointer;color:#a52727;margin-left:1rem' title ='Remove' ></span><span class='icon-filter icon-size-20' onclick='filter(" + i + ")' style='cursor:pointer;color:#e2ae1e;margin-left:1rem' title ='Filter' ></span>"]
-                else if (data[i][1] === "Processing...")
-                    files[i] = [data[i][0], data[i][1], "<span class='icon-animation icon-size-20' title='Loading'</span>"]
+                if (data[i][2] === "Processed")
+                    files[i] = [data[i][0], data[i][1], data[i][2], "<span class='icon-play-contained icon-size-20'  onclick='analyse(" + i + ")'  title='Analyse' style='cursor:pointer;color:green' ></span><span class='icon-remove-contain icon-size-20' onclick='del(" + i + ")' style='cursor:pointer;color:#a52727;margin-left:1rem' title ='Remove' ></span><span class='icon-filter icon-size-20' onclick='filter(" + i + ")' style='cursor:pointer;color:#e2ae1e;margin-left:1rem' title ='Filter' ></span>"]
+                else if (data[i][2] === "Processing...")
+                    files[i] = [data[i][0], data[i][1], data[i][2], "<span class='icon-animation icon-size-20' title='Loading'</span>"]
                 else
-                    files[i] = [data[i][0], data[i][1], "<span class='icon-remove-contain icon-size-20' onclick='del(" + i + ")' style='cursor:pointer;color:#a52727' title ='Remove' ></span>"]
+                    files[i] = [data[i][0], data[i][1], data[i][2], "<span class='icon-remove-contain icon-size-20' onclick='del(" + i + ")' style='cursor:pointer;color:#a52727' title ='Remove' ></span>"]
             }
             console.log(files)
             files
@@ -39,6 +38,7 @@ $(document).ready(function () {
                     data: files,
                     columns: [
                         { title: "Filename" },
+                        { title: "Device"},
                         { title: "Status" },
                         { title: "Actions" },
 

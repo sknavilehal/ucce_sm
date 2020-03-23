@@ -54,7 +54,7 @@ def parse_error_code(line):
     else: return 0
 
 def parse_sip_msg(sip_msg):
-    line = '\n'.join(sip_msg.splitlines()[0:2])
+    line = '\n'.join(sip_msg.splitlines()[0:3])
     msg = {}
     via = []
     msg["exchange"] = parse_exchange(line)

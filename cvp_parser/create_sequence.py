@@ -1,30 +1,11 @@
 import os
 from pymongo import MongoClient
+from .mappings import r_to_color
 from bson.objectid import ObjectId
 from plantweb.render import render
 
 client = MongoClient("mongodb://localhost:27017/")
 db = client["CVP"]
-
-r_to_color = {
-    '1': " -[#black]> ",
-    '2': " -[#green]> ",
-    '3': " -[#yellow]> ",
-    '4': " -[#red]> ",
-    'B': " -[#orange]> ",
-    'I': " -[#blue]> ",
-    'R': " -[#blue]> ",
-    'P': " -[#blue]> ",
-    'C': " -[#blue]> ",
-    'O': " -[#blue]> ",
-    'N': " -[#blue]> ",
-    'S': " -[#blue]> ",
-    'M': " -[#blue]> ",
-    'U': " -[#blue]> ",
-    'A': " -[#blue]> ",
-    'E': " -[#blue]> ",
-    'D': " -[#blue]> "
-}
 
 def create_sequence(filename,cvp, guids):
     for guid in guids.keys():
