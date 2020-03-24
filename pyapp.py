@@ -10,16 +10,17 @@ from bson.objectid import ObjectId
 from plantweb.render import render
 from cvp_parser.parser_main import parser_main
 from cvp_parser.query_parser import query_parser
-from flask import jsonify, Blueprint, render_template, request, Response, current_app as app
+from flask import jsonify, Blueprint, render_template, request, Response, current_app
 
 bp = Blueprint("bp", __name__)
 
-def threaded_task(filename, contents):
+def threaded_task(app, filename, contents):
     mongo.db.files.insert_one({"_id":filename,"device":"unknown", "status": "Processing..."})
     try:
         device = parser_main(filename, contents)
         result = mongo.db.files.update({"_id":filename},  {"$set": {"status": "Processed", "device": device}})
     except Exception:
+        app.logger.error(traceback.print_exc())
         result = mongo.db.files.update({"_id":filename}, {"$set": {"status": "Failed"}})
 
     return result
@@ -81,7 +82,8 @@ def uploads():
     if ( file.filename in unique_files):
         return "Exists",400
 
-    thread = Thread(target=threaded_task, args=(file.filename, contents))
+    app = current_app._get_current_object()
+    thread = Thread(target=threaded_task, args=(app, file.filename, contents))
     thread.daemon = True
     thread.start()
     

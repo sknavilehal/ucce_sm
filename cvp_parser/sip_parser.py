@@ -31,7 +31,7 @@ def parse_exchange(line):
     if match:
         return {"type": "response", "text":match.group(1)}
     else:
-        m = re.search(r'([A-Z]+) sip:(\*?[@\d\.a-zA-Z\-]+)', line)
+        m = re.search(r'([A-Z]+) sip:(?:;[a-z0-9\.=]+;)?(\*?[@\d\.a-zA-Z\-]+)', line)
         request = m.group(1)
         parts = m.group(2).split('@')
 
