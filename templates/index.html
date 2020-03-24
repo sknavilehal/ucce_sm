@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block css %}
-<link href="{{url_for('static', filename='css/files.css')}}" rel="stylesheet" type="text/css">
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
-
 <link href="{{url_for('static', filename='dropzone-5.7.0/dropzone-5.7.0/dist/min/dropzone.min.css')}}" rel="stylesheet" type="text/css">
     <script src="{{url_for('static' ,filename='dropzone-5.7.0/dropzone-5.7.0/dist/dropzone.js')}}"></script>
     <!--<script src="{{url_for('static' ,filename='js/initial.js')}}"></script>-->
     <link href="{{url_for('static', filename='css/dropzone.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{url_for('static', filename='css/files.css')}}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+
     {% endblock %}
 {% block content %}
 <div class="row base-margin-bottom" style="position: relative;left: 10rem;top:5rem;margin-right: 20rem;">
@@ -17,22 +17,18 @@
         <div clas="row ">
             <div class="center">
                 <button class="btn pull left" id="upload">Upload</button>
-             
+                
             </div>
         </div>
     </div>
     <div class="col-6">
-        
         <table id="table_id" style="width:80%" class=" hover order-column row-border">
 
         </table>
-
-
     </div>
 </div>
 {% block script %}
 <script src="{{url_for('static' ,filename='js/initial.js')}}"></script>
-<!--<script src="{{url_for('static',filename='js/files.js')}}"></script>-->
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 
 {% endblock %}

@@ -2,7 +2,7 @@ var files
 $(document).ready(function () {
     //document.getElementById("body").removeAttribute("onload")
     //document.getElementById("visible").style.display = "block"
-    document.getElementById("home").classList.remove("sidebar__item--selected")
+    //document.getElementById("home").classList.remove("sidebar__item--selected")
     //document.getElementById("files").classList.add("sidebar__item--selected")
     files = []
     $.ajax({
@@ -13,12 +13,12 @@ $(document).ready(function () {
         processData: false,
         success: function (data) {
             //alert('Success!');
-            if (data.length > 0) {
+           /* if (data.length > 0) {
                 //document.getElementById("visible").style.display="block"
                 document.getElementById("statistics").setAttribute("onclick", "doNav('statistics/" + data[0] + "')")
                 document.getElementById("filter").setAttribute("onclick", "doNav('filters/" + data[0] + "')")
 
-            }
+            }*/
             console.log(data.length)
             for (i = 0; i < data.length; i++) {
                 console.log(data[i][0])
@@ -33,6 +33,10 @@ $(document).ready(function () {
             console.log(files)
             files
             console.log(files)
+            if ( $.fn.dataTable.isDataTable( '#table_id' ) ) {
+                table = $('#table_id').DataTable();
+                table.destroy();
+            }
             $('#table_id').DataTable(
                 {
                     data: files,
