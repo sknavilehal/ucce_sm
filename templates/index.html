@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block css %}
+<link href="{{url_for('static', filename='css/files.css')}}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+
 <link href="{{url_for('static', filename='dropzone-5.7.0/dropzone-5.7.0/dist/min/dropzone.min.css')}}" rel="stylesheet" type="text/css">
     <script src="{{url_for('static' ,filename='dropzone-5.7.0/dropzone-5.7.0/dist/dropzone.js')}}"></script>
     <!--<script src="{{url_for('static' ,filename='js/initial.js')}}"></script>-->
@@ -14,45 +17,23 @@
         <div clas="row ">
             <div class="center">
                 <button class="btn pull left" id="upload">Upload</button>
-                <button class="btn  pull-right" onclick="doNav('/files')" id="upload-c" style="background-color: burlywood;
-                border-color:darkred;">View Files</button>
+             
             </div>
         </div>
     </div>
     <div class="col-6">
-        <div class="timeline">
-            <div class="timeline__item">
-                <div class="timeline__icon">
-                    <span class="icon-circle"></span>
-                </div>
-                <div class="timeline__content" style="background-color: white;">
-                    <div>
-                        This tool identifies signatures and patterns in Contact
-                        Center Calls based on CVP logs. </div>
-                </div>
-            </div>
-            <div class="timeline__item">
-                <div class="timeline__icon">
-                    <span class="icon-circle"></span>
-                </div>
-                <div class="timeline__content" style="background-color: white;">
-                    <div>
-                        Upload the file, Check the list of files, Analyse the file required.
-                    </div>
-                </div>
-            </div>
-            <div class="timeline__item">
-                <div class="timeline__icon">
-                    <span class="icon-circle"></span>
-                </div>
-                <div class="timeline__content" style="background-color: white;">
-                    <div>Visualize the calls flows using the sequence diagrams.</div>
-                </div>
-            </div>
-        </div>
+        
+        <table id="table_id" style="width:80%" class=" hover order-column row-border">
+
+        </table>
+
+
     </div>
 </div>
 {% block script %}
 <script src="{{url_for('static' ,filename='js/initial.js')}}"></script>
+<!--<script src="{{url_for('static',filename='js/files.js')}}"></script>-->
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+
 {% endblock %}
 {% endblock %}
