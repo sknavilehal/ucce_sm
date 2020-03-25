@@ -57,6 +57,7 @@ def parse_sip_msg(sip_msg):
     line = '\n'.join(sip_msg.splitlines()[0:3])
     msg = {}
     via = []
+    msg["sent"] = False
     msg["exchange"] = parse_exchange(line)
     lines = sip_msg.splitlines()
     #msg["error_code"] = 0
@@ -79,6 +80,7 @@ def parse_sip_msg(sip_msg):
     msg["via"] = via
     msg["text"] = sip_msg
     msg["error_code"] = parse_error_code(msg["exchange"]["text"])
+    if "Sent" in lines[1] or "Sending" in lines[0]: msg["sent"] = True
 
     if content_len > 0:
         sdp_body = sip_msg.split('\n\n')[1:]

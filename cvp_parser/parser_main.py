@@ -29,6 +29,6 @@ def parser_main(filename, contents):
         return device
     legtoguid, msgs = legToGuid(device, contents)
     guids = GUIDS(legtoguid, msgs)
-    create_sequence(filename,cvp, guids)
+    create_sequence(device, filename,cvp, guids)
 
     return device

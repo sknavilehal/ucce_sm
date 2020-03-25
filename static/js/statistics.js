@@ -12,15 +12,14 @@ $.ajax({
     contentType: false,
     cache: false,
     processData: false,
-    success: function(data) {
+    success: function (data) {
         //alert('Success!');
-        if(data.length>0)
-        {
+        if (data.length > 0) {
             //document.getElementById("visible").style.display="block"
-            document.getElementById("statistics").setAttribute("onclick","doNav('../statistics/"+filename+"')")
+            document.getElementById("statistics").setAttribute("onclick", "doNav('../statistics/" + filename + "')")
             document.getElementById("filter").setAttribute("onclick", "doNav('../filters/" + data[0] + "')")
-  
-  }
+
+        }
     }
 });
 function get_table(filename) {
@@ -42,7 +41,7 @@ function appendData(data) {
     for (var i = 0; i < data.length; i++) {
         GUIDs[i] = [];
         //for Details hyperlink to work
-        GUIDs[i] = [data[i][0], "<a href='#' id='seq_diag' onclick='seq(" + i + ")'>Details</a>"];
+        GUIDs[i] = [data[i][0], data[i][1], data[i][2], "<a href='#' id='seq_diag' onclick='seq(" + i + ")'>Details</a>"];
     }
     //destroy the tables content when switching b/w files
     if (document.getElementById("example").innerHTML != "") {
@@ -64,6 +63,8 @@ function appendData(data) {
         //columns for database
         columns: [
             { title: "ID" },
+            { title: "From" },
+            { title: "To" },
             { title: "Details" }
         ]
     });

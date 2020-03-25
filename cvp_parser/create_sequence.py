@@ -7,10 +7,14 @@ from plantweb.render import render
 client = MongoClient("mongodb://localhost:27017/")
 db = client["CVP"]
 
-def create_sequence(filename,cvp, guids):
+def create_sequence(device, filename,cvp, guids):
     for guid in guids.keys():
-        sequence = "@startuml\nskinparam sequence {\nLifeLineBorderColor black\nParticipantBorderColor #00bceb\nParticipantBackgroundColor white\nParticipantFontName Consolas\nParticipantFontSize 17\nParticipantFontColor black\n}\n"
+        doc = {}
+        doc["_id"] = {"filename":filename, "guid":guid}
+        doc["from"] = '-'
+        doc["to"] = '-'
         src = dest = text = ""
+        sequence = "@startuml\nskinparam sequence {\nLifeLineBorderColor black\nParticipantBorderColor #00bceb\nParticipantBackgroundColor white\nParticipantFontName Consolas\nParticipantFontSize 17\nParticipantFontColor black\n}\n"
         for msg in guids[guid]:
             if msg["type"] == "sip":
                 text = msg["exchange"]["text"]
@@ -36,6 +40,14 @@ def create_sequence(filename,cvp, guids):
             else:
                 src, dest = msg["from"], msg["to"]
                 text = msg["status"]
+            
+            if doc["from"] == '-' and doc["to"] == '-' and device == "cvp" and "DNIS" in msg and "ANI" in msg:
+                doc["from"] = msg["ANI"]
+                doc["to"] = msg["DNIS"]
+            if doc["from"] == '-' and device == "cube" and msg["exchange"]["type"] == "request" and not msg["sent"]:
+                doc["from"] = msg["from"]["ext"] + "@" + msg["from"]["addr"]
+            if doc["to"] == '-' and device == "cube" and msg["exchange"]["type"] == "request" and msg["sent"]:
+                doc["to"] = msg["exchange"]["ext"] + "@" + msg["exchange"]["addr"]
 
             code = text[0]
             oid = str(ObjectId())
@@ -46,10 +58,7 @@ def create_sequence(filename,cvp, guids):
         
         sequence += "@enduml"
 
-        doc = {
-            "_id": {"filename": os.path.basename(filename), "guid": guid},
-            "sequence": sequence,
-        }
+        doc["sequence"] = sequence
         db.GUIDs.insert_one(doc)
 
 

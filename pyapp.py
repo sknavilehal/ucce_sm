@@ -44,7 +44,7 @@ def signatures():
 @bp.route("/api/GUIDs/<string:filename>")
 def get_GUIDs(filename):
     cursor = mongo.db.GUIDs.find({"_id.filename":filename})
-    GUIDs = [[res["_id"]["guid"]] for res in cursor]
+    GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
     return jsonify(GUIDs),200
 
 @bp.route("/api/GUID/<string:id>")

@@ -83,9 +83,11 @@ def parse_ged_msg(ged_msg):
     msg["guid"] = parse_guid(ged_msg)
     
     if "publishing to " in ged_msg.lower():
+        msg["sent"] = True
         msg["to"] = parse_tofro(ged_msg)
         msg["from"] = parse_ss(ged_msg)
     elif "processing from " in ged_msg.lower():
+        msg["sent"] = False
         msg["to"] = parse_ss(ged_msg)
         msg["from"] = parse_tofro(ged_msg)
         if check_icmss_ivrss(msg): return {}
@@ -99,7 +101,6 @@ def parse_ged_msg(ged_msg):
     #Sending the ged message line to parse the attributes from it.
     parse_attributes(ged_msg, msg)
 
-    msg["text"] = ged_msg
     msg["type"] = "ged"
     msg["text"] = ged_msg
 
