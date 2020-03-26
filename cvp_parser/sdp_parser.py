@@ -77,22 +77,3 @@ def sdp_parser(body):
         sdp[attr] = attrs[attr]
     return sdp
 
-multiline = """v=0
-o=CiscoSystemsSIP-GW-UserAgent 5181 3975 IN IP4 10.106.122.150
-s=SIP Call
-c=IN IP4 10.106.122.150
-t=0 0
-m=audio 11634 RTP/AVP 0 8 18 101
-c=IN IP4 10.106.122.150
-a=rtpmap:0 PCMU/8000
-a=rtpmap:8 PCMA/8000
-a=rtpmap:18 G729/8000
-a=fmtp:18 annexb=no
-a=rtpmap:101 telephone-event/8000
-a=fmtp:101 0-16
-a=ptime:20
-"""
-
-if __name__ == "__main__":
-    sdp = sdp_parser(multiline)
-    pprint(sdp)

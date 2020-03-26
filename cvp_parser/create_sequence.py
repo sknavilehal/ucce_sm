@@ -10,10 +10,10 @@ db = client["CVP"]
 def create_sequence(device, filename,cvp, guids):
     for guid in guids.keys():
         doc = {}
-        doc["_id"] = {"filename":filename, "guid":guid}
         doc["from"] = '-'
         doc["to"] = '-'
         src = dest = text = ""
+        doc["_id"] = {"filename":filename, "guid":guid}
         sequence = "@startuml\nskinparam sequence {\nLifeLineBorderColor black\nParticipantBorderColor #00bceb\nParticipantBackgroundColor white\nParticipantFontName Consolas\nParticipantFontSize 17\nParticipantFontColor black\n}\n"
         for msg in guids[guid]:
             if msg["type"] == "sip":

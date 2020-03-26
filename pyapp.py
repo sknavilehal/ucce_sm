@@ -20,7 +20,7 @@ def threaded_task(app, filename, contents):
         device = parser_main(filename, contents)
         result = mongo.db.files.update({"_id":filename},  {"$set": {"status": "Processed", "device": device}})
     except Exception:
-        app.logger.error(traceback.print_exc())
+        app.logger.error(traceback.format_exc())
         result = mongo.db.files.update({"_id":filename}, {"$set": {"status": "Failed"}})
 
     return result

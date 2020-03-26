@@ -27,7 +27,7 @@ def legToGuid(device, lines):
     messages=[]
     legtoguid = {}
     call_id = None; ccapi = None; ignore_ged_msg = ignore_sip_msg = True
-    #ignored_logs = {"UserCB:", "TransactionManagement:"} 
+
     filtered_logs = {"Sending", "BEGINING PROCESSING NEW MESSAGE"}
     for line in lines:
         if isDelimeter(device, line):
