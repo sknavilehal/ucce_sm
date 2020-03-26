@@ -7,6 +7,18 @@ from plantweb.render import render
 client = MongoClient("mongodb://localhost:27017/")
 db = client["CVP"]
 
+def add_NI(doc,msg):
+    if doc["from"] == '-' and doc["to"] == '-' and "DNIS" in msg and "ANI" in msg:
+        doc["from"] = msg["ANI"]
+        doc["to"] = msg["DNIS"]
+
+def add_ReqUri(doc,msg):
+    if doc["from"] == '-' and msg["exchange"]["type"] == "request" and not msg["sent"]:
+        doc["from"] = msg["from"]["ext"] + "@" + msg["from"]["addr"]
+    if doc["to"] == '-' and msg["exchange"]["type"] == "request" and msg["sent"]:
+        doc["to"] = msg["exchange"]["ext"] + "@" + msg["exchange"]["addr"]
+
+
 def create_sequence(device, filename,cvp, guids):
     for guid in guids.keys():
         doc = {}
@@ -40,14 +52,11 @@ def create_sequence(device, filename,cvp, guids):
             else:
                 src, dest = msg["from"], msg["to"]
                 text = msg["status"]
-            
-            if doc["from"] == '-' and doc["to"] == '-' and device == "cvp" and "DNIS" in msg and "ANI" in msg:
-                doc["from"] = msg["ANI"]
-                doc["to"] = msg["DNIS"]
-            if doc["from"] == '-' and device == "cube" and msg["exchange"]["type"] == "request" and not msg["sent"]:
-                doc["from"] = msg["from"]["ext"] + "@" + msg["from"]["addr"]
-            if doc["to"] == '-' and device == "cube" and msg["exchange"]["type"] == "request" and msg["sent"]:
-                doc["to"] = msg["exchange"]["ext"] + "@" + msg["exchange"]["addr"]
+
+            if device == "cvp":
+                add_NI(doc,msg)
+            if device == "cube":
+                add_ReqUri(doc,msg)
 
             code = text[0]
             oid = str(ObjectId())

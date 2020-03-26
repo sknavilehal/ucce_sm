@@ -78,7 +78,7 @@ function seq(i) {
     data = table.rows(i).data()[0][0]
     $.ajax({
         type: 'GET',
-        url: '/diagram/' + data,
+        url: `/diagram/${filename}/${data}`,
         contentType: false,
         cache: false,
         processData: false,
@@ -86,5 +86,5 @@ function seq(i) {
         }
     });
     //open diagram in new page
-    window.open("/diagram/" + data);
+    window.open(`/diagram/${filename}/${data}`);
 }

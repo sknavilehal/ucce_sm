@@ -11,29 +11,30 @@
 <div class="row base-margin-bottom " style="margin-left: 10rem;">
 	<div class="col-6">
 		<div style="background-color: white;position:absolute;top:10rem;padding:25px">
-		<div class="form-group">
-			<div class="form-group__text">
-				<input id="input-state-readonly" style="width:40rem" type="text">
-				<label for="input-state-readonly">Query</label>
+			<div class="form-group">
+				<div class="form-group__text">
+					<input id="input-state-readonly" style="width:40rem" type="text">
+					<label for="input-state-readonly">Signature</label>
+				</div>
+				<br>
+				<div class="form-group__text">
+					<input id="input-hint-default" type="text">
+					<label for="input-hint-default">Description</label>
+				</div>
+				<div class="form-group__help">
+					<span>Enter relevant signature</span>
+				</div>
+				<button class="btn" id="add">Add</button>
 			</div>
-			<br>
-			<div class="form-group__text">
-				<input id="input-hint-default" type="text">
-				<label for="input-hint-default">Signature</label>
-			</div>
-			<div class="form-group__help">
-				<span>Enter relevant signature</span>
-			</div>
-			<button class="btn" id="add">Add</button>
 		</div>
-	</div></div>
-		
+	</div>
+
 	<div class="col-6 center">
-		<table id="table_id" style="width:80%;" class=" hover order-column row-border"> </table>
-     
+		<table id="table_id" style="width:100%;" class=" hover order-column row-border"> </table>
+
 	</div>
 </div>
-	{%endblock%}
-	{%block script%}
-	<script src="{{url_for('static',filename='js/signatures.js')}}"></script>
-	{%endblock%}
+{%endblock%}
+{%block script%}
+<script src="{{url_for('static',filename='js/signatures.js')}}"></script>
+{%endblock%}

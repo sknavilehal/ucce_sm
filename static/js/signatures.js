@@ -1,6 +1,6 @@
 
 $(document).ready(function () {
-    document.getElementById("body").setAttribute("onload","signature()")
+    document.getElementById("body").setAttribute("onload", "signature()")
     document.getElementById("visible").style.display = "block"
     document.getElementById("home").classList.remove("sidebar__item--selected")
     document.getElementById("sign").classList.add("sidebar__item--selected")
@@ -13,7 +13,6 @@ $.ajax({
     cache: false,
     processData: false,
     success: function (data) {
-        //alert('Success!');
         if (data.length > 0) {
             //document.getElementById("visible").style.display="block"
             document.getElementById("statistics").setAttribute("onclick", "doNav('/statistics/" + data[0] + "')")
@@ -24,34 +23,29 @@ $.ajax({
 
 $('#add').click(function () {
     var p = {
-        filter: document.getElementById("input-state-readonly").value,
-        signature: document.getElementById("input-hint-default").value
+        signature: document.getElementById("input-state-readonly").value,
+        description: document.getElementById("input-hint-default").value
     }
     console.log(p)
     if (document.getElementById("table_id").innerHTML != "") {
         var table1 = $('#table_id').DataTable();
         table1.destroy();
         document.getElementById("table_id").innerHTML = ""
-
-        //  console.log(document.getElementById("table_id").innerHTML.length)
     }
     $.ajax({
         url: '/api/signature',
         type: 'post',
         contentType: 'application/json',
         data: JSON.stringify(p),
-        success: function(data) {
-            //alert("aaa")
+        success: function (data) {
             signature()
-
         },
-        
     });
 });
 
 
-function signature(){
-list=[]
+function signature() {
+    list = []
     $.ajax({
         url: '/api/signatures',
         type: 'get',
@@ -59,8 +53,8 @@ list=[]
         success: function (data) {
             console.log(data)
             for (i = 0; i < data.length; i++) {
-                list[i] =[]
-                list[i] =[data[i][0],data[i][1]]
+                list[i] = []
+                list[i] = [data[i][0], data[i][1]]
             }
             $('#table_id').DataTable(
                 {
@@ -68,14 +62,10 @@ list=[]
                     scrollCollapse: true,
                     data: list,
                     columns: [
-                        { title: "Signatures" },
+                        { title: "Signature" },
                         { title: "Description" }
                     ],
-
                 });
         }
-
-        
-
     });
 }
