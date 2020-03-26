@@ -104,7 +104,9 @@ def getfilenames():
 def callFilter():
     call_filter = request.get_json()["filter"]
     filename = request.get_json()["filename"]
+    filename=filename.split(",")[0]
     query = query_parser(call_filter)
+    print(query)
     if not query:
         return "Invalid call filter", 400
     query["_id.filename"] = filename
