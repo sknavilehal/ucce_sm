@@ -106,13 +106,14 @@ def callFilter():
     filename = request.get_json()["filename"]
     filename=filename.split(",")[0]
     query = query_parser(call_filter)
-    print(query)
     if not query:
         return "Invalid call filter", 400
     query["_id.filename"] = filename
     guids = mongo.db.msgs.distinct("guid",query)
+    cursor = mongo.db.GUIDs.find({"_id.guid": {"$in":guids}})
+    GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
 
-    return {"guids": guids, "query":str(query)}
+    return jsonify(GUIDs), 200
 
 @bp.route("/api/signature", methods=["POST"])
 def storeSignatute():
