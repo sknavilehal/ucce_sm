@@ -21,8 +21,22 @@ $.ajax({
             all[i].removeAttribute("href")
             //add onclick function
             all[i].setAttribute("style","text-decoration:none;")
+            all[i].setAttribute("data-toggle", "modal")
+            all[i].setAttribute("data-target", "#exampleModal")
             all[i].setAttribute("onclick", "get_msgs(\"" + msg_id + "\")")
         }
+        var rect1=doc.getElementsByTagName("rect")
+       // console.log(rect1)
+        for(i=0;i<rect1.length;i++){
+        rect1[i].setAttribute("rx","4")
+        rect1[i].setAttribute("ry","4")
+        rect1[i].style.fill="#87d0ff8a"
+        rect1[i].style.stroke="#72c0ff"
+
+        }
+        $(doc).find("rect").each(function(){
+            console.log(this.innerHTML)
+        })
             var all1 = doc.getElementsByTagName("text");
                 for(var i = 0, max = all1.length; i < max; i++) 
                 {
@@ -30,10 +44,13 @@ $.ajax({
                     all1[i].setAttribute("font-family","'Poppins', sans-serif")
                     all1[i].setAttribute("text-decoration","none")
                     all1[i].setAttribute("font-weight","300px")
+                    
+                  
+                            
                             if(all1[i].innerHTML.search("INVITE")>=0)
                             {
                          
-                            all1[i].setAttribute("fill","blue")
+                            all1[i].setAttribute("fill","black")
                             }
                             if(all1[i].innerHTML.search("BYE")>=0)
                             {
@@ -43,8 +60,8 @@ $.ajax({
                             all1[i].setAttribute("fill","green")
                             if(all1[i].innerHTML.search("3")==0)
                             all1[i].setAttribute("fill","yellow")
-                            if(all1[i].innerHTML.search("1")==0)
-                            all1[i].setAttribute("fill","black")
+                            if(all1[i].innerHTML.search("1")==0 && all1[i].innerHTML.length<4)
+                            all1[i].setAttribute("fill","blue")
                             if(all1[i].innerHTML.search("4")==0 ||all1[i].innerHTML.search("5")==0 ||all1[i].innerHTML.search("6")==0 )
                             all1[i].setAttribute("fill","red")
                     
@@ -69,7 +86,9 @@ function closeModal (id) {
     $('#'+id).detach().prependTo(('#'+id+'-placeholder')).addClass('hide');
     $('#modal-backdrop').addClass('hide');
 }
+
 function get_msgs(id) {
+    
     $.ajax({
         type: 'GET',
         url: "/api/message/" + id,
@@ -168,7 +187,7 @@ function get_msgs(id) {
     //.log(temp)
      
             msg=temp.replace(/(?:\r\n|\r|\n)/g, '<br>')
-            openModal("modal-small",msg)
+            document.getElementById("msg").innerHTML=msg
             //document.getElementById("msg").textContent = msg
         }
     });

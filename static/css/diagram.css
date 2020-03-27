@@ -31,4 +31,19 @@ text-align: center;
 #svg1 path,
 #svg1 rect{
   fill: #00bceb;
+
+}
+
+.col
+{
+  overflow:auto
+}
+
+
+
+#logo
+{
+    position:absolute;
+    top:0;
+    margin-left: 30%;
 }

@@ -36,3 +36,15 @@ box-shadow: 0 0 8px #e9e9ed;
     background-color:#ff4a7c;
     border-color: #ff4a7c;
 }
+
+.autocomplete-suggestion
+{
+    background-color: white;
+    padding :3px
+}
+
+.autocomplete-selected
+{
+    background-color: rgb(202, 220, 248);
+    padding :3px
+}

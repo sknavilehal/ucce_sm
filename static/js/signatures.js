@@ -19,7 +19,7 @@ $.ajax({
         //alert('Success!');
         if (data.length > 0) {
             //document.getElementById("visible").style.display="block"
-            document.getElementById("details-link").setAttribute("href","statistics/" + data[0][0] )
+            document.getElementById("details-link").setAttribute("href","details/" + data[0][0] )
         }
     }
 });
