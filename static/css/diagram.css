@@ -33,7 +33,9 @@ text-align: center;
   fill: #00bceb;
 
 }
-
+.modal-body{
+  word-break: break-all;
+}
 .col
 {
   overflow:auto

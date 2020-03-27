@@ -20,7 +20,7 @@ $.ajax({
             all[i].removeAttribute("xlink:href")
             all[i].removeAttribute("href")
             //add onclick function
-            all[i].setAttribute("style","text-decoration:none;")
+            all[i].setAttribute("style","text-decoration:none;cursor:pointer")
             all[i].setAttribute("data-toggle", "modal")
             all[i].setAttribute("data-target", "#exampleModal")
             all[i].setAttribute("onclick", "get_msgs(\"" + msg_id + "\")")
@@ -30,8 +30,8 @@ $.ajax({
         for(i=0;i<rect1.length;i++){
         rect1[i].setAttribute("rx","4")
         rect1[i].setAttribute("ry","4")
-        rect1[i].style.fill="#87d0ff8a"
-        rect1[i].style.stroke="#72c0ff"
+        rect1[i].style.fill="#BBDEFB"
+        rect1[i].style.stroke="#90CAF9"
 
         }
         $(doc).find("rect").each(function(){
