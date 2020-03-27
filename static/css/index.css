@@ -1,14 +1,89 @@
 
-.col
+.dropzone {
+    background: white;
+    border-radius: 5px;
+    border: 2px dashed rgb(0, 135, 247);
+    border-image: none;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.center {
+    max-width: 300px;
+    margin-top: 4rem;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+.dropzone .dz-preview.dz-file-preview .dz-image {
+    background: #bdd2f1;
+    width: 150px;
+    height: 100px;
+}
+
+
+
+.item
 {
-    
-    background-color: white;
-    margin:0.6rem;
-    -moz-box-shadow: 0 0 3px #ccc;
--webkit-box-shadow: 0 0 3px #ccc;
-box-shadow: 0 0 8px #e9e9ed;
-    
+    padding: 1rem;
+}
+.processed:disabled{
+    background-color: rgba(29,201,183,.1);
+color: #0875a9;
+border:none;
+font-weight: bold;
+font-size: 0.7rem;
+
+
+}
+.btn-warning:disabled
+{
+    background-color: rgba(255,184,34,.1);
+color: #ffb822;
+cursor: text!important;
+font-weight:bold;
+font-size: 0.7rem;
+border:none
+}
+.profile
+{
+    position: absolute;;
+    right: 0;
+    top:0
     
 }
 
 
+.view
+{
+    background-color: #ffb822;
+border-color: #ffb822;
+color: #111;
+border:none;
+
+font-size: 0.7rem;
+}
+.remove
+{
+background-color: #dc3545;
+border-color:#dc3545    ;
+color: #111;
+border:none;
+
+font-size: 0.7rem;
+
+}
+
+
+.refresh
+{
+    background-color: #591df1;
+    border-color: #591df1;
+    color: #fff;
+        border:none;
+        
+        font-size: 0.7rem;
+
+}

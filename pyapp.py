@@ -29,9 +29,9 @@ def threaded_task(app, filename, contents):
 def index():
     return render_template("index.html")
 
-@bp.route("/statistics/<filename>")
-def statistics(filename):
-    return render_template("statistics.html",filename=filename)
+@bp.route("/details/<filename>")
+def details(filename):
+    return render_template("details.html",filename=filename)
 
 @bp.route("/files")
 def files():

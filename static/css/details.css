@@ -17,3 +17,22 @@ box-shadow: 0 0 8px #e9e9ed;
     
     
 }
+
+.dropdown-toggle {
+    color:#ff4a7c;
+    background-color: white;
+    border-color: #ff4a7c;
+}
+
+
+.dropdown-toggle:hover {
+    color: white;
+    background-color:#ff4a7c;
+    border-color: #ff4a7c;
+}
+
+.show>.btn-secondary.dropdown-toggle {
+    color: white;
+    background-color:#ff4a7c;
+    border-color: #ff4a7c;
+}

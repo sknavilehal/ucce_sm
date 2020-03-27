@@ -22,9 +22,9 @@
                     <div class="input-group input-group-sm">
                         <div class="dropdown mr-5">
                             <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              Dropdown button
+                              Select Files
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <div class="dropdown-menu" id="files" aria-labelledby="dropdownMenuButton">
                               <a class="dropdown-item" href="#">Action</a>
                               <a class="dropdown-item" href="#">Another action</a>
                               <a class="dropdown-item" href="#">Something else here</a>
@@ -36,7 +36,7 @@
                           </span>
                         </div>
                         <input id="autocomplete" type="text" class="form-control" placeholder="Query" aria-label="Query" aria-describedby="basic-addon1">
-                        <input id="submit" class="btn btn-sm btn-primary ml-5" type="submit" value="Submit"></div>
+                        <input id="submit" class="btn btn-sm btn-primary ml-5" type="submit" value="Filter"></div>
                       
              
                 </div>
@@ -57,5 +57,5 @@
 
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script> 
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-<script src="{{url_for('static' ,filename='js/statistics.js')}}"></script>
+<script src="{{url_for('static' ,filename='js/details.js')}}"></script>
 {%endblock%}
