@@ -250,10 +250,11 @@ $('#submit').click(function () {
             // temp=data.guids.toString().replace(/,/g,"<br>")
             // document.getElementById("out").innerHTML=temp
             files = []
-            console.log(data.guids.length)
-            for (i = 0; i < data.guids.length; i++) {
+            console.log(data)
+            console.log(data[0])
+            for (i = 0; i < data.length; i++) {
                 files[i] = []
-                files[i] = [data.guids[i], "<a href='#' id='seq_diag' onclick='seq(" + i + ")'>Details</a>", "<a href='#' id='sign' onclick='sign(" + i + ")'>Signatures</a>"]
+                files[i] = [data[i][0],data[i][1],data[i][2], "<a href='#' id='seq_diag' onclick='seq(" + i + ")'>Details</a>", "<a href='#' id='sign' onclick='sign(" + i + ")'>Signatures</a>"]
             }
 
             $('#call_details').DataTable(
@@ -263,6 +264,8 @@ $('#submit').click(function () {
                     data: files,
                     columns: [
                         { title: "ID" },
+                        {title:"From"},
+                        {title:"To"},
                         { title: "Details" },
                         { title: "Signatures" }
                     ],

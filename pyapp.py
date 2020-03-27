@@ -90,7 +90,7 @@ def uploads():
     #   parser_main(file.filename, contents)
     return render_template("index.html"), 200
 
-@bp.route('/statistics/<filename>/<string:ID>',methods=["GET"])
+@bp.route('/details/<filename>/<string:ID>',methods=["GET"])
 def diagram(filename,ID):
     return render_template("diagram.html", guid=ID)
 
