@@ -1,11 +1,10 @@
 var flaskData = document.getElementById("flaskvar")
-var filename = flaskData.getAttribute("filename")
 var guid = flaskData.getAttribute("guid")
 //for the cappi id gets the svg code of its sequence diagram and messages
 $.ajax({
     //document.getElementById("diagram").innerHTML=
     type: 'GET',
-    url: `/api/GUID/${filename}/${guid}`,
+    url: "/api/GUID/" + guid,
     success: function (re) {
         var s = re.svg
         //parse the svg string and convert it to HTML DOM
@@ -28,7 +27,7 @@ $.ajax({
                 for(var i = 0, max = all1.length; i < max; i++) 
                 {
                     //coloring
-                    all1[i].setAttribute("font-family","Trebuchet MS")
+                    all1[i].setAttribute("font-family","'Poppins', sans-serif")
                     all1[i].setAttribute("text-decoration","none")
                     all1[i].setAttribute("font-weight","300px")
                             if(all1[i].innerHTML.search("INVITE")>=0)

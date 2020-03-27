@@ -12,9 +12,10 @@ function initial(){
         success: function (data) {
             //alert('Success!');
             if (data.length > 0) {
-                document.getElementById("visible").style.display = "block"
-                document.getElementById("statistics").setAttribute("onclick", "doNav('statistics/" + data[0] + "')")
-                document.getElementById("filter").setAttribute("onclick", "doNav('filters/" + data[0] + "')")
+                //document.getElementById("visible").style.display = "block"
+                console.log(data[0])
+                document.getElementById("details-link").setAttribute("href","statistics/" + data[0][0] )
+              //  document.getElementById("filter").setAttribute("onclick", "doNav('filters/" + data[0] + "')")
            
             }
             //console.log(data.length)
@@ -22,9 +23,11 @@ function initial(){
                 console.log(data[i][0])
                 files[i] = []
                 if (data[i][2] === "Processed")
-                    files[i] = [data[i][0], data[i][1], data[i][2], "<span class='icon-play-contained icon-size-20'  onclick='analyse(" + i + ")'  title='Analyse' style='cursor:pointer;color:green' ></span><span class='icon-remove-contain icon-size-20' onclick='del(" + i + ")' style='cursor:pointer;color:#a52727;margin-left:1rem' title ='Remove' ></span><span class='icon-filter icon-size-20' onclick='filter(" + i + ")' style='cursor:pointer;color:#e2ae1e;margin-left:1rem' title ='Filter' ></span>"]
+                    files[i] = [data[i][0], data[i][1], "<button type='button' class='btn btn-primary btn-sm btn-success' >Processed</button>", 
+                    " <div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-secondary view' onclick='analyse(" + i + ")'>View</button><button type='button' class='btn btn-sm btn-secondary remove' onclick='del(" + i + ")'>Remove</button></div>"   ]
                 else if (data[i][2] === "Processing...")
-                    files[i] = [data[i][0], data[i][1], data[i][2], "<span class='icon-animation icon-size-20' onclick='refresh("+i+")' title='Refresh'</span>"]
+                    files[i] = [data[i][0], data[i][1], "<button type='button' class='btn btn-primary btn-sm btn-warning' >Processing</button>"
+                    ,"  <button type='button' class='btn btn-sm btn-primary refresh'  onclick='refresh("+i+")' title='Refresh'>Refresh</button>" ]
                 else
                     files[i] = [data[i][0], data[i][1], data[i][2], "<span class='icon-remove-contain icon-size-20' onclick='del(" + i + ")' style='cursor:pointer;color:#a52727' title ='Remove' ></span>"]
             }
@@ -95,7 +98,7 @@ function analyse(i) {
     var table = $('#table_id').DataTable();
     data = table.rows(i).data()[0][0]
     //alert(data)
-    doNav('/statistics/' + data)
+    location.href='/statistics/' + data
     //open diagram in new page
     //window.open("/diagram/" + data);
 }
@@ -106,14 +109,14 @@ function del(i) {
     $.ajax({
         type: 'GET',
         url: '/api/delete/' + data,
-        contentType: false,
-        cache: false,
-        processData: false,
         success: function (data) {
-            initial()
+            console.log(data)
+            
 
         }
     });
+    //initial()
+    location.reload()
 }
 
 function filter(i) {

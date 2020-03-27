@@ -1,8 +1,3 @@
-body.cui .btn {
-    background-color: #0094eb;
-    border-color: #0175a2;
-    color: #f8f8f8;
-}
 
 .dropzone {
     background: white;
@@ -26,4 +21,69 @@ body.cui .btn {
     background: #afddf7;
     width: 150px;
     height: 100px;
+}
+
+
+
+.item
+{
+    padding: 1rem;
+}
+.btn-success{
+    background-color: rgba(29,201,183,.1);
+color: #1dc9b7;
+border:none;
+font-weight:600;
+font-size: 0.7rem;
+
+
+}
+.btn-warning
+{
+    background-color: rgba(255,184,34,.1);
+color: #ffb822;
+cursor: text!important;
+font-weight:600;
+font-size: 0.7rem;
+border:none
+}
+.profile
+{
+    position: absolute;;
+    right: 0;
+    top:0
+    
+}
+
+
+.view
+{
+    background-color: #ffb822;
+border-color: #ffb822;
+color: #111;
+border:none;
+
+font-size: 0.7rem;
+}
+.remove
+{
+background-color: #dc3545;
+border-color:#dc3545    ;
+color: #111;
+border:none;
+
+font-size: 0.7rem;
+
+}
+
+
+.refresh
+{
+    background-color: #591df1;
+    border-color: #591df1;
+    color: #fff;
+        border:none;
+        
+        font-size: 0.7rem;
+
 }

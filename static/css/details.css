@@ -1,0 +1,19 @@
+.dropdown-toggle
+{
+    color: #495057;
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+}
+
+.col
+{
+    
+    background-color: white;
+    margin:0.6rem;
+    -moz-box-shadow: 0 0 3px #ccc;
+-webkit-box-shadow: 0 0 3px #ccc;
+box-shadow: 0 0 8px #e9e9ed;
+
+    
+    
+}
