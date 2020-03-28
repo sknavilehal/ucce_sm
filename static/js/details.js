@@ -1,4 +1,4 @@
-
+import suggestions from './suggestions.js';
 
 var flaskData = document.getElementById("flaskvar")
 var filename = flaskData.getAttribute("filename")
@@ -7,6 +7,8 @@ var filename = flaskData.getAttribute("filename")
 document.getElementById("home").classList.remove("active")
 document.getElementById("details").classList.add("active")
 get_table(filename)
+window.seq = seq
+window.sign = sign
 
 $.ajax({
     type: 'GET',
@@ -20,7 +22,7 @@ $.ajax({
             console.log(data)
             var d=document.getElementById("files")
             var temp=""
-            for(i=0;i<data.length;i++)
+            for(let i=0;i<data.length;i++)
             {
                 temp=temp+"<a class='dropdown-item' onclick='get_table(\""+data[i][0]+"\")' href='#'>"+data[i][0]+"</a>"
             }
@@ -47,7 +49,7 @@ function appendData(data) {
     for (var i = 0; i < data.length; i++) {
         GUIDs[i] = [];
         //for Details hyperlink to work
-        GUIDs[i] = [data[i][0], data[i][1], data[i][2], "<a href='#' id='seq_diag' onclick='seq(" + data[i][0] + ")'>Details</a>"];
+        GUIDs[i] = [data[i][0], data[i][1], data[i][2], `<a href='#' id='seq_diag' onclick='seq("${data[i][0]}")'>Details</a>`, `<a href='#' id='sign' onclick='sign("${data[i][0]}")'>Signature</a>`];
     }
     //destroy the tables content when switching b/w files
     if (document.getElementById("call_details").innerHTML != "") {
@@ -71,144 +73,21 @@ function appendData(data) {
             { title: "ID" },
             { title: "From" },
             { title: "To" },
-            { title: "Details" }
+            { title: "Details" },
+            { title: "Signature"}
         ]
     });
 
     var table = $('#call_details').DataTable();
 
 }
-//execute this when diagram for sequence is asked
-function seq(data) {
-    //var table = $('#call_details').DataTable();
-    //data = table.rows(i).data()[0][0]
-    $.ajax({
-        type: 'GET',
-        url: `/diagram/${filename}/${data}`,
-        contentType: false,
-        cache: false,
-        processData: false,
-        success: function (data) {
-        }
-    });
-    //open diagram in new page
-    window.open("/diagram/" + data);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //document.getElementById("call_details").innerHTML = ""
-var countries = [
-    "guid",
-    "to",
-    "from",
-    "status",
-    "Thrd",
-    "CALLGUID",
-    "DialogId",
-    "DialogID",
-    "SendSeqNo",
-    "ErrorCode",
-    "text",
-    "type",
-    "DNIS",
-    "ANI",
-    "CED",
-    "rckey",
-    "rcseq",
-    "uui",
-    "callguid",
-    "trunkGroupId",
-    "trunkNumber",
-    "serviceId",
-    "calledNumber",
-    "location",
-    "locationpkid",
-    "pstntrunkgroupid",
-    "sipheader",
-    "variables",
-    "arrays",
-    "Variables",
-    "text",
-    "label",
-    "correlationId",
-    "sipheader",
-    "EventID",
-    "CauseCode",
-    "rcday",
-    "uui",
-    "whisperAnnounce",
-    "NEW_TRANSACTION_EVENT",
-    "SET_CALL_VARIABLES_EVENT",
-    "OPEN_REQ",
-    "OPEN_CONF",
-    "FAILURE_CONF",
-    "FAILURE_EVENT",
-    "HEARTBEAT_REQ",
-    "HEARTBEAT_CONF",
-    "CLOSE_REQ",
-    "CLOSE_CONF",
-    "ROUTE_REQUEST_EVENT",
-    "ROUTE_SELECT",
-    "ROUTE_END_EVENT",
-    "ROUTE_END",
-    "REGISTER_VARIABLES",
-    "INIT_DATA_REQ",
-    "INIT_DATA_CONF",
-    "INIT_TRKGRP_DATA_EVENT",
-    "INIT_SERVICE_DATA_EVENT",
-    "INIT_VRU_DATA_EVENT",
-    "INIT_DATA_END_EVENT",
-    "DELIVERED_EVENT",
-    "ORIGINATED_EVENT",
-    "CALL_CLEARED_EVENT",
-    "CONFERENCED_EVENT",
-    "DELIVERED_EVENT",
-    "VRU_STATUS_EVENT",
-    "TRKGRP_STATUS_EVENT",
-    "SERVICE_STATUS_EVENT",
-    "ROUTE_REQUEST_EVENT",
-    "ROUTE_SELECT",
-    "ROUT_END_EVENT",
-    "ROUTE_END",
-    "TIME_SYNCH_REQ",
-    "TIME_SYNCH_CONF",
-    "SERVICE_CONTROL",
-    "INIT_SERVICE_CTRL_REQ",
-    "INIT_SERVICE_CTRL_CONF",
-    "INIT_SERVICE_CTRL_DATA",
-    "FEATURE_RUN_SCRIPT",
-    "FEATURE_CONNECT","FEATURE_CANCEL","FEATURE_RELEASE","INIT_SERVICE_CTRL_TRKGRP","INIT_SERVICE_CTRL_SERVICE","INIT_SERVICE_CTRL_VRU","INIT_SERVICE_CTRL_END","TRKGRP_STATUS","SERVICE_STATUS","VRU_STATUS","NEW_CALL","REQUEST_INSTRUCTION","RUN_SCRIPT_REQ","RUN_SCRIPT_RESULT","EVENT_REPORT","DIALOG_FAILURE_CONF","DIALOG_FAILURE_EVENT","CONNECT_TO_RESOURCE","TEMPORARY_CONNECT","RESOURCE_CONNECTED"
 
-];
 let re = /and\s|or\s|&&\s|\|\|\s|\'/gi;
 $('#autocomplete').autocomplete({
     lookupLimit: 5,
-    lookup: countries,
+    lookup: suggestions,
     delimiter: re,
     onSelect: function (suggestion) {
         // alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
@@ -228,72 +107,23 @@ $('#submit').click(function () {
         filter: p,
         filename: filename
     }
-    if (document.getElementById("call_details").innerHTML != "") {
-        var table1 = $('#call_details').DataTable();
-        table1.destroy();
-        document.getElementById("call_details").innerHTML = ""
-
-        //  console.log(document.getElementById("table_id").innerHTML.length)
-    }
-    //console.log(document.getElementById("table_id").innerHTML)
-
     $.ajax({
         url: '/api/filter',
         type: 'post',
         dataType: 'json',
         contentType: 'application/json',
+        data: JSON.stringify(person),
         success: function (data) {
-            // temp=data.guids.toString().replace(/,/g,"<br>")
-            // document.getElementById("out").innerHTML=temp
-            files = []
-            console.log(data)
-            console.log(data[0])
-            for (i = 0; i < data.length; i++) {
-                files[i] = []
-                files[i] = [data[i][0],data[i][1],data[i][2], "<a href='#' id='seq_diag' onclick='seq(" + i + ")'>Details</a>", "<a href='#' id='sign' onclick='sign(" + i + ")'>Signatures</a>"]
-            }
-
-            $('#call_details').DataTable(
-                {
-                    scrollY: '50vh',
-                    scrollCollapse: true,
-                    data: files,
-                    columns: [
-                        { title: "ID" },
-                        {title:"From"},
-                        {title:"To"},
-                        { title: "Details" },
-                        { title: "Signatures" }
-                    ],
-
-                });
-        },
-        data: JSON.stringify(person)
+            appendData(data)
+        }
     });
 });
 
-function seq(i) {
-    var table = $('#call_details').DataTable();
-
-    data = table.rows(i).data()[0][0]
-    $.ajax({
-        type: 'GET',
-        url: '/diagram/' + data,
-        contentType: false,
-        cache: false,
-        processData: false,
-        success: function (data) {
-        }
-    });
-    //open diagram in new page
-    window.open("./"+filename+"/" + data);
+function seq(data) {
+    window.open("/diagram/"+filename+"/" + data);
 }
 
-function sign(i) {
-    var table = $('#table_id').DataTable();
-
-    data = table.rows(i).data()[0][0]
-
+function sign(data) {
     $.ajax({
         type: 'GET',
         url: '/api/match/' + data + '/' + filename,
