@@ -13,10 +13,12 @@ def GUIDS(legtoguid, msgs):
             if call_id in legtoguid.keys():
                 guid = legtoguid[call_id]
                 parsed_msg["guid"] = guid
+                parsed_msg["count"] = msg[2]
                 guids[guid].append(parsed_msg)
         else:
             parsed_msg = parse_ged_msg(msg[1])
             if parsed_msg and parsed_msg["guid"] in guid_set:
+                parsed_msg["count"] = msg[2]
                 guid = parsed_msg["guid"]
                 guids[guid].append(parsed_msg)
 

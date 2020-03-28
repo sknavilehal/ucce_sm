@@ -18,7 +18,7 @@ def add_to_and_from(doc, msg):
     doc["from"] = msg["from"]["ext"] 
     doc["to"] = msg["exchange"]["ext"] 
 
-def create_sequence(device, filename,cvp, guids):
+def create_sequence(filename,cvp, guids):
     for guid in guids.keys():
         doc = {}
         doc["from"] = '-'

@@ -24,6 +24,7 @@ def isDelimeter(device, line):
 
 def legToGuid(device, lines):
     msg=""
+    count = 0
     messages=[]
     legtoguid = {}
     call_id = None; ccapi = None; ignore_ged_msg = ignore_sip_msg = True
@@ -32,9 +33,9 @@ def legToGuid(device, lines):
     for line in lines:
         if isDelimeter(device, line):
             if call_id and not ignore_sip_msg:
-                messages.append(("sip", msg.strip()))
+                messages.append(("sip", msg.strip(), count))
             elif not ignore_ged_msg:
-                messages.append(("ged", msg.strip()))
+                messages.append(("ged", msg.strip(), count))
             msg=""
             call_id = ccapi = None
             ignore_ged_msg = ignore_sip_msg = True

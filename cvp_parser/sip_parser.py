@@ -1,4 +1,6 @@
 import re
+import time
+from datetime import datetime
 from flask import current_app as app, abort
 from .sdp_parser import sdp_parser
 
@@ -53,6 +55,20 @@ def parse_error_code(line):
     if m: return int(m.group(0))
     else: return 0
 
+def parse_datetime(line):
+    _format = re.compile(r'\w{3}\s+\d{1,2}\s+\d\d:\d\d:\d\d.\d{3}')
+    match = re.search(r'\w{3}\s+\d{1,2}\s+\d{4}\s+\d\d:\d\d:\d\d.\d{3}', line)
+    if match:
+        match = ' '.join(match.group().split())
+        d = time.strptime(match, "%b %d %Y %H:%M:%S.%f")
+        return datetime(d.tm_year, d.tm_mon, d.tm_mday, d.tm_hour, d.tm_min, d.tm_sec)
+    elif _format.search(line):
+        match = _format.search(line).group()
+        match = ' '.join(match.split())
+        d = time.strptime(match, "%b %d %H:%M:%S.%f")
+        return datetime(d.tm_year, d.tm_mon, d.tm_mday, d.tm_hour, d.tm_min, d.tm_sec)
+    else: return None
+
 def parse_sip_msg(sip_msg):
     line = '\n'.join(sip_msg.splitlines()[0:3])
     msg = {}
@@ -60,6 +76,7 @@ def parse_sip_msg(sip_msg):
     msg["sent"] = False
     msg["exchange"] = parse_exchange(line)
     lines = sip_msg.splitlines()
+    msg["datetime"] = parse_datetime(lines[0])
     #msg["error_code"] = 0
 
     for line in lines:
