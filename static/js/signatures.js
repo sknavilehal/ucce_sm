@@ -62,7 +62,7 @@ list=[]
             console.log(data)
             for (i = 0; i < data.length; i++) {
                 list[i] =[]
-                list[i] =[data[i][0],data[i][1]]
+                list[i] =[data[i][0],data[i][1],"<div class='btn-group' role='group' aria-label='Basic example'><i class='fa fa-minus-circle fa-2x' style='color:#dc3545;margin-left:5px;cursor:pointer' title='Remove' aria-hidden='true' onclick='del(" + i + ")'></i></div>"]
             }
             $('#table_id').DataTable(
                 {
@@ -71,7 +71,8 @@ list=[]
                     data: list,
                     columns: [
                         { title: "Signatures" },
-                        { title: "Description" }
+                        { title: "Description" },
+                        {title:"Actions"}
                     ],
 
                 });
