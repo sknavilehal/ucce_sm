@@ -47,7 +47,7 @@ function appendData(data) {
     for (var i = 0; i < data.length; i++) {
         GUIDs[i] = [];
         //for Details hyperlink to work
-        GUIDs[i] = [data[i][0], data[i][1], data[i][2], "<a href='#' id='seq_diag' onclick='seq(" + i + ")'>Details</a>"];
+        GUIDs[i] = [data[i][0], data[i][1], data[i][2], "<a href='#' id='seq_diag' onclick='seq(" + data[i][0] + ")'>Details</a>"];
     }
     //destroy the tables content when switching b/w files
     if (document.getElementById("call_details").innerHTML != "") {
@@ -79,12 +79,12 @@ function appendData(data) {
 
 }
 //execute this when diagram for sequence is asked
-function seq(i) {
-    var table = $('#call_details').DataTable();
-    data = table.rows(i).data()[0][0]
+function seq(data) {
+    //var table = $('#call_details').DataTable();
+    //data = table.rows(i).data()[0][0]
     $.ajax({
         type: 'GET',
-        url: '/diagram/' + data,
+        url: `/diagram/${filename}/${data}`,
         contentType: false,
         cache: false,
         processData: false,
