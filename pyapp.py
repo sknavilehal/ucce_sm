@@ -47,10 +47,10 @@ def get_GUIDs(filename):
     GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
     return jsonify(GUIDs),200
 
-@bp.route("/api/GUID/<string:id>")
-def get_GUID(id):
-    # BAD CODE: WHAT IF TWO LOG FILES HAVE SAME GUID
-    sequence = mongo.db.GUIDs.find_one({"_id.guid":id},{"sequence":1})
+@bp.route("/api/GUID/<string:filename>/<string:id>")
+def get_GUID(filename, id):
+    _id = {"filename":filename, "guid":id}
+    sequence = mongo.db.GUIDs.find_one({"_id":_id},{"sequence":1})
     sequence = sequence["sequence"]
     svg = render(sequence, engine="plantuml", format="svg")
     svg = svg[0].decode('utf-8')
@@ -90,9 +90,9 @@ def uploads():
     #   parser_main(file.filename, contents)
     return render_template("index.html"), 200
 
-@bp.route('/details/<filename>/<string:ID>',methods=["GET"])
+@bp.route('/details/<string:filename>/<string:ID>',methods=["GET"])
 def diagram(filename,ID):
-    return render_template("diagram.html", guid=ID)
+    return render_template("diagram.html", filename=filename, guid=ID)
 
 @bp.route("/api/files")
 def getfilenames():
@@ -118,9 +118,9 @@ def callFilter():
 @bp.route("/api/signature", methods=["POST"])
 def storeSignatute():
     call_filter = request.get_json()["filter"]
-    signature = request.get_json()["signature"]
+    signature = request.get_json()["description"]
     try:
-        id = mongo.db.signatures.insert_one({"_id":signature, "filter":call_filter})
+        id = mongo.db.signatures.insert_one({"_id":signature, "description":call_filter})
     except Exception:
         return "signature already exists", 400
     return id.inserted_id, 200
@@ -136,14 +136,14 @@ def getSignatures():
 def matchSigntures(ID=None, filename=None):
     signatures = []
     cursor = mongo.db.signatures.find({})
-    filters = [(res["_id"],res["filter"]) for res in cursor]
+    filters = [(res["_id"],res["description"]) for res in cursor]
     for call_filter in filters:
-        query = query_parser(call_filter[1])
+        query = query_parser(call_filter[0])
         if not query: continue
         query["guid"] = ID
         query["_id.filename"] = filename
         if mongo.db.msgs.find_one(query, {"_id":1}):
-            signatures.append(call_filter[0])
+            signatures.append(call_filter[1])
     return {"signatures": signatures}
 
 @bp.route("/api/delete/<filename>")

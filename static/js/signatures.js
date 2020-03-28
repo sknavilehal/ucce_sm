@@ -27,7 +27,7 @@ $.ajax({
 $('#add').click(function () {
     var p = {
         filter: document.getElementById("query").value,
-        signature: document.getElementById("signature_name").value
+        description: document.getElementById("signature_name").value
     }
     console.log(p)
     if (document.getElementById("table_id").innerHTML != "") {
@@ -70,7 +70,7 @@ list=[]
                     scrollCollapse: true,
                     data: list,
                     columns: [
-                        { title: "Signatures" },
+                        { title: "Signature" },
                         { title: "Description" },
                         {title:"Actions"}
                     ],

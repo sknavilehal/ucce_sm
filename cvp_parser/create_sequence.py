@@ -7,17 +7,16 @@ from plantweb.render import render
 client = MongoClient("mongodb://localhost:27017/")
 db = client["CVP"]
 
-def add_NI(doc,msg):
-    if doc["from"] == '-' and doc["to"] == '-' and "DNIS" in msg and "ANI" in msg:
+#Function to add 'to' and 'from' for the call summary table using 'dnis' and 'ani' attributes
+def add_dnis_and_ani(doc,msg):
+    if "DNIS" in msg and "ANI" in msg:
         doc["from"] = msg["ANI"]
         doc["to"] = msg["DNIS"]
 
-def add_ReqUri(doc,msg):
-    if doc["from"] == '-' and msg["exchange"]["type"] == "request" and not msg["sent"]:
-        doc["from"] = msg["from"]["ext"] + "@" + msg["from"]["addr"]
-    if doc["to"] == '-' and msg["exchange"]["type"] == "request" and msg["sent"]:
-        doc["to"] = msg["exchange"]["ext"] + "@" + msg["exchange"]["addr"]
-
+#Function to add 'to' and 'from' for the call summary table using first sip message
+def add_to_and_from(doc, msg):
+    doc["from"] = msg["from"]["ext"] 
+    doc["to"] = msg["exchange"]["ext"] 
 
 def create_sequence(device, filename,cvp, guids):
     for guid in guids.keys():
@@ -49,14 +48,16 @@ def create_sequence(device, filename,cvp, guids):
                 src = src.replace('-', '_')
                 dest = dest.replace('-', '_')
 
+                #Using the first sip message to get the 'to' and 'from' for the call summary table
+                if doc["from"] == '-' and doc["to"] == '-'
+                    add_to_and_from(doc, msg)
             else:
                 src, dest = msg["from"], msg["to"]
                 text = msg["status"]
 
-            if device == "cvp":
-                add_NI(doc,msg)
-            if device == "cube":
-                add_ReqUri(doc,msg)
+                #If there are no sip messages, then using 'dnis' and 'ani' attributes to get 'to' and 'from' 
+                if doc["from"] == '-' and doc["to"] == '-':
+                    add_dnis_and_ani(doc,msg)
 
             code = text[0]
             oid = str(ObjectId())
