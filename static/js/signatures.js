@@ -43,9 +43,7 @@ $('#add').click(function () {
         contentType: 'application/json',
         data: JSON.stringify(p),
         success: function(data) {
-            //alert("aaa")
             signature()
-
         },
         
     });
@@ -74,11 +72,7 @@ list=[]
                         { title: "Description" },
                         {title:"Actions"}
                     ],
-
                 });
         }
-
-        
-
     });
 }

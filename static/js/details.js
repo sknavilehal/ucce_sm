@@ -25,10 +25,6 @@ $.ajax({
                 temp=temp+"<a class='dropdown-item' onclick='get_table(\""+data[i][0]+"\")' href='#'>"+data[i][0]+"</a>"
             }
             d.innerHTML=temp
-            //document.getElementById("visible").style.display="block"
-        //    document.getElementById("statistics").setAttribute("onclick", "doNav('../statistics/" + filename + "')")
-         //   document.getElementById("filter").setAttribute("onclick", "doNav('../filters/" + data[0] + "')")
-
         }
     }
 });

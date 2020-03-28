@@ -49,7 +49,7 @@ def create_sequence(device, filename,cvp, guids):
                 dest = dest.replace('-', '_')
 
                 #Using the first sip message to get the 'to' and 'from' for the call summary table
-                if doc["from"] == '-' and doc["to"] == '-'
+                if doc["from"] == '-' and doc["to"] == '-':
                     add_to_and_from(doc, msg)
             else:
                 src, dest = msg["from"], msg["to"]
