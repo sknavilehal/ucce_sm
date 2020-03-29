@@ -8,8 +8,8 @@ from threading import Thread
 from natsort import natsorted
 from bson.objectid import ObjectId
 from plantweb.render import render
+from query_parser import query_parser
 from log_parser.parser_main import parser_main
-from log_parser.query_parser import query_parser
 from flask import jsonify, Blueprint, render_template, request, Response, current_app
 
 bp = Blueprint("bp", __name__)
@@ -124,10 +124,10 @@ def callFilter():
 
 @bp.route("/api/signature", methods=["POST"])
 def storeSignatute():
-    call_filter = request.get_json()["filter"]
-    signature = request.get_json()["description"]
+    signature = request.get_json()["signature"]
+    description = request.get_json()["description"]
     try:
-        id = mongo.db.signatures.insert_one({"_id":signature, "description":call_filter})
+        id = mongo.db.signatures.insert_one({"_id":signature, "description":description})
     except Exception:
         return "signature already exists", 400
     return id.inserted_id, 200
@@ -135,7 +135,7 @@ def storeSignatute():
 @bp.route("/api/signatures")
 def getSignatures():
     cursor = mongo.db.signatures.find({})
-    result = [[res["_id"], res["filter"]] for res in cursor]
+    result = [[res["_id"], res["description"]] for res in cursor]
 
     return jsonify(result)
 

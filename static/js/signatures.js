@@ -26,8 +26,8 @@ $.ajax({
 
 $('#add').click(function () {
     var p = {
-        filter: document.getElementById("query").value,
-        description: document.getElementById("signature_name").value
+        signature: document.getElementById("signature").value,
+        description: document.getElementById("description").value
     }
     console.log(p)
     if (document.getElementById("table_id").innerHTML != "") {
