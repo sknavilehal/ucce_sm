@@ -1,7 +1,7 @@
 from .GUIDS import GUIDS
-from .mappings import device
-from .legToGuid import legToGuid
+from .callMapping import callMapping
 from .sequence import sequence
+from .constants import CVP, UNKNOWN, device_map, devices
 
 def parse_cvp_addr(line):
     cvp = line.split()[1]
@@ -9,26 +9,26 @@ def parse_cvp_addr(line):
     return cvp
 
 def detect_device(contents):
-    delimeters = [": //", ": %CVP_", ": %_"]
+    delimeters = [": //", ": %CVP_", ": %CCBU"]
 
     for content in contents:
         for delimeter in delimeters:
             if delimeter in content:
-                return device[delimeter]
+                return device_map[delimeter]
     
-    return "unknown"
+    return UNKNOWN
 
 def parser_main(filename, contents):
     contents = contents.getvalue().decode('latin1').splitlines()
     
     cvp = None
     device = detect_device(contents)
-    if device == "cvp":
+    if device == CVP:
         cvp = parse_cvp_addr(contents[0])
-    elif device == "unkown":
+    elif device == UNKNOWN:
         return device
-    legtoguid, msgs = legToGuid(device, contents)
-    guids = GUIDS(legtoguid, msgs)
+    callmapping, msgs = callMapping(device, contents)
+    guids = GUIDS(callmapping, msgs)
     sequence(filename,cvp, guids)
 
-    return (device, guids)
+    return (devices[device], guids)

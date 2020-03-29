@@ -2,8 +2,6 @@ import suggestions from './suggestions.js';
 
 var flaskData = document.getElementById("flaskvar")
 var filename = flaskData.getAttribute("filename")
-//document.getElementById("body").removeAttribute("onload")
-//document.getElementById("visible").style.display = "block"
 document.getElementById("home").classList.remove("active")
 document.getElementById("details").classList.add("active")
 get_table(filename)
@@ -79,10 +77,7 @@ function appendData(data) {
     });
 
     var table = $('#call_details').DataTable();
-
 }
-
-//document.getElementById("call_details").innerHTML = ""
 
 let re = /and\s|or\s|&&\s|\|\|\s|\'/gi;
 $('#autocomplete').autocomplete({
@@ -91,7 +86,6 @@ $('#autocomplete').autocomplete({
     delimiter: re,
     onSelect: function (suggestion) {
         // alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
-
     },
     beforeRender: function (container) {
         console.log(document.getElementById("autocomplete").value)
@@ -134,8 +128,6 @@ function sign(data) {
             console.log(data)
         }
     });
-    //open diagram in new page
-    // window.open("/diagram/" + data);
     openModal('modal-small')
 }
 

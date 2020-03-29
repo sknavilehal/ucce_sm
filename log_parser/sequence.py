@@ -1,5 +1,5 @@
 import os
-from .mappings import r_to_color
+from .constants import r_to_color
 from bson.objectid import ObjectId
 from plantweb.render import render
 
