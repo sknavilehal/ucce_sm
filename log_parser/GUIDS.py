@@ -5,7 +5,8 @@ def GUIDS(legtoguid, msgs):
     guids = {}
     guid_set = set(legtoguid.values())
     for guid in guid_set:
-        guids[guid] = []
+        guids[guid] = {}
+        guids[guid]["msgs"] = []
     for msg in msgs:
         if msg[0] == "sip":
             parsed_msg = parse_sip_msg(msg[1])
@@ -14,12 +15,12 @@ def GUIDS(legtoguid, msgs):
                 guid = legtoguid[call_id]
                 parsed_msg["guid"] = guid
                 parsed_msg["count"] = msg[2]
-                guids[guid].append(parsed_msg)
+                guids[guid]["msgs"].append(parsed_msg)
         else:
             parsed_msg = parse_ged_msg(msg[1])
             if parsed_msg and parsed_msg["guid"] in guid_set:
                 parsed_msg["count"] = msg[2]
                 guid = parsed_msg["guid"]
-                guids[guid].append(parsed_msg)
+                guids[guid]["msgs"].append(parsed_msg)
 
     return guids

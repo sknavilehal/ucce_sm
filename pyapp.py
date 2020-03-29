@@ -8,17 +8,24 @@ from threading import Thread
 from natsort import natsorted
 from bson.objectid import ObjectId
 from plantweb.render import render
-from cvp_parser.parser_main import parser_main
-from cvp_parser.query_parser import query_parser
+from log_parser.parser_main import parser_main
+from log_parser.query_parser import query_parser
 from flask import jsonify, Blueprint, render_template, request, Response, current_app
 
 bp = Blueprint("bp", __name__)
 
+def writeToDB(guids):
+    for guid in guids.keys():
+        mongo.db.GUIDs.insert_one(guids[guid]["doc"])
+        for msg in guids[guid]["msgs"]:
+            mongo.db.msgs.insert_one(msg)
+
 def threaded_task(app, filename, contents):
     mongo.db.files.insert_one({"_id":filename,"device":"unknown", "status": "Processing..."})
     try:
-        device = parser_main(filename, contents)
+        device, guids = parser_main(filename, contents)
         result = mongo.db.files.update({"_id":filename},  {"$set": {"status": "Processed", "device": device}})
+        writeToDB(guids)
     except Exception:
         app.logger.error(traceback.format_exc())
         result = mongo.db.files.update({"_id":filename}, {"$set": {"status": "Failed"}})

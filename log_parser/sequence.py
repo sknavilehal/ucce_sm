@@ -1,11 +1,7 @@
 import os
-from pymongo import MongoClient
 from .mappings import r_to_color
 from bson.objectid import ObjectId
 from plantweb.render import render
-
-client = MongoClient("mongodb://localhost:27017/")
-db = client["CVP"]
 
 #Function to add 'to' and 'from' for the call summary table using 'dnis' and 'ani' attributes
 def add_dnis_and_ani(doc,msg):
@@ -18,7 +14,7 @@ def add_to_and_from(doc, msg):
     doc["from"] = msg["from"]["ext"] 
     doc["to"] = msg["exchange"]["ext"] 
 
-def create_sequence(filename,cvp, guids):
+def sequence(filename,cvp, guids):
     for guid in guids.keys():
         doc = {}
         doc["from"] = '-'
@@ -26,7 +22,7 @@ def create_sequence(filename,cvp, guids):
         src = dest = text = ""
         doc["_id"] = {"filename":filename, "guid":guid}
         sequence = "@startuml\nskinparam sequence {\nLifeLineBorderColor black\nParticipantBorderColor #00bceb\nParticipantBackgroundColor white\nParticipantFontName Consolas\nParticipantFontSize 17\nParticipantFontColor black\n}\n"
-        for msg in guids[guid]:
+        for msg in guids[guid]["msgs"]:
             if msg["type"] == "sip":
                 text = msg["exchange"]["text"]
                 if msg["exchange"]["type"] == "request":
@@ -62,13 +58,10 @@ def create_sequence(filename,cvp, guids):
             code = text[0]
             oid = str(ObjectId())
             msg["_id"] = {"filename":os.path.basename(filename), "oid":oid}
-            db.msgs.insert_one(msg)
             text = " : [[{"+oid+"} " + text + "]]\n"
             sequence += src + r_to_color.get(code," -[#black]> ") + dest +text  
         
         sequence += "@enduml"
 
         doc["sequence"] = sequence
-        db.GUIDs.insert_one(doc)
-
-
+        guids[guid]["doc"] = doc

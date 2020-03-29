@@ -1,7 +1,7 @@
 from .GUIDS import GUIDS
 from .mappings import device
 from .legToGuid import legToGuid
-from .create_sequence import create_sequence
+from .sequence import sequence
 
 def parse_cvp_addr(line):
     cvp = line.split()[1]
@@ -29,6 +29,6 @@ def parser_main(filename, contents):
         return device
     legtoguid, msgs = legToGuid(device, contents)
     guids = GUIDS(legtoguid, msgs)
-    create_sequence(filename,cvp, guids)
+    sequence(filename,cvp, guids)
 
-    return device
+    return (device, guids)
