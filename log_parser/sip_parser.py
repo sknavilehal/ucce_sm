@@ -1,5 +1,4 @@
 import re
-import time
 from datetime import datetime
 from flask import current_app as app, abort
 from .sdp_parser import sdp_parser
@@ -60,14 +59,13 @@ def parse_datetime(line):
     match = re.search(r'\w{3}\s+\d{1,2}\s+\d{4}\s+\d\d:\d\d:\d\d.\d{3}', line)
     if match:
         match = ' '.join(match.group().split())
-        d = time.strptime(match, "%b %d %Y %H:%M:%S.%f")
-        return datetime(d.tm_year, d.tm_mon, d.tm_mday, d.tm_hour, d.tm_min, d.tm_sec)
+        d = datetime.strptime(match, "%b %d %Y %H:%M:%S.%f")
     elif _format.search(line):
         match = _format.search(line).group()
         match = ' '.join(match.split())
-        d = time.strptime(match, "%b %d %H:%M:%S.%f")
-        return datetime(d.tm_year, d.tm_mon, d.tm_mday, d.tm_hour, d.tm_min, d.tm_sec)
+        d = datetime.strptime(match, "%b %d %H:%M:%S.%f")
     else: return None
+    return datetime(d.year, d.month, d.day, d.hour, d.minute, d.second, d.microsecond)
 
 def parse_sip_msg(sip_msg):
     line = '\n'.join(sip_msg.splitlines()[0:3])

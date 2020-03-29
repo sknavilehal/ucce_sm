@@ -5,12 +5,13 @@ from db import mongo
 from io import BytesIO
 from zipfile import ZipFile
 from threading import Thread
+from datetime import datetime
 from natsort import natsorted
 from bson.objectid import ObjectId
 from plantweb.render import render
 from query_parser import query_parser
 from log_parser.parser_main import parser_main
-from flask import jsonify, Blueprint, render_template, request, Response, current_app
+from flask import jsonify, Blueprint, render_template, request, Response, current_app, send_file
 
 bp = Blueprint("bp", __name__)
 
@@ -164,3 +165,18 @@ def deleteFile(filename):
 @bp.route('/filters/<filename>',methods=["GET"])
 def filter(filename):
     return render_template("filter.html",filename=filename)
+
+@bp.route("/logAccess", methods=["POST"])
+def generateDownloadLink():
+    parts = request.get_json()
+    filename = parts["filename"]
+    from_date = datetime.strptime(parts["from_date"], "%Y-%m-%dT%H:%M")
+    to_date = datetime.strptime(parts["to_date"], "%Y-%m-%dT%H:%M")
+
+    path = os.path.join(current_app.instance_path, filename)
+    cursor = mongo.db.msgs.find({"_id.filename":filename, "datetime": {"$gt": from_date, "$lt": to_date}}, {"text":1}).sort("count",1)
+    with open(path, 'w') as file:
+        for res in cursor:
+            file.write(res["text"])
+
+    return send_file(path, attachment_filename=filename)

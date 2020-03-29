@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 def check_icmss_ivrss(msg):
     if msg["from"] == "ICM_SS" and msg["to"] == "IVR_SS" or msg["from"] == "IVR_SS" and msg["to"] == "ICM_SS":
@@ -78,9 +79,18 @@ def parse_attributes(ged_msg, msg):
             if attribute[0] not in msg.keys():
                 msg[attribute[0]] = attribute[1]
 
+def parse_datetime(line):
+    match = re.search(r'\w{3}\s+\d{1,2}\s+\d{4}\s+\d\d:\d\d:\d\d.\d{3}', line)
+    if match:
+        match = ' '.join(match.group().split())
+        d = datetime.strptime(match, "%b %d %Y %H:%M:%S.%f")
+        return datetime(d.year, d.month, d.day, d.hour, d.minute, d.second, d.microsecond)
+    else: return None
+
 def parse_ged_msg(ged_msg):
     msg = {}
     msg["guid"] = parse_guid(ged_msg)
+    msg["datetime"] = parse_datetime(ged_msg.splitlines()[0])
     
     if "publishing to " in ged_msg.lower():
         msg["sent"] = True
