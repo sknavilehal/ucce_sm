@@ -3,6 +3,7 @@ import logging
 import traceback
 from db import mongo
 from io import BytesIO
+from io import StringIO
 from zipfile import ZipFile
 from threading import Thread
 from datetime import datetime
@@ -173,10 +174,12 @@ def generateDownloadLink():
     from_date = datetime.strptime(parts["from_date"], "%Y-%m-%dT%H:%M")
     to_date = datetime.strptime(parts["to_date"], "%Y-%m-%dT%H:%M")
 
-    path = os.path.join(current_app.instance_path, filename)
     cursor = mongo.db.msgs.find({"_id.filename":filename, "datetime": {"$gt": from_date, "$lt": to_date}}, {"text":1}).sort("count",1)
-    with open(path, 'w') as file:
-        for res in cursor:
-            file.write(res["text"])
-
-    return send_file(path, attachment_filename=filename)
+    file = BytesIO()
+    if cursor.count() == 0:
+        file.write("No messages found within date range".encode('latin1'))
+        filename = "404.txt"
+    for res in cursor:
+        file.write(res["text"].encode('latin1'))
+    file.seek(0)
+    return send_file(file, attachment_filename=filename, mimetype='text/plain', as_attachment=True)
