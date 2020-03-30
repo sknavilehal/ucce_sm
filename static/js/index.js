@@ -1,5 +1,13 @@
 document.getElementById("body").setAttribute("onload","initial()")
 Dropzone.autoDiscover = false;
+$(function() {
+    $('input[name="daterange"]').daterangepicker({
+      opens: 'left'
+    }, function(start, end, label) {
+      console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    });
+  });
+  
 var files=[]
 function initial(){
     $.ajax({
@@ -23,7 +31,7 @@ function initial(){
                 files[i] = []
                 if (data[i][2] === "Processed")
                     files[i] = [data[i][0], data[i][1], "<button type='button' class='btn btn-primary btn-sm btn-success processed' disabled >Processed</button>", 
-                    " <div class='btn-group' role='group' aria-label='Basic example'><i class='fa fa-play-circle fa-2x ' style='color:#28a745;cursor:pointer' title='View Details' aria-hidden='true' onclick='analyse(" + i + ")'></i><i class='fa fa-minus-circle fa-2x' style='color:#dc3545;margin-left:5px;cursor:pointer' title='Remove' aria-hidden='true' onclick='del(" + i + ")'></i></div>"   ]
+                    " <div class='btn-group' role='group' aria-label='Basic example'><i class='fa fa-play-circle fa-2x ' style='color:#28a745;cursor:pointer' title='View Details' aria-hidden='true' onclick='analyse(" + i + ")'></i><i class='fa fa-minus-circle fa-2x' style='color:#dc3545;margin-left:5px;cursor:pointer' title='Remove' aria-hidden='true' onclick='del(" + i + ")'></i><i class='fa fa-arrow-circle-down fa-2x' style='color:#FFC107;margin-left:5px;cursor:pointer' title='Download' onclick='download(" + i + ")' data-toggle='modal' data-target='#exampleModal' aria-hidden='true'></i></div>"  ]
               
                   //  " <div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-warning view' onclick='analyse(" + i + ")'>View</button><button type='button' class='btn btn-sm btn-danger remove' onclick='del(" + i + ")'>Remove</button></div>"   ]
                 else if (data[i][2] === "Processing...")
@@ -46,8 +54,7 @@ function initial(){
                         { title: "Filename" },
                         { title: "Device"},
                         { title: "Status" },
-                        { title: "Actions","width":"30%" },
-
+                        { title: "Actions","width":"20%" }
                     ],
                     stateSave: true
                 });
@@ -104,6 +111,33 @@ function analyse(i) {
     //window.open("/diagram/" + data);
 }
 
+function download(i)
+{
+    var table = $('#table_id').DataTable();
+    data = table.rows(i).data()[0][0]
+    document.getElementById("title").innerHTML=data
+}
+function send()
+{
+    //alert("ff")
+    var p=
+    {from_date:document.getElementById("start").value,
+    to_date:document.getElementById("end").value,
+    filename:document.getElementById("title").innerHTML}
+    $.ajax({
+        url: '/logAccess',
+        type: 'post',
+        
+        data: JSON.stringify(p),
+        success: function(data) {
+            var url = URL.createObjectURL(data);
+       alert(url)
+        },
+        
+    });
+
+
+}
 function del(i) {
     var table = $('#table_id').DataTable();
     data = table.rows(i).data()[0][0]
