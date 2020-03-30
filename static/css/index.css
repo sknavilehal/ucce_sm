@@ -55,6 +55,28 @@ border:none
     
 }
 
+.signature
+{
+    
+cursor: pointer;
+color: #7E57C2;
+    border-color: #673AB7;
+font-weight:bold;
+font-size: 0.7rem;
+
+}
+
+.signature:hover
+{
+    
+cursor: pointer;
+background-color: #7E57C2;
+    border-color: #673AB7;
+font-weight:bold;
+font-size: 0.7rem;
+
+}
+
 
 .view
 {

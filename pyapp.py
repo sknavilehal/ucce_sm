@@ -149,6 +149,9 @@ def matchSigntures(ID=None, filename=None):
     for call_filter in filters:
         query = query_parser(call_filter[0])
         if not query: continue
+        #print("DDD"+ID+"DD")
+        if(ID==""):
+            print("ttt")
         query["guid"] = ID
         query["_id.filename"] = filename
         if mongo.db.msgs.find_one(query, {"_id":1}):

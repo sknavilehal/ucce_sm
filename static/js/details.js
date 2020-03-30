@@ -47,7 +47,7 @@ function appendData(data) {
     for (var i = 0; i < data.length; i++) {
         GUIDs[i] = [];
         //for Details hyperlink to work
-        GUIDs[i] = [data[i][0], data[i][1], data[i][2], `<a href='#' id='seq_diag' onclick='seq("${data[i][0]}")'>Details</a>`, `<a href='#' id='sign' onclick='sign("${data[i][0]}")'>Signature</a>`];
+        GUIDs[i] = [data[i][0], data[i][1], data[i][2], `<a href='#' id='seq_diag' onclick='seq("${data[i][0]}")'>Details</a>`, `<a href='#' id='sign' data-toggle='modal' data-target='#exampleModal' onclick='sign("${data[i][0]}")'>Signature</a>`];
     }
     //destroy the tables content when switching b/w files
     if (document.getElementById("call_details").innerHTML != "") {
@@ -68,9 +68,9 @@ function appendData(data) {
         },
         //columns for database
         columns: [
-            { title: "ID" },
-            { title: "From" },
-            { title: "To" },
+            { title: "GUID" },
+            { title: "DNIS" },
+            { title: "ANI" },
             { title: "Details" },
             { title: "Signature"}
         ]
@@ -125,9 +125,17 @@ function sign(data) {
         cache: false,
         processData: false,
         success: function (data) {
-            console.log(data)
+            console.log(data.signatures)
+            var temp=""
+            var i
+            for(i=0;i<data.signatures.length;i++)
+            {
+                temp=temp+data.signatures[i]
+            }
+            document.getElementById("signatures1").innerHTML=temp
+
         }
     });
-    openModal('modal-small')
+    //openModal('modal-small')
 }
 

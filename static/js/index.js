@@ -31,12 +31,12 @@ function initial(){
                 files[i] = []
                 if (data[i][2] === "Processed")
                     files[i] = [data[i][0], data[i][1], "<button type='button' class='btn btn-primary btn-sm btn-success processed' disabled >Processed</button>", 
-                    " <div class='btn-group' role='group' aria-label='Basic example'><i class='fa fa-play-circle fa-2x ' style='color:#28a745;cursor:pointer' title='View Details' aria-hidden='true' onclick='analyse(" + i + ")'></i><i class='fa fa-minus-circle fa-2x' style='color:#dc3545;margin-left:5px;cursor:pointer' title='Remove' aria-hidden='true' onclick='del(" + i + ")'></i><i class='fa fa-arrow-circle-down fa-2x' style='color:#FFC107;margin-left:5px;cursor:pointer' title='Download' onclick='download(" + i + ")' data-toggle='modal' data-target='#exampleModal' aria-hidden='true'></i></div>"  ]
+                    " <div class='btn-group' role='group' aria-label='Basic example'><i class='fa fa-play-circle fa-2x ' style='color:#28a745;cursor:pointer' title='View Details' aria-hidden='true' onclick='analyse(" + i + ")'></i><i class='fa fa-minus-circle fa-2x' style='color:#dc3545;margin-left:5px;cursor:pointer' title='Remove' aria-hidden='true' onclick='del(" + i + ")'></i><i class='fa fa-arrow-circle-down fa-2x' style='color:#FFC107;margin-left:5px;cursor:pointer' title='Download' onclick='download(" + i + ")' data-toggle='modal' data-target='#exampleModal' aria-hidden='true'></i></div>" ,`<button type='button' class='btn btn-sm btn-outline-primary signature'  data-toggle='modal' data-target='#exampleModal1' onclick='sign("${data[i][0]}")'>Signature</button>` ]
               
                   //  " <div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-warning view' onclick='analyse(" + i + ")'>View</button><button type='button' class='btn btn-sm btn-danger remove' onclick='del(" + i + ")'>Remove</button></div>"   ]
                 else if (data[i][2] === "Processing...")
                     files[i] = [data[i][0], data[i][1], "<button type='button' class='btn btn-primary btn-sm btn-warning'disabled >Processing</button>"
-                    ,"  <button type='button' class='btn btn-sm btn-primary refresh'  onclick='refresh("+i+")' title='Refresh'>Refresh</button>" ]
+                    ,"  <button type='button' class='btn btn-sm btn-primary refresh'  onclick='refresh("+i+")' title='Refresh'>Refresh</button>","","" ]
                 else
                     files[i] = [data[i][0], data[i][1], data[i][2], "<span class='icon-remove-contain icon-size-20' onclick='del(" + i + ")' style='cursor:pointer;color:#a52727' title ='Remove' ></span>"]
             }
@@ -54,7 +54,8 @@ function initial(){
                         { title: "Filename" },
                         { title: "Device"},
                         { title: "Status" },
-                        { title: "Actions","width":"20%" }
+                        { title: "Actions","width":"20%" },
+                        {title:"Signatures"}
                     ],
                     stateSave: true
                 });
@@ -164,4 +165,27 @@ function filter(i) {
 function refresh(i)
 {
     initial()
+}
+
+
+function sign(data) {
+    $.ajax({
+        type: 'GET',
+        url: '/api/match//' +data,
+        contentType: false,
+        cache: false,
+        processData: false,
+        success: function (data) {
+            console.log(data.signatures)
+            var temp=""
+            var i
+            for(i=0;i<data.signatures.length;i++)
+            {
+                temp=temp+data.signatures[i]
+            }
+            document.getElementById("signatures1").innerHTML=temp
+
+        }
+    });
+    //openModal('modal-small')
 }
