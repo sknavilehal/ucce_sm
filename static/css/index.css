@@ -47,6 +47,12 @@ font-weight:bold;
 font-size: 0.7rem;
 border:none
 }
+.btn-danger:disabled{
+    cursor: text!important;
+    font-weight:bold;
+    font-size: 0.7rem;
+    border:none
+}
 .profile
 {
     position: absolute;;

@@ -11,8 +11,9 @@ def add_dnis_and_ani(doc,msg):
 
 #Function to add 'to' and 'from' for the call summary table using first sip message
 def add_to_and_from(doc, msg):
-    doc["from"] = msg["from"]["ext"] 
-    doc["to"] = msg["exchange"]["ext"] 
+    if msg["exchange"]["type"] == "request":
+        doc["from"] = msg["from"]["ext"] 
+        doc["to"] = msg["exchange"]["ext"] 
 
 def sequence(filename,cvp, guids):
     for guid in guids.keys():

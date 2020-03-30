@@ -7,6 +7,7 @@ document.getElementById("details").classList.add("active")
 get_table(filename)
 window.seq = seq
 window.sign = sign
+window.get_table = get_table
 
 $.ajax({
     type: 'GET',

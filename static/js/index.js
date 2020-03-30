@@ -1,15 +1,8 @@
-document.getElementById("body").setAttribute("onload","initial()")
+document.getElementById("body").setAttribute("onload", "initial()")
 Dropzone.autoDiscover = false;
-$(function() {
-    $('input[name="daterange"]').daterangepicker({
-      opens: 'left'
-    }, function(start, end, label) {
-      console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-    });
-  });
-  
-var files=[]
-function initial(){
+
+var files = []
+function initial() {
     $.ajax({
         type: 'GET',
         url: '/api/files',
@@ -18,32 +11,31 @@ function initial(){
         cache: false,
         processData: false,
         success: function (data) {
-            
+
             if (data.length > 0) {
-                
+
                 console.log(data[0])
-                document.getElementById("details-link").setAttribute("href","details/" + data[0][0] )
-              
+                document.getElementById("details-link").setAttribute("href", "details/" + data[0][0])
+
             }
-            
+
             for (i = 0; i < data.length; i++) {
                 console.log(data[i][0])
                 files[i] = []
                 if (data[i][2] === "Processed")
-                    files[i] = [data[i][0], data[i][1], "<button type='button' class='btn btn-primary btn-sm btn-success processed' disabled >Processed</button>", 
-                    " <div class='btn-group' role='group' aria-label='Basic example'><i class='fa fa-play-circle fa-2x ' style='color:#28a745;cursor:pointer' title='View Details' aria-hidden='true' onclick='analyse(" + i + ")'></i><i class='fa fa-minus-circle fa-2x' style='color:#dc3545;margin-left:5px;cursor:pointer' title='Remove' aria-hidden='true' onclick='del(" + i + ")'></i><i class='fa fa-arrow-circle-down fa-2x' style='color:#FFC107;margin-left:5px;cursor:pointer' title='Download' onclick='download(" + i + ")' data-toggle='modal' data-target='#exampleModal' aria-hidden='true'></i></div>" ,`<button type='button' class='btn btn-sm btn-outline-primary signature'  data-toggle='modal' data-target='#exampleModal1' onclick='sign("${data[i][0]}")'>Signature</button>` ]
-              
-                  //  " <div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-warning view' onclick='analyse(" + i + ")'>View</button><button type='button' class='btn btn-sm btn-danger remove' onclick='del(" + i + ")'>Remove</button></div>"   ]
+                    files[i] = [data[i][0], data[i][1], `<button type='button' class='btn btn-primary btn-sm btn-success processed' disabled >${data[i][2]}</button>`,
+                    "<div class='btn-group' role='group' aria-label='Basic example'><i class='fa fa-play-circle fa-2x ' style='color:#28a745;cursor:pointer' title='View Details' aria-hidden='true' onclick='analyse(" + i + ")'></i><i class='fa fa-minus-circle fa-2x' style='color:#dc3545;margin-left:5px;cursor:pointer' title='Remove' aria-hidden='true' onclick='del(" + i + ")'></i><i class='fa fa-arrow-circle-down fa-2x' style='color:#FFC107;margin-left:5px;cursor:pointer' title='Download' onclick='download(" + i + ")' data-toggle='modal' data-target='#exampleModal' aria-hidden='true'></i></div>",
+                    `<button type='button' class='btn btn-sm btn-outline-primary signature'  data-toggle='modal' data-target='#exampleModal1' onclick='sign("${data[i][0]}")'>Signature</button>`]
+
+                //  " <div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-warning view' onclick='analyse(" + i + ")'>View</button><button type='button' class='btn btn-sm btn-danger remove' onclick='del(" + i + ")'>Remove</button></div>"   ]
                 else if (data[i][2] === "Processing...")
-                    files[i] = [data[i][0], data[i][1], "<button type='button' class='btn btn-primary btn-sm btn-warning'disabled >Processing</button>"
-                    ,"  <button type='button' class='btn btn-sm btn-primary refresh'  onclick='refresh("+i+")' title='Refresh'>Refresh</button>","","" ]
+                    files[i] = [data[i][0], data[i][1], `<button type='button' class='btn btn-primary btn-sm btn-warning'disabled >${data[i][2]}</button>`
+                        , "<button type='button' class='btn btn-sm btn-primary refresh'  onclick='refresh(" + i + ")' title='Refresh'>Refresh</button>", "", ""]
                 else
-                    files[i] = [data[i][0], data[i][1], data[i][2], "<span class='icon-remove-contain icon-size-20' onclick='del(" + i + ")' style='cursor:pointer;color:#a52727' title ='Remove' ></span>"]
+                    files[i] = [data[i][0], data[i][1], `<button type='button' class='btn btn-primary btn-sm btn-danger' disabled >${data[i][2]}</button>`, "<i class='fa fa-minus-circle fa-2x' style='color:#dc3545;margin-left:5px;cursor:pointer' title='Remove' aria-hidden='true' onclick='del(" + i + ")'>", "", ""]
             }
-            //console.log(files)
-            //files
-            //console.log(files)
-            if ( $.fn.dataTable.isDataTable( '#table_id' ) ) {
+
+            if ($.fn.dataTable.isDataTable('#table_id')) {
                 table = $('#table_id').DataTable();
                 table.destroy();
             }
@@ -52,10 +44,10 @@ function initial(){
                     data: files,
                     columns: [
                         { title: "Filename" },
-                        { title: "Device"},
+                        { title: "Device" },
                         { title: "Status" },
-                        { title: "Actions","width":"20%" },
-                        {title:"Signatures"}
+                        { title: "Actions", "width": "20%" },
+                        { title: "Signature" }
                     ],
                     stateSave: true
                 });
@@ -64,10 +56,8 @@ function initial(){
 
 }
 
-
-//alert("ggg")
 options = {
-    autoDiscover:false,
+    autoDiscover: false,
     url: '/uploads',
     acceptedFiles: '.txt,.log,.zip',
     addRemoveLinks: true,
@@ -91,9 +81,8 @@ options = {
         });
         if (this.element.dropzone) {
             return this.element.dropzone;
-         }
+        }
     }
-
 };
 
 uploader = new Dropzone('#upload-widget', options);
@@ -102,43 +91,15 @@ $("#button").click(function (e) {
     uploader.processQueue();
 });
 
-
 function analyse(i) {
     var table = $('#table_id').DataTable();
     data = table.rows(i).data()[0][0]
     //alert(data)
-    location.href='/details/' + data
+    location.href = '/details/' + data
     //open diagram in new page
     //window.open("/diagram/" + data);
 }
 
-function download(i)
-{
-    var table = $('#table_id').DataTable();
-    data = table.rows(i).data()[0][0]
-    document.getElementById("title").innerHTML=data
-}
-function send()
-{
-    //alert("ff")
-    var p=
-    {from_date:document.getElementById("start").value,
-    to_date:document.getElementById("end").value,
-    filename:document.getElementById("title").innerHTML}
-    $.ajax({
-        url: '/logAccess',
-        type: 'post',
-        
-        data: JSON.stringify(p),
-        success: function(data) {
-            var url = URL.createObjectURL(data);
-       alert(url)
-        },
-        
-    });
-
-
-}
 function del(i) {
     var table = $('#table_id').DataTable();
     data = table.rows(i).data()[0][0]
@@ -147,8 +108,6 @@ function del(i) {
         url: '/api/delete/' + data,
         success: function (data) {
             console.log(data)
-            
-
         }
     });
     //initial()
@@ -162,30 +121,61 @@ function filter(i) {
     doNav('/filters/' + data)
 }
 
-function refresh(i)
-{
+function refresh(i) {
     initial()
 }
-
 
 function sign(data) {
     $.ajax({
         type: 'GET',
-        url: '/api/match//' +data,
+        url: '/api/match//' + data,
         contentType: false,
         cache: false,
         processData: false,
         success: function (data) {
             console.log(data.signatures)
-            var temp=""
+            var temp = ""
             var i
-            for(i=0;i<data.signatures.length;i++)
-            {
-                temp=temp+data.signatures[i]
+            for (i = 0; i < data.signatures.length; i++) {
+                temp = temp + data.signatures[i]
             }
-            document.getElementById("signatures1").innerHTML=temp
+            document.getElementById("signatures1").innerHTML = temp
 
         }
     });
     //openModal('modal-small')
+}
+
+$(function () {
+    $('input[name="daterange"]').daterangepicker({
+        opens: 'left'
+    }, function (start, end, label) {
+        console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    });
+});
+
+function download(i) {
+    var table = $('#table_id').DataTable();
+    data = table.rows(i).data()[0][0]
+    document.getElementById("title").innerHTML = data
+}
+function send() {
+    //alert("ff")
+    var p =
+    {
+        from_date: document.getElementById("start").value,
+        to_date: document.getElementById("end").value,
+        filename: document.getElementById("title").innerHTML
+    }
+    $.ajax({
+        url: '/logAccess',
+        type: 'post',
+
+        data: JSON.stringify(p),
+        success: function (data) {
+            var url = URL.createObjectURL(data);
+            alert(url)
+        },
+
+    });
 }
