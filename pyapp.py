@@ -23,8 +23,8 @@ def eventLogging():
     writer = csv.writer(eventLog)
 
     endpoint = request.endpoint.split('.')[1]
-    ignored_endpoints = ["get_calls", "ladder_diagram", "get_message", "upload_files","call_filter", "post_signature", "match_signtures", "delete_file"]
-    if endpoint not in ignored_endpoints: return None
+    important_endpoints = ["get_calls", "ladder_diagram", "get_message", "upload_files","call_filter", "post_signature", "match_signtures", "delete_file"]
+    if endpoint not in important_endpoints: return None
 
     if endpoint == "match_signtures": print(request.args)
 
