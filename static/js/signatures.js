@@ -16,7 +16,7 @@ $('#add').click(function () {
         //  console.log(document.getElementById("table_id").innerHTML.length)
     }
     $.ajax({
-        url: '/post-signature',
+        url: '/Signatures/new-sig',
         type: 'post',
         contentType: 'application/json',
         data: JSON.stringify(p),

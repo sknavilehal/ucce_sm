@@ -58,7 +58,7 @@ function initial() {
 
 options = {
     autoDiscover: false,
-    url: '/uploads',
+    url: '/Files-History/upload',
     acceptedFiles: '.txt,.log,.zip',
     addRemoveLinks: true,
     dictDefaultMessage: 'Drag a log file here to save, or click to select one',
@@ -105,7 +105,7 @@ function del(i) {
     data = table.rows(i).data()[0][0]
     $.ajax({
         type: 'GET',
-        url: '/delete/' + data,
+        url: `/Files-History/delete?filename=${data}`,
         success: function (data) {
             console.log(data)
         }
@@ -121,15 +121,14 @@ function refresh(i) {
 function sign(data) {
     $.ajax({
         type: 'GET',
-        url: `/match-signatures/${data}/`,
+        url: `/Files-History/signature?filename=${data}`,
         contentType: false,
         cache: false,
         processData: false,
         success: function (data) {
             console.log(data.signatures)
             var temp = ""
-            var i
-            for (i = 0; i < data.signatures.length; i++) {
+            for (var i = 0; i < data.signatures.length; i++) {
                 temp = temp + data.signatures[i]
             }
             document.getElementById("signatures1").innerHTML = temp

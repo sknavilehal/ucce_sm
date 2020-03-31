@@ -5,7 +5,7 @@ var guid = flaskData.getAttribute("guid")
 $.ajax({
     //document.getElementById("diagram").innerHTML=
     type: 'GET',
-    url: `/ladder-diagram/${filename}/${guid}`,
+    url: `/Call-Summary/details?filename=${filename}&guid=${guid}`,
     success: function (re) {
         var s = re.svg
         //parse the svg string and convert it to HTML DOM
@@ -83,7 +83,7 @@ function get_msgs(id) {
 
     $.ajax({
         type: 'GET',
-        url: "/message/" + id,
+        url: `/Call-Summary/message?oid=${id}`,
         contentType: false,
         cache: false,
         processData: false,

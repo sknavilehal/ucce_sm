@@ -30,7 +30,7 @@ $.ajax({
     }
 });
 function get_table(filename) {
-    fetch('/get-calls/' + filename)
+    fetch(`/Files-History/analyze?filename=${filename}`)
         .then(function (response) {
             return response.json();
         })
@@ -103,7 +103,7 @@ $('#submit').click(function () {
         filename: filename
     }
     $.ajax({
-        url: '/call-filter',
+        url: 'Call-Summary/filter',
         type: 'post',
         dataType: 'json',
         contentType: 'application/json',
@@ -121,7 +121,7 @@ function seq(data) {
 function sign(data) {
     $.ajax({
         type: 'GET',
-        url: '/match-signatures/' + filename + '/' + data,
+        url: `/Call-Summary/signature?filename=${filename}&guid=${data}`,
         contentType: false,
         cache: false,
         processData: false,

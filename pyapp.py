@@ -20,17 +20,30 @@ bp = Blueprint("bp", __name__)
 def eventLogging():
     filePath = os.path.join(current_app.instance_path, 'eventLog.log')
     eventLog = open(filePath, 'a', newline='')
-    writer = csv.writer(eventLog, quoting=csv.QUOTE_ALL)
+    writer = csv.writer(eventLog)
 
     endpoint = request.endpoint.split('.')[1]
-    ignored_endpoints = ["index", "signatures_page", "call_summary", "get_files","diagram_page"]
-    if endpoint in ignored_endpoints: return None
+    ignored_endpoints = ["get_calls", "ladder_diagram", "get_message", "upload_files","call_filter", "post_signature", "match_signtures", "delete_file"]
+    if endpoint not in ignored_endpoints: return None
+
+    if endpoint == "match_signtures": print(request.args)
+
+    parts = request.path.split('/')
+    category, action = parts[1], parts[2]
+    row = [str(datetime.now()), category, action]
+
     if endpoint == 'upload_files':
-        writer.writerow([str(datetime.now()), endpoint, request.files['file'].filename])
+        row.append(request.files['file'].filename)
+        writer.writerow(row)
     elif request.method == 'GET':
-        writer.writerow([str(datetime.now()), endpoint, str(request.view_args)])
+        for param in request.args.keys():
+            if param == "_": continue
+            row.append(request.args.get(param))
+        writer.writerow(row)
     elif request.method == 'POST':
-        writer.writerow([str(datetime.now()), endpoint, str(request.get_json())])
+        for key in request.get_json().keys():
+            row.append(request.get_json()[key])
+        writer.writerow(row)
 
     eventLog.close()
     return None
@@ -65,14 +78,17 @@ def call_summary(filename):
 def signatures_page():
     return render_template("signatures.html")
 
-@bp.route("/get-calls/<string:filename>")
-def get_calls(filename):
+@bp.route("/Files-History/analyze")
+def get_calls():
+    filename = request.args.get('filename', None)
     cursor = mongo.db.GUIDs.find({"_id.filename":filename})
     GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
     return jsonify(GUIDs),200
 
-@bp.route("/ladder-diagram/<string:filename>/<string:guid>")
-def ladder_diagram(filename, guid):
+@bp.route("/Call-Summary/details")
+def ladder_diagram():
+    filename = request.args.get('filename', None)
+    guid = request.args.get('guid', None)
     _id = {"filename":filename, "guid":guid}
     sequence = mongo.db.GUIDs.find_one({"_id":_id},{"sequence":1})
     sequence = sequence["sequence"]
@@ -81,13 +97,14 @@ def ladder_diagram(filename, guid):
 
     return {"svg":svg},200
 
-@bp.route("/message/<string:id>")
-def get_message(id):
-    msg_text = mongo.db.msgs.find_one({"_id.oid": id}, {"text":1})
+@bp.route("/Call-Summary/message")
+def get_message():
+    oid = request.args.get('oid', None)
+    msg_text = mongo.db.msgs.find_one({"_id.oid": oid}, {"text":1})
     msg_text = msg_text["text"]
     return {"msg_text": msg_text}
 
-@bp.route("/uploads", methods=["POST"])
+@bp.route("/Files-History/upload", methods=["POST"])
 def upload_files():
     file = request.files['file']
 
@@ -124,12 +141,12 @@ def get_files():
     files = [[res["_id"], res["device"], res["status"]] for res in cursor]
     return jsonify(files),200
 
-@bp.route("/call-filter", methods=["POST"])
+@bp.route("/Call-Summary/filter", methods=["POST"])
 def call_filter():
-    call_filter = request.get_json()["filter"]
+    filter = request.get_json()["filter"]
     filename = request.get_json()["filename"]
     filename=filename.split(",")[0]
-    query = query_parser(call_filter)
+    query = query_parser(filter)
     if not query:
         return "Invalid call filter", 400
     query["_id.filename"] = filename
@@ -139,7 +156,7 @@ def call_filter():
 
     return jsonify(GUIDs), 200
 
-@bp.route("/post-signature", methods=["POST"])
+@bp.route("/Signatures/new-sig", methods=["POST"])
 def post_signature():
     signature = request.get_json()["signature"]
     description = request.get_json()["description"]
@@ -156,24 +173,27 @@ def get_signatures():
 
     return jsonify(result)
 
-@bp.route("/match-signatures/<string:filename>/", defaults={"guid":None})
-@bp.route("/match-signatures/<string:filename>/<string:guid>")
-def match_signtures(filename, guid):
+@bp.route("/Files-History/signature")
+@bp.route("/Call-Summary/signature")
+def match_signtures():
     signatures = []
+    filename = request.args.get("filename", None)
+    guid = request.args.get("guid", None)
     cursor = mongo.db.signatures.find({})
     filters = [(res["_id"],res["description"]) for res in cursor]
-    for call_filter in filters:
-        query = query_parser(call_filter[0])
+    for filter in filters:
+        query = query_parser(filter[0])
         if not query: continue
         if guid is not None:
             query["guid"] = guid
         query["_id.filename"] = filename
         if mongo.db.msgs.find_one(query, {"_id":1}):
-            signatures.append(call_filter[1])
+            signatures.append(filter[1])
     return {"signatures": signatures}
 
-@bp.route("/delete/<filename>")
-def delete_file(filename):
+@bp.route("/Files-History/delete")
+def delete_file():
+    filename = request.args.get('filename', None)
     mongo.db.files.delete_one({"_id": filename})
     mongo.db.GUIDs.delete_many({"_id.filename":filename})  
     mongo.db.msgs.delete_many({"_id.filename":filename})
