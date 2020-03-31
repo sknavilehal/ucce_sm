@@ -5,7 +5,7 @@ var files = []
 function initial() {
     $.ajax({
         type: 'GET',
-        url: '/api/files',
+        url: '/files',
 
         contentType: false,
         cache: false,
@@ -15,7 +15,7 @@ function initial() {
             if (data.length > 0) {
 
                 console.log(data[0])
-                document.getElementById("details-link").setAttribute("href", "details/" + data[0][0])
+                document.getElementById("details-link").setAttribute("href", "call-summary/" + data[0][0])
 
             }
 
@@ -95,7 +95,7 @@ function analyse(i) {
     var table = $('#table_id').DataTable();
     data = table.rows(i).data()[0][0]
     //alert(data)
-    location.href = '/details/' + data
+    location.href = '/call-summary/' + data
     //open diagram in new page
     //window.open("/diagram/" + data);
 }
@@ -105,20 +105,13 @@ function del(i) {
     data = table.rows(i).data()[0][0]
     $.ajax({
         type: 'GET',
-        url: '/api/delete/' + data,
+        url: '/delete/' + data,
         success: function (data) {
             console.log(data)
         }
     });
     //initial()
     location.reload()
-}
-
-function filter(i) {
-    var table = $('#table_id').DataTable();
-    data = table.rows(i).data()[0][0]
-    //alert(data)
-    doNav('/filters/' + data)
 }
 
 function refresh(i) {
@@ -128,7 +121,7 @@ function refresh(i) {
 function sign(data) {
     $.ajax({
         type: 'GET',
-        url: '/api/match//' + data,
+        url: `/match-signatures/${data}/`,
         contentType: false,
         cache: false,
         processData: false,

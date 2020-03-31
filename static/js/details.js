@@ -11,7 +11,7 @@ window.get_table = get_table
 
 $.ajax({
     type: 'GET',
-    url: '/api/files',
+    url: '/files',
     contentType: false,
     cache: false,
     processData: false,
@@ -30,7 +30,7 @@ $.ajax({
     }
 });
 function get_table(filename) {
-    fetch('/api/GUIDs/' + filename)
+    fetch('/get-calls/' + filename)
         .then(function (response) {
             return response.json();
         })
@@ -103,7 +103,7 @@ $('#submit').click(function () {
         filename: filename
     }
     $.ajax({
-        url: '/api/filter',
+        url: '/call-filter',
         type: 'post',
         dataType: 'json',
         contentType: 'application/json',
@@ -115,13 +115,13 @@ $('#submit').click(function () {
 });
 
 function seq(data) {
-    window.open("/diagram/"+filename+"/" + data);
+    window.open("/diagram-page/"+filename+"/" + data);
 }
 
 function sign(data) {
     $.ajax({
         type: 'GET',
-        url: '/api/match/' + data + '/' + filename,
+        url: '/match-signatures/' + filename + '/' + data,
         contentType: false,
         cache: false,
         processData: false,

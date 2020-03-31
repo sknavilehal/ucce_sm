@@ -1,3 +1,5 @@
+import os
+import csv
 import logging
 from pyapp import bp
 from db import mongo
@@ -10,6 +12,15 @@ mongo.init_app(app)
 CORS(app)
 
 app.register_blueprint(bp)
+
+path = app.instance_path
+if not os.path.exists(path):
+    os.makedirs(path)
+
+filePath = os.path.join(app.instance_path, 'eventLog.log')
+with open(filePath, 'w', newline='') as eventLog:
+    writer = csv.writer(eventLog)
+    writer.writerow(["Date", "Action"])
 
 if __name__ != "__main__":
     gunicorn_logger = logging.getLogger('gunicorn.error')

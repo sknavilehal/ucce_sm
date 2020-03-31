@@ -1,28 +1,6 @@
 document.getElementById("home").classList.remove("active")
 document.getElementById("signatures").classList.add("active")
 document.getElementById("body").setAttribute("onload","signature()")
-/*
-$(document).ready(function () {
-    
-    document.getElementById("visible").style.display = "block"
-    document.getElementById("home").classList.remove("sidebar__item--selected")
-    document.getElementById("sign").classList.add("sidebar__item--selected")
-});
-console.log("message")*/
-$.ajax({
-    type: 'GET',
-    url: '/api/files',
-    contentType: false,
-    cache: false,
-    processData: false,
-    success: function (data) {
-        //alert('Success!');
-        if (data.length > 0) {
-            //document.getElementById("visible").style.display="block"
-            document.getElementById("details-link").setAttribute("href","details/" + data[0][0] )
-        }
-    }
-});
 
 $('#add').click(function () {
     var p = {
@@ -38,7 +16,7 @@ $('#add').click(function () {
         //  console.log(document.getElementById("table_id").innerHTML.length)
     }
     $.ajax({
-        url: '/api/signature',
+        url: '/post-signature',
         type: 'post',
         contentType: 'application/json',
         data: JSON.stringify(p),
@@ -53,8 +31,8 @@ $('#add').click(function () {
 function signature(){
 list=[]
     $.ajax({
-        url: '/api/signatures',
-        type: 'get',
+        url: '/get-signatures',
+        type: 'GET',
 
         success: function (data) {
             console.log(data)
