@@ -2,27 +2,49 @@ import os
 import csv
 import logging
 import traceback
-from db import mongo
+#from db import mongo
 from io import BytesIO
 from zipfile import ZipFile
 from threading import Thread
 from datetime import datetime
 from natsort import natsorted
+from pymongo import MongoClient
 from bson.objectid import ObjectId
 from plantweb.render import render
 from query_parser import query_parser
 from log_parser.parser_main import parser_main
-from flask import jsonify, Blueprint, render_template, request, Response, current_app, send_file
+from flask import jsonify, Blueprint, render_template, request, Response, current_app, send_file, session, g, redirect
 
 bp = Blueprint("bp", __name__)
 
+client = MongoClient("mongodb://localhost:27017")
+
+@bp.route('/setSession/<string:username>')
+def setSession(username):
+    session["username"] = username
+
+    return "Session set", 200
+    
+@bp.route('/clearSession')
+def clearSession():
+    session.pop("username")
+
+    return redirect("/")
+
 @bp.before_request
-def eventLogging():
+def before_request():
+    username = session.get("username", "Guest")
+    g.db = client[username]
+    endpoint = request.endpoint.split('.')[1]
+    
+    endpoints = ['setSession', 'clearSession']
+    if session.get("username", None) is None and endpoint not in endpoints:
+        return render_template('index.html')
+
     filePath = os.path.join(current_app.instance_path, 'eventLog.log')
     eventLog = open(filePath, 'a', newline='')
     writer = csv.writer(eventLog)
 
-    endpoint = request.endpoint.split('.')[1]
     important_endpoints = ["get_calls", "ladder_diagram", "get_message", "upload_files","call_filter", "post_signature", "match_signtures", "delete_file"]
     if endpoint not in important_endpoints: return None
 
@@ -46,23 +68,24 @@ def eventLogging():
         writer.writerow(row)
 
     eventLog.close()
+
     return None
 
 def writeToDB(guids):
     for guid in guids.keys():
-        mongo.db.GUIDs.insert_one(guids[guid]["doc"])
+        g.db.GUIDs.insert_one(guids[guid]["doc"])
         for msg in guids[guid]["msgs"]:
-            mongo.db.msgs.insert_one(msg)
+            g.db.msgs.insert_one(msg)
 
 def threaded_task(app, filename, contents):
-    mongo.db.files.insert_one({"_id":filename,"device":"unknown", "status": "Processing..."})
+    g.db.files.insert_one({"_id":filename,"device":"unknown", "status": "Processing..."})
     try:
         device, guids = parser_main(filename, contents)
-        result = mongo.db.files.update({"_id":filename},  {"$set": {"status": "Processed", "device": device}})
+        result = g.db.files.update({"_id":filename},  {"$set": {"status": "Processed", "device": device}})
         writeToDB(guids)
     except Exception:
         app.logger.error(traceback.format_exc())
-        result = mongo.db.files.update({"_id":filename}, {"$set": {"status": "Failed"}})
+        result = g.db.files.update({"_id":filename}, {"$set": {"status": "Failed"}})
 
     return result
 
@@ -82,7 +105,7 @@ def signatures_page():
 @bp.route("/Files-History/analyze")
 def get_calls():
     filename = request.args.get('filename', None)
-    cursor = mongo.db.GUIDs.find({"_id.filename":filename})
+    cursor = g.db.GUIDs.find({"_id.filename":filename})
     GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
     return jsonify(GUIDs),200
 
@@ -91,7 +114,7 @@ def ladder_diagram():
     filename = request.args.get('filename', None)
     guid = request.args.get('guid', None)
     _id = {"filename":filename, "guid":guid}
-    sequence = mongo.db.GUIDs.find_one({"_id":_id},{"sequence":1})
+    sequence = g.db.GUIDs.find_one({"_id":_id},{"sequence":1})
     sequence = sequence["sequence"]
     svg = render(sequence, engine="plantuml", format="svg")
     svg = svg[0].decode('utf-8')
@@ -101,7 +124,7 @@ def ladder_diagram():
 @bp.route("/Call-Summary/message")
 def get_message():
     oid = request.args.get('oid', None)
-    msg_text = mongo.db.msgs.find_one({"_id.oid": oid}, {"text":1})
+    msg_text = g.db.msgs.find_one({"_id.oid": oid}, {"text":1})
     msg_text = msg_text["text"]
     return {"msg_text": msg_text}
 
@@ -109,7 +132,7 @@ def get_message():
 def upload_files():
     file = request.files['file']
     app = current_app._get_current_object()
-    files=mongo.db.files.distinct("_id")
+    files=g.db.files.distinct("_id")
     
     if file.filename.endswith('.zip'):
         zipfile = ZipFile(file)
@@ -146,7 +169,7 @@ def diagram_page():
 
 @bp.route("/files")
 def get_files():
-    cursor = mongo.db.files.find({})
+    cursor = g.db.files.find({})
     files = [[res["_id"], res["device"], res["status"]] for res in cursor]
     return jsonify(files),200
 
@@ -159,8 +182,8 @@ def call_filter():
     if not query:
         return "Invalid call filter", 400
     query["_id.filename"] = filename
-    guids = mongo.db.msgs.distinct("guid",query)
-    cursor = mongo.db.GUIDs.find({"_id.guid": {"$in":guids}})
+    guids = g.db.msgs.distinct("guid",query)
+    cursor = g.db.GUIDs.find({"_id.guid": {"$in":guids}})
     GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
 
     return jsonify(GUIDs), 200
@@ -170,14 +193,14 @@ def post_signature():
     signature = request.get_json()["signature"]
     description = request.get_json()["description"]
     try:
-        id = mongo.db.signatures.insert_one({"_id":signature, "description":description})
+        id = g.db.signatures.insert_one({"_id":signature, "description":description})
     except Exception:
         return "signature already exists", 400
     return id.inserted_id, 200
 
 @bp.route("/get-signatures")
 def get_signatures():
-    cursor = mongo.db.signatures.find({})
+    cursor = g.db.signatures.find({})
     result = [[res["_id"], res["description"]] for res in cursor]
 
     return jsonify(result)
@@ -188,7 +211,7 @@ def match_signtures():
     signatures = []
     filename = request.args.get("filename", None)
     guid = request.args.get("guid", None)
-    cursor = mongo.db.signatures.find({})
+    cursor = g.db.signatures.find({})
     filters = [(res["_id"],res["description"]) for res in cursor]
     for filter in filters:
         query = query_parser(filter[0])
@@ -196,17 +219,17 @@ def match_signtures():
         if guid is not None:
             query["guid"] = guid
         query["_id.filename"] = filename
-        if mongo.db.msgs.find_one(query, {"_id":1}):
+        if g.db.msgs.find_one(query, {"_id":1}):
             signatures.append(filter[1])
     return {"signatures": signatures}
 
 @bp.route("/Files-History/delete")
 def delete_file():
     filename = request.args.get('filename', None)
-    mongo.db.files.delete_one({"_id": filename})
-    mongo.db.GUIDs.delete_many({"_id.filename":filename})  
-    mongo.db.msgs.delete_many({"_id.filename":filename})
-    unique_files=mongo.db.GUIDs.distinct("_id.filename")
+    g.db.files.delete_one({"_id": filename})
+    g.db.GUIDs.delete_many({"_id.filename":filename})  
+    g.db.msgs.delete_many({"_id.filename":filename})
+    unique_files=g.db.GUIDs.distinct("_id.filename")
     return jsonify(unique_files),200
 
 @bp.route("/logAccess", methods=["POST"])
@@ -216,7 +239,7 @@ def generateDownloadLink():
     from_date = datetime.strptime(parts["from_date"], "%Y-%m-%dT%H:%M")
     to_date = datetime.strptime(parts["to_date"], "%Y-%m-%dT%H:%M")
 
-    cursor = mongo.db.msgs.find({"_id.filename":filename, "datetime": {"$gt": from_date, "$lt": to_date}}, {"text":1}).sort("count",1)
+    cursor = g.db.msgs.find({"_id.filename":filename, "datetime": {"$gt": from_date, "$lt": to_date}}, {"text":1}).sort("count",1)
     file = BytesIO()
     if cursor.count() == 0:
         file.write("No messages found within date range".encode('latin1'))

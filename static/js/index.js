@@ -1,5 +1,22 @@
-document.getElementById("body").setAttribute("onload", "initial()")
+// document.getElementById("body").setAttribute("onload", "initial()")
 Dropzone.autoDiscover = false;
+
+$(document).ready(function(){
+    console.log(Cookies.get('session') == null)
+    if(Cookies.get("session") == null){
+        var username = window.prompt("Enter username")
+        $.ajax({
+            type: 'GET',
+            url: `/setSession/${username}`,
+            success: function(data){
+                window.alert(`${username} session set`)
+                initial()
+            }
+        })
+    }
+    else
+        initial()
+})
 
 var files = []
 function initial() {
