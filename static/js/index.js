@@ -95,7 +95,7 @@ function analyse(i) {
     var table = $('#table_id').DataTable();
     data = table.rows(i).data()[0][0]
     //alert(data)
-    location.href = '/call-summary/' + data
+    location.href = `call-summary?filename=${data}`
     //open diagram in new page
     //window.open("/diagram/" + data);
 }

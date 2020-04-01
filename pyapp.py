@@ -70,8 +70,9 @@ def threaded_task(app, filename, contents):
 def index():
     return render_template("index.html")
 
-@bp.route("/call-summary/<filename>")
-def call_summary(filename):
+@bp.route("/call-summary")
+def call_summary():
+    filename = request.args.get('filename', None)
     return render_template("details.html",filename=filename)
 
 @bp.route("/signatures-page")
@@ -107,33 +108,41 @@ def get_message():
 @bp.route("/Files-History/upload", methods=["POST"])
 def upload_files():
     file = request.files['file']
-
-    contents = BytesIO()
+    app = current_app._get_current_object()
+    files=mongo.db.files.distinct("_id")
+    
     if file.filename.endswith('.zip'):
         zipfile = ZipFile(file)
-        names = natsorted(zipfile.namelist(), key=lambda x: x.lower())
-        for name in names:
-            contents.write(zipfile.read(name))
+        filenames = natsorted(zipfile.namelist(), key=lambda x: x.lower())
+        dirnames = set([os.path.dirname(name) for name in zipfile.namelist()])
+
+        for _dir in dirnames:
+            contents = BytesIO()
+            for name in filenames:
+                if os.path.dirname(name) == _dir:
+                    basename = os.path.basename(name)
+                    if basename.endswith('.log') and basename.startswith('CVP.'):
+                        contents.write(zipfile.read(name))
+            filename = file.filename + '/' + _dir
+            if (filename in files):
+                return "Exists",400
+            Thread(target=threaded_task, args=(app, filename, contents)).start()
     elif file.filename.endswith('.log') or file.filename.endswith('.txt'):
+        contents = BytesIO()
         contents.write(file.read())
+        if ( file.filename in files):
+            return "Exists",400
+        Thread(target=threaded_task, args=(app, file.filename, contents)).start()
     else:
         return "Invalid file type", 400
-
-    unique_files=mongo.db.GUIDs.distinct("_id.filename")
-    if ( file.filename in unique_files):
-        return "Exists",400
-
-    app = current_app._get_current_object()
-    thread = Thread(target=threaded_task, args=(app, file.filename, contents))
-    thread.daemon = True
-    thread.start()
     
-    #   parser_main(file.filename, contents)
     return render_template("index.html"), 200
 
-@bp.route('/diagram-page/<string:filename>/<string:ID>',methods=["GET"])
-def diagram_page(filename,ID):
-    return render_template("diagram.html", filename=filename, guid=ID)
+@bp.route('/diagram-page',methods=["GET"])
+def diagram_page():
+    filename = request.args.get('filename', None)
+    guid = request.args.get('guid', None)
+    return render_template("diagram.html", filename=filename, guid=guid)
 
 @bp.route("/files")
 def get_files():

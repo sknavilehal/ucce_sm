@@ -115,7 +115,7 @@ $('#submit').click(function () {
 });
 
 function seq(data) {
-    window.open("/diagram-page/"+filename+"/" + data);
+    window.open(`/diagram-page?filename=${filename}&guid=${data}`);
 }
 
 function sign(data) {
