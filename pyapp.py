@@ -71,23 +71,19 @@ def before_request():
 
     return None
 
-def writeToDB(guids):
-    for guid in guids.keys():
-        g.db.GUIDs.insert_one(guids[guid]["doc"])
-        for msg in guids[guid]["msgs"]:
-            g.db.msgs.insert_one(msg)
-
-def threaded_task(app, filename, contents):
-    g.db.files.insert_one({"_id":filename,"device":"unknown", "status": "Processing..."})
+def threaded_task(_g, app, filename, contents):
+    _g.db.files.insert_one({"_id":filename,"device":"unknown", "status": "Processing..."})
     try:
         device, guids = parser_main(filename, contents)
-        result = g.db.files.update({"_id":filename},  {"$set": {"status": "Processed", "device": device}})
-        writeToDB(guids)
+        _g.db.files.update({"_id":filename},  {"$set": {"status": "Processed", "device": device}})
+        
+        for guid in guids.keys():
+            _g.db.GUIDs.insert_one(guids[guid]["doc"])
+            for msg in guids[guid]["msgs"]:
+                _g.db.msgs.insert_one(msg)
     except Exception:
         app.logger.error(traceback.format_exc())
-        result = g.db.files.update({"_id":filename}, {"$set": {"status": "Failed"}})
-
-    return result
+        _g.db.files.update({"_id":filename}, {"$set": {"status": "Failed"}})
 
 @bp.route("/")
 def index():
@@ -132,30 +128,36 @@ def get_message():
 def upload_files():
     file = request.files['file']
     app = current_app._get_current_object()
+    _g = g._get_current_object()
     files=g.db.files.distinct("_id")
     
     if file.filename.endswith('.zip'):
+        names_container = {}
         zipfile = ZipFile(file)
         filenames = natsorted(zipfile.namelist(), key=lambda x: x.lower())
-        dirnames = set([os.path.dirname(name) for name in zipfile.namelist()])
 
-        for _dir in dirnames:
+        for filename in filenames:
+            basename = os.path.basename(filename)
+            dirname = os.path.dirname(filename)
+            if basename.endswith('.log') and basename.startswith('CVP.'):
+                if dirname not in names_container: names_container[dirname] = []
+                names_container[dirname].append(filename)
+        
+        for _dir, _files in names_container.items():
             contents = BytesIO()
-            for name in filenames:
-                if os.path.dirname(name) == _dir:
-                    basename = os.path.basename(name)
-                    if basename.endswith('.log') and basename.startswith('CVP.'):
-                        contents.write(zipfile.read(name))
-            filename = file.filename + '/' + _dir
-            if (filename in files):
+            if _dir in files:
                 return "Exists",400
-            Thread(target=threaded_task, args=(app, filename, contents)).start()
+            for _file in _files:
+                contents.write(zipfile.read(_file))
+            filename = file.filename + '/' + _dir
+            Thread(target=threaded_task, args=(_g, app, filename, contents)).start()
+
     elif file.filename.endswith('.log') or file.filename.endswith('.txt'):
         contents = BytesIO()
         contents.write(file.read())
         if ( file.filename in files):
             return "Exists",400
-        Thread(target=threaded_task, args=(app, file.filename, contents)).start()
+        Thread(target=threaded_task, args=(_g, app, file.filename, contents)).start()
     else:
         return "Invalid file type", 400
     
