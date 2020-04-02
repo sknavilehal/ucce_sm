@@ -2,7 +2,6 @@ import os
 import csv
 import logging
 import traceback
-#from db import mongo
 from io import BytesIO
 from zipfile import ZipFile
 from threading import Thread
@@ -45,7 +44,7 @@ def before_request():
     eventLog = open(filePath, 'a', newline='')
     writer = csv.writer(eventLog)
 
-    important_endpoints = ["get_calls", "ladder_diagram", "get_message", "upload_files","call_filter", "post_signature", "match_signtures", "delete_file"]
+    important_endpoints = ["get_calls", "ladder_diagram", "get_message", "upload_files","call_filter", "post_signature", "match_signtures", "delete_file", "delete_signature"]
     if endpoint not in important_endpoints: return None
 
     if endpoint == "match_signtures": print(request.args)
@@ -112,8 +111,11 @@ def ladder_diagram():
     _id = {"filename":filename, "guid":guid}
     sequence = g.db.GUIDs.find_one({"_id":_id},{"sequence":1})
     sequence = sequence["sequence"]
-    svg = render(sequence, engine="plantuml", format="svg")
-    svg = svg[0].decode('utf-8')
+    try:
+        svg = render(sequence, engine="plantuml", format="svg")
+        svg = svg[0].decode('utf-8')
+    except Exception as e:
+        return str(e), 500
 
     return {"svg":svg},200
 
@@ -199,6 +201,13 @@ def post_signature():
     except Exception:
         return "signature already exists", 400
     return id.inserted_id, 200
+
+@bp.route("/Signatures/delete-sig")
+def delete_signature():
+    signature = request.args.get("signature", None)
+    g.db.signatures.delete_one({"_id":signature})
+
+    return "Signature deleted", 200
 
 @bp.route("/get-signatures")
 def get_signatures():
