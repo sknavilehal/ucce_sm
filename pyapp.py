@@ -20,6 +20,7 @@ client = MongoClient("mongodb://localhost:27017")
 
 @bp.route('/setSession/<string:username>')
 def setSession(username):
+    # username here is name of the database
     session["username"] = username
 
     return "Session set", 200
@@ -32,10 +33,12 @@ def clearSession():
 
 @bp.before_request
 def before_request():
+    #Before a request is made get username from session and store database connection in g object
     username = session.get("username", "Guest")
-    g.db = client[username]
+    g.db = client[username] # Gets reset after a request and has to be set again
     endpoint = request.endpoint.split('.')[1]
     
+    #Event logging
     endpoints = ['setSession', 'clearSession']
     if session.get("username", None) is None and endpoint not in endpoints:
         return render_template('index.html')
@@ -44,10 +47,9 @@ def before_request():
     eventLog = open(filePath, 'a', newline='')
     writer = csv.writer(eventLog)
 
+    # Only endpoints in this list are logged to eventLog.log
     important_endpoints = ["get_calls", "ladder_diagram", "get_message", "upload_files","call_filter", "post_signature", "match_signtures", "delete_file", "delete_signature"]
     if endpoint not in important_endpoints: return None
-
-    if endpoint == "match_signtures": print(request.args)
 
     parts = request.path.split('/')
     category, action = parts[1], parts[2]
@@ -71,6 +73,7 @@ def before_request():
     return None
 
 def threaded_task(_g, app, filename, contents):
+    # _g and app are flask objects required for threaded task running outside application context
     _g.db.files.insert_one({"_id":filename,"device":"unknown", "status": "Processing..."})
     try:
         device, guids = parser_main(filename, contents)
