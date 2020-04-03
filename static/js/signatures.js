@@ -1,6 +1,17 @@
+import suggestions from './suggestions.js'
+
 document.getElementById("home").classList.remove("active")
 document.getElementById("signatures").classList.add("active")
 document.getElementById("body").setAttribute("onload","signature()")
+window.del = del
+window.signature = signature
+
+let re = /and\s|or\s|&&\s|\|\|\s|\'/gi;
+$('#signature').autocomplete({
+    lookupLimit: 5,
+    lookup: suggestions,
+    delimiter: re,
+});
 
 $('#add').click(function () {
     var p = {
@@ -25,13 +36,13 @@ $('#add').click(function () {
 });
 
 function signature(){
-list=[]
+    var list=[]
     $.ajax({
         url: '/get-signatures',
         type: 'GET',
 
         success: function (data) {
-            for (i = 0; i < data.length; i++) {
+            for (var i = 0; i < data.length; i++) {
                 list[i] =[]
                 list[i] =[data[i][0],data[i][1],`<div class='btn-group' role='group' aria-label='Basic example'><i class='fa fa-minus-circle fa-2x' style='color:#dc3545;margin-left:5px;cursor:pointer' title='Remove' aria-hidden='true' onclick='del(${i})'></i></div>`]
             }

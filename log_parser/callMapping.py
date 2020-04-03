@@ -8,12 +8,10 @@ ingnored_ged_logs = {"CTIQuerySkillGroupStatisticsConf", "Payload=BEFORE PUBLISH
 def parse_ids(line):
     idx = line.lower().find("guid")
     guid = line[idx:].split('=')[1].strip().split()[0]
-    if guid[-1] == ',':
-        guid = guid[:-1]
+    guid = guid.split(',')[0]
     idx = line.lower().find("legid")
     legid = line[idx:].split('=')[1].strip().split()[0].split('@')[0]
-    if legid[-1] == ',':
-        legid = legid[:-1]
+    legid = legid.split(',')[0]
     return guid,legid
 
 def parse_callid(line):

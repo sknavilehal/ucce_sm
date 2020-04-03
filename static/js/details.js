@@ -18,7 +18,6 @@ $.ajax({
     success: function (data) {
         //alert('Success!');
         if (data.length > 0) {
-            console.log(data)
             var d=document.getElementById("files")
             var temp=""
             for(let i=0;i<data.length;i++)
@@ -80,14 +79,12 @@ $('#autocomplete').autocomplete({
         // alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
     },
     beforeRender: function (container) {
-        console.log(document.getElementById("autocomplete").value)
     }
 });
 
 $('#submit').click(function () {
     //alert("ggg")
     var p = document.getElementById("autocomplete").value
-    console.log(p)
     //document.getElementById("entered_query").innerHTML=p
     var person = {
         filter: p,
@@ -117,7 +114,6 @@ function sign(data) {
         cache: false,
         processData: false,
         success: function (data) {
-            console.log(data.signatures)
             var temp=""
             var i
             for(i=0;i<data.signatures.length;i++)

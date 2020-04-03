@@ -1,4 +1,4 @@
-from .constants import SIP, GED125, GED125
+from .constants import SIP, GED125, GED188
 from .sip_parser import parse_sip_msg
 from .ged_parser import parse_ged_msg
 

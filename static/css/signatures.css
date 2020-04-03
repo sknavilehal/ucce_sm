@@ -1,0 +1,11 @@
+.autocomplete-suggestion
+{
+    background-color: white;
+    padding :3px
+}
+
+.autocomplete-selected
+{
+    background-color: rgb(202, 220, 248);
+    padding :3px
+}

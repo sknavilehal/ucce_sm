@@ -35,7 +35,6 @@ def clearSession():
 def before_request():
     #Before a request is made get username from session and store database connection in g object
     username = session.get("username", "Guest")
-    print(username)
     g.db = client[username] # Gets reset after a request and has to be set again
     endpoint = request.endpoint.split('.')[1]
     
@@ -195,7 +194,7 @@ def call_filter():
         return "Invalid call filter", 400
     query["_id.filename"] = filename
     guids = g.db.msgs.distinct("guid",query)
-    cursor = g.db.GUIDs.find({"_id.guid": {"$in":guids}})
+    cursor = g.db.GUIDs.find({"_id.guid": {"$in":guids}, "_id.filename":filename})
     GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
 
     return jsonify(GUIDs), 200
@@ -251,19 +250,12 @@ def delete_file():
     unique_files=g.db.GUIDs.distinct("_id.filename")
     return jsonify(unique_files),200
 
-@bp.route("/logAccess", methods=["POST"])
+@bp.route("/download-log")
 def generateDownloadLink():
-    parts = request.get_json()
-    filename = parts["filename"]
-    from_date = datetime.strptime(parts["from_date"], "%Y-%m-%dT%H:%M")
-    to_date = datetime.strptime(parts["to_date"], "%Y-%m-%dT%H:%M")
-
-    cursor = g.db.msgs.find({"_id.filename":filename, "datetime": {"$gt": from_date, "$lt": to_date}}, {"text":1}).sort("count",1)
+    filename = request.args.get("filename", None)
+    cursor = g.db.msgs.find({"_id.filename":filename}, {"text":1}).sort("count",1)
     file = BytesIO()
-    if cursor.count() == 0:
-        file.write("No messages found within date range".encode('latin1'))
-        filename = "404.txt"
     for res in cursor:
         file.write(res["text"].encode('latin1'))
     file.seek(0)
-    return send_file(file, attachment_filename=filename, mimetype='text/plain', as_attachment=True)
+    return send_file(file, attachment_filename=os.path.basename(filename), mimetype='text/plain', as_attachment=True)
