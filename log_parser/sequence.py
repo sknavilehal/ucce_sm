@@ -58,7 +58,7 @@ def sequence(filename,cvp, guids):
 
             code = text[0]
             oid = str(ObjectId())
-            msg["_id"] = {"filename":os.path.basename(filename), "oid":oid}
+            msg["_id"] = {"filename":filename, "oid":oid}
             text = " : [[{"+oid+"} " + text + "]]\n"
             sequence += src + r_to_color.get(code," -[#black]> ") + dest +text  
         
