@@ -58,15 +58,6 @@ function appendData(data) {
     document.getElementById('call_details').innerHTML = ""
     $('#call_details').DataTable({
         data: GUIDs,
-        //add error codes
-        "createdRow": function (row, data, dataIndex) {
-            if (data[12] > 500) {
-                $(row).addClass('red');
-            }
-            else if (data[12] > 400) {
-                $(row).addClass('maroon');
-            }
-        },
         //columns for database
         columns: [
             { title: "GUID" },

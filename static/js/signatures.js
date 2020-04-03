@@ -7,13 +7,10 @@ $('#add').click(function () {
         signature: document.getElementById("signature").value,
         description: document.getElementById("description").value
     }
-    console.log(p)
     if (document.getElementById("table_id").innerHTML != "") {
         var table1 = $('#table_id').DataTable();
         table1.destroy();
         document.getElementById("table_id").innerHTML = ""
-
-        //  console.log(document.getElementById("table_id").innerHTML.length)
     }
     $.ajax({
         url: '/Signatures/new-sig',
@@ -27,7 +24,6 @@ $('#add').click(function () {
     });
 });
 
-
 function signature(){
 list=[]
     $.ajax({
@@ -35,11 +31,11 @@ list=[]
         type: 'GET',
 
         success: function (data) {
-            console.log(data)
             for (i = 0; i < data.length; i++) {
                 list[i] =[]
-                list[i] =[data[i][0],data[i][1],"<div class='btn-group' role='group' aria-label='Basic example'><i class='fa fa-minus-circle fa-2x' style='color:#dc3545;margin-left:5px;cursor:pointer' title='Remove' aria-hidden='true' onclick='del(" + i + ")'></i></div>"]
+                list[i] =[data[i][0],data[i][1],`<div class='btn-group' role='group' aria-label='Basic example'><i class='fa fa-minus-circle fa-2x' style='color:#dc3545;margin-left:5px;cursor:pointer' title='Remove' aria-hidden='true' onclick='del(${i})'></i></div>`]
             }
+            
             $('#table_id').DataTable(
                 {
                     scrollY: '50vh',
@@ -51,6 +47,21 @@ list=[]
                         {title:"Actions"}
                     ],
                 });
+        }
+
+    });
+}
+function del(i){
+    data = $("#table_id").DataTable().row(i).data()[0]
+    $.ajax({
+        url: `/Signatures/delete-sig?signature=${data}`,
+        type: `GET`,
+        success: function(res){
+            $('#table_id').DataTable().destroy()
+            signature();
+        },
+        error: function(err){
+            console.log(err)
         }
     });
 }

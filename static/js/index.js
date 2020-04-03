@@ -14,15 +14,7 @@ function initial() {
         processData: false,
         success: function (data) {
 
-            if (data.length > 0) {
-
-                console.log(data[0])
-                //document.getElementById("details-link").setAttribute("href", "call-summary?filename=" + data[0][0])
-
-            }
-
             for (i = 0; i < data.length; i++) {
-                console.log(data[i][0])
                 files[i] = []
                 if (data[i][2] === "Processed")
                     files[i] = [data[i][0], data[i][1], `<button type='button' class='btn btn-primary btn-sm btn-success processed' disabled >${data[i][2]}</button>`,
@@ -109,7 +101,6 @@ function del(i) {
         type: 'GET',
         url: `/Files-History/delete?filename=${data}`,
         success: function (data) {
-            console.log(data)
         }
     });
     //initial()
@@ -128,7 +119,6 @@ function sign(data) {
         cache: false,
         processData: false,
         success: function (data) {
-            console.log(data.signatures)
             var temp = ""
             for (var i = 0; i < data.signatures.length; i++) {
                 temp = temp + data.signatures[i]
