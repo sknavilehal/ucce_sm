@@ -29,19 +29,20 @@ def setSession(username):
 def clearSession():
     session.pop("username")
 
-    return redirect("/")
+    return "",200
 
 @bp.before_request
 def before_request():
     #Before a request is made get username from session and store database connection in g object
     username = session.get("username", "Guest")
+    print(username)
     g.db = client[username] # Gets reset after a request and has to be set again
     endpoint = request.endpoint.split('.')[1]
     
     #Event logging
     endpoints = ['setSession', 'clearSession']
     if session.get("username", None) is None and endpoint not in endpoints:
-        return render_template('index.html')
+        return render_template('login.html')
 
     filePath = os.path.join(current_app.instance_path, 'eventLog.log')
     eventLog = open(filePath, 'a', newline='')
@@ -88,7 +89,11 @@ def threaded_task(_g, app, filename, contents):
         _g.db.files.update({"_id":filename}, {"$set": {"status": "Failed"}})
 
 @bp.route("/")
-def index():
+def login():
+    return render_template("login.html")
+
+@bp.route("/home")
+def home():
     return render_template("index.html")
 
 @bp.route("/call-summary")

@@ -18,6 +18,14 @@ body
     color:#6c6a6a;
 }
 
+.navbar-nav > li > p
+{
+    font-size: 0.9rem;
+    margin: 0.6rem;
+    font-weight: 550;
+   
+}
+
 .navbar-nav > li > a:hover
 {
     color:#ff4a7c;

@@ -1,22 +1,7 @@
-// document.getElementById("body").setAttribute("onload", "initial()")
+document.getElementById("body").setAttribute("onload", "initial()")
 Dropzone.autoDiscover = false;
 
-$(document).ready(function(){
-    console.log(Cookies.get('session') == null)
-    if(Cookies.get("session") == null){
-        var username = window.prompt("Enter username")
-        $.ajax({
-            type: 'GET',
-            url: `/setSession/${username}`,
-            success: function(data){
-                window.alert(`${username} session set`)
-                initial()
-            }
-        })
-    }
-    else
-        initial()
-})
+
 
 var files = []
 function initial() {
@@ -32,7 +17,7 @@ function initial() {
             if (data.length > 0) {
 
                 console.log(data[0])
-                document.getElementById("details-link").setAttribute("href", "call-summary/" + data[0][0])
+                //document.getElementById("details-link").setAttribute("href", "call-summary?filename=" + data[0][0])
 
             }
 
