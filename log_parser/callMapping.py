@@ -1,9 +1,9 @@
 import re
 from .constants import CUBE,CVP,FINESSE,SIP,GED125,GED188
 
-filtered_sip_logs = {"Sending", "BEGINING PROCESSING NEW MESSAGE"}
-filtered_ged_logs = {"DECODED_MESSAGE_FROM_CTI_SERVER", "XMPP_PUBLISH_ASYNCHRONOUS"}
-ingnored_ged_logs = {"CTIQuerySkillGroupStatisticsConf", "Payload=BEFORE PUBLISH"}
+filtered_cvp_logs = {"Sending", "BEGINING PROCESSING NEW MESSAGE"}
+filtered_finesse_logs = {"DECODED_MESSAGE_FROM_CTI_SERVER", "XMPP_PUBLISH_ASYNCHRONOUS"}
+ingnored_finesse_logs = {"CTIQuerySkillGroupStatisticsConf", "Payload=BEFORE PUBLISH"}
 
 def parse_ids(line):
     idx = line.lower().find("guid")
@@ -53,7 +53,7 @@ def callMapping(device, lines):
                 callmapping[legid] = guid
             if "publishing to " in line.lower() or "processing from " in line.lower():
                 ignore_ged125_msg = False
-            for log in filtered_sip_logs:
+            for log in filtered_cvp_logs:
                 if log in line: ignore_sip_msg = False
         elif device == CUBE:
             if "ccsipDisplayMsg:" in line:
@@ -64,9 +64,9 @@ def callMapping(device, lines):
                 elif not match:
                     ignore_sip_msg = False
         elif device == FINESSE:
-            for log in filtered_ged_logs:
+            for log in filtered_finesse_logs:
                 if log in line: ignore_ged188_msg = False
-            for log in ingnored_ged_logs:
+            for log in ingnored_finesse_logs:
                 if log in line: ignore_ged188_msg = True
         
         if "Call-ID: " in line:

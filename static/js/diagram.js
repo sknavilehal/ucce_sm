@@ -62,7 +62,11 @@ $.ajax({
 
         document.getElementById("diagram").innerHTML = ""
         document.getElementById("diagram").appendChild(doc.documentElement)
+    },
+    error: function(err){
+        alert(err.responseText)
     }
+    
 });
 
 

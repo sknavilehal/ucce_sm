@@ -43,7 +43,7 @@ def before_request():
     if session.get("username", None) is None and endpoint not in endpoints:
         return render_template('login.html')
 
-    filePath = os.path.join(current_app.instance_path, 'eventLog.csv')
+    filePath = os.path.join(current_app.instance_path, 'event_log.csv')
     eventLog = open(filePath, 'a', newline='')
     writer = csv.writer(eventLog)
 
@@ -122,7 +122,7 @@ def ladder_diagram():
         svg = render(sequence, engine="plantuml", format="svg")
         svg = svg[0].decode('utf-8')
     except Exception as e:
-        
+        return str(e), 403
 
     return {"svg":svg},200
 
