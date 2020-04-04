@@ -63,9 +63,9 @@ function signature(){
     });
 }
 function del(i){
-    data = $("#table_id").DataTable().row(i).data()[0]
+    var data = $("#table_id").DataTable().row(i).data()
     $.ajax({
-        url: `/Signatures/delete-sig?signature=${data}`,
+        url: `/Signatures/delete-sig?signature=${data[0]}`,
         type: `GET`,
         success: function(res){
             $('#table_id').DataTable().destroy()

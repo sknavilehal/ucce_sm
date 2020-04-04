@@ -74,7 +74,7 @@ def parse_sip_msg(sip_msg):
     msg["sent"] = False
     msg["exchange"] = parse_exchange(line)
     lines = sip_msg.splitlines()
-    msg["datetime"] = parse_datetime(lines[0])
+    #msg["datetime"] = parse_datetime(lines[0])
     #msg["error_code"] = 0
 
     for line in lines:

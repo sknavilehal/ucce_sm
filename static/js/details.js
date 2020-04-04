@@ -3,7 +3,6 @@ import suggestions from './suggestions.js';
 var flaskData = document.getElementById("flaskvar")
 var filename = flaskData.getAttribute("filename")
 document.getElementById("home").classList.remove("active")
-document.getElementById("details").classList.add("active")
 get_table(filename)
 window.seq = seq
 window.sign = sign

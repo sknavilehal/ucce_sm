@@ -1,8 +1,6 @@
 document.getElementById("body").setAttribute("onload", "initial()")
 Dropzone.autoDiscover = false;
 
-
-
 var files = []
 function initial() {
     $.ajax({
@@ -24,7 +22,7 @@ function initial() {
                 //  " <div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-warning view' onclick='analyse(" + i + ")'>View</button><button type='button' class='btn btn-sm btn-danger remove' onclick='del(" + i + ")'>Remove</button></div>"   ]
                 else if (data[i][2] === "Processing...")
                     files[i] = [data[i][0], data[i][1], `<button type='button' class='btn btn-primary btn-sm btn-warning'disabled >${data[i][2]}</button>`
-                        , "<button type='button' class='btn btn-sm btn-primary refresh'  onclick='refresh(" + i + ")' title='Refresh'>Refresh</button>", "", ""]
+                        , "<button type='button' class='btn btn-sm btn-primary refresh'  onclick='initial()' title='Refresh'>Refresh</button>", "", ""]
                 else
                     files[i] = [data[i][0], data[i][1], `<button type='button' class='btn btn-primary btn-sm btn-danger' disabled >${data[i][2]}</button>`, "<i class='fa fa-minus-circle fa-2x' style='color:#dc3545;margin-left:5px;cursor:pointer' title='Remove' aria-hidden='true' onclick='del(" + i + ")'>", "", ""]
             }
@@ -107,10 +105,6 @@ function del(i) {
     location.reload()
 }
 
-function refresh(i) {
-    initial()
-}
-
 function sign(data) {
     $.ajax({
         type: 'GET',
@@ -130,5 +124,5 @@ function sign(data) {
 
 function download(i) {
     var data = $('#table_id').DataTable().row(i).data()[0]
-    window.open(`/download-log?filename=${data}`)
+    window.open(`/download-file?filename=${data}`)
 }

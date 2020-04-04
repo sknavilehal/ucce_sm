@@ -39,11 +39,11 @@ def before_request():
     endpoint = request.endpoint.split('.')[1]
     
     #Event logging
-    endpoints = ['setSession', 'clearSession']
+    endpoints = ['setSession', 'clearSession', 'download_eventlog']
     if session.get("username", None) is None and endpoint not in endpoints:
         return render_template('login.html')
 
-    filePath = os.path.join(current_app.instance_path, 'eventLog.log')
+    filePath = os.path.join(current_app.instance_path, 'eventLog.csv')
     eventLog = open(filePath, 'a', newline='')
     writer = csv.writer(eventLog)
 
@@ -53,7 +53,7 @@ def before_request():
 
     parts = request.path.split('/')
     category, action = parts[1], parts[2]
-    row = [str(datetime.now()), category, action]
+    row = [str(datetime.now()), username, category, action]
 
     if endpoint == 'upload_files':
         row.append(request.files['file'].filename)
@@ -122,7 +122,7 @@ def ladder_diagram():
         svg = render(sequence, engine="plantuml", format="svg")
         svg = svg[0].decode('utf-8')
     except Exception as e:
-        return str(e), 500
+        
 
     return {"svg":svg},200
 
@@ -250,8 +250,8 @@ def delete_file():
     unique_files=g.db.GUIDs.distinct("_id.filename")
     return jsonify(unique_files),200
 
-@bp.route("/download-log")
-def generateDownloadLink():
+@bp.route("/download-file")
+def download_file():
     filename = request.args.get("filename", None)
     cursor = g.db.msgs.find({"_id.filename":filename}, {"text":1}).sort("count",1)
     file = BytesIO()
@@ -259,3 +259,9 @@ def generateDownloadLink():
         file.write(res["text"].encode('latin1'))
     file.seek(0)
     return send_file(file, attachment_filename=os.path.basename(filename), mimetype='text/plain', as_attachment=True)
+
+@bp.route("/download-eventlog")
+def download_eventlog():
+    file = os.path.join(current_app.instance_path, 'event_log.csv')
+
+    return send_file(file, attachment_filename=os.path.basename(file), mimetype='text/plain', as_attachment=True)

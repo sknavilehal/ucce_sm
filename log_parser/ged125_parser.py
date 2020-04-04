@@ -87,10 +87,10 @@ def parse_datetime(line):
         return datetime(d.year, d.month, d.day, d.hour, d.minute, d.second, d.microsecond)
     else: return None
 
-def parse_ged_msg(ged_msg):
+def parse_ged125_msg(ged_msg):
     msg = {}
     msg["guid"] = parse_guid(ged_msg)
-    msg["datetime"] = parse_datetime(ged_msg.splitlines()[0])
+    #msg["datetime"] = parse_datetime(ged_msg.splitlines()[0])
     
     if "publishing to " in ged_msg.lower():
         msg["sent"] = True
