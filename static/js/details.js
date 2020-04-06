@@ -70,8 +70,8 @@ function appendData(data) {
         //columns for database
         columns: [
             { title: "GUID" },
-            { title: "DNIS" },
             { title: "ANI" },
+            { title: "DNIS" },
             { title: "Details" },
             { title: "Signature"}
         ]
