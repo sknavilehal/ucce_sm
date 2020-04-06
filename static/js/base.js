@@ -17,19 +17,3 @@ function logout()
     
 }
 
-
-$.ajax({
-    type: 'GET',
-    url: '/files',
-
-    contentType: false,
-    cache: false,
-    processData: false,
-    success: function (data) {
-        if(data.length>0)
-        {
-            console.log(data[0][0])
-           document.getElementById("details-link").setAttribute("href","call-summary?filename="+data[0][0])
-        }
-    }
-})

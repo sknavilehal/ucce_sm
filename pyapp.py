@@ -35,16 +35,15 @@ def clearSession():
 def before_request():
     #Before a request is made get username from session and store database connection in g object
     username = session.get("username", "Guest")
-    print(username)
     g.db = client[username] # Gets reset after a request and has to be set again
     endpoint = request.endpoint.split('.')[1]
     
     #Event logging
-    endpoints = ['setSession', 'clearSession']
+    endpoints = ['setSession', 'clearSession', 'download_eventlog']
     if session.get("username", None) is None and endpoint not in endpoints:
         return render_template('login.html')
 
-    filePath = os.path.join(current_app.instance_path, 'eventLog.log')
+    filePath = os.path.join(current_app.instance_path, 'event_log.csv')
     eventLog = open(filePath, 'a', newline='')
     writer = csv.writer(eventLog)
 
@@ -54,7 +53,7 @@ def before_request():
 
     parts = request.path.split('/')
     category, action = parts[1], parts[2]
-    row = [str(datetime.now()), category, action]
+    row = [str(datetime.now()), username, category, action]
 
     if endpoint == 'upload_files':
         row.append(request.files['file'].filename)
@@ -123,7 +122,7 @@ def ladder_diagram():
         svg = render(sequence, engine="plantuml", format="svg")
         svg = svg[0].decode('utf-8')
     except Exception as e:
-        return str(e), 500
+        return str(e), 403
 
     return {"svg":svg},200
 
@@ -195,7 +194,7 @@ def call_filter():
         return "Invalid call filter", 400
     query["_id.filename"] = filename
     guids = g.db.msgs.distinct("guid",query)
-    cursor = g.db.GUIDs.find({"_id.guid": {"$in":guids}})
+    cursor = g.db.GUIDs.find({"_id.guid": {"$in":guids}, "_id.filename":filename})
     GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
 
     return jsonify(GUIDs), 200
@@ -251,19 +250,18 @@ def delete_file():
     unique_files=g.db.GUIDs.distinct("_id.filename")
     return jsonify(unique_files),200
 
-@bp.route("/logAccess", methods=["POST"])
-def generateDownloadLink():
-    parts = request.get_json()
-    filename = parts["filename"]
-    from_date = datetime.strptime(parts["from_date"], "%Y-%m-%dT%H:%M")
-    to_date = datetime.strptime(parts["to_date"], "%Y-%m-%dT%H:%M")
-
-    cursor = g.db.msgs.find({"_id.filename":filename, "datetime": {"$gt": from_date, "$lt": to_date}}, {"text":1}).sort("count",1)
+@bp.route("/download-file")
+def download_file():
+    filename = request.args.get("filename", None)
+    cursor = g.db.msgs.find({"_id.filename":filename}, {"text":1}).sort("count",1)
     file = BytesIO()
-    if cursor.count() == 0:
-        file.write("No messages found within date range".encode('latin1'))
-        filename = "404.txt"
     for res in cursor:
         file.write(res["text"].encode('latin1'))
     file.seek(0)
-    return send_file(file, attachment_filename=filename, mimetype='text/plain', as_attachment=True)
+    return send_file(file, attachment_filename=os.path.basename(filename), mimetype='text/plain', as_attachment=True)
+
+@bp.route("/download-eventlog")
+def download_eventlog():
+    file = os.path.join(current_app.instance_path, 'event_log.csv')
+
+    return send_file(file, attachment_filename=os.path.basename(file), mimetype='text/plain', as_attachment=True)

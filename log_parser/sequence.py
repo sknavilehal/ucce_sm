@@ -15,7 +15,7 @@ def add_to_and_from(doc, msg):
         doc["from"] = msg["from"]["ext"] 
         doc["to"] = msg["exchange"]["ext"] 
 
-def sequence(filename,cvp, guids):
+def sequence(filename, guids):
     for guid in guids.keys():
         doc = {}
         doc["from"] = '-'
@@ -40,8 +40,8 @@ def sequence(filename,cvp, guids):
                     text = text + " W/ SDP"
 
                 if msg["exchange"]["text"] == "ACK": dest = msg["exchange"]["addr"]
-                if src == cvp: src = "SIP_SS"
-                if dest == cvp: dest = "SIP_SS"
+                if src == guids[guid]["cvp"]: src = "SIP_SS"
+                if dest == guids[guid]["cvp"]: dest = "SIP_SS"
                 src = src.replace('-', '_')
                 dest = dest.replace('-', '_')
 
@@ -58,7 +58,7 @@ def sequence(filename,cvp, guids):
 
             code = text[0]
             oid = str(ObjectId())
-            msg["_id"] = {"filename":os.path.basename(filename), "oid":oid}
+            msg["_id"] = {"filename":filename, "oid":oid}
             text = " : [[{"+oid+"} " + text + "]]\n"
             sequence += src + r_to_color.get(code," -[#black]> ") + dest +text  
         

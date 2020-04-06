@@ -3,7 +3,6 @@
 <link href="{{url_for('static', filename='css/signatures.css')}}" rel="stylesheet" type="text/css">
 {% endblock%}
 
-
 {%block content %}
 <div class="container-fluid">
     <div class="row p-4">
@@ -18,8 +17,7 @@
                     <div class="form-group">
                         <label for="signature_name">Description</label>
                         <input type="text" class="form-control" id="description">
-                        <small id="" class="form-text text-muted">Add a name to your signature</small>
-
+                        <!-- <small id="" class="form-text text-muted">Add a name to your signature</small> -->
                     </div>
 
                     <button type="submit" class="btn btn-sm btn-primary" id="add">Add</button>
@@ -40,7 +38,8 @@
 {%endblock %}
 
 {%block script%}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.10/jquery.autocomplete.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-<script src="{{url_for('static' ,filename='js/signatures.js')}}"></script>
+<script src="{{url_for('static' ,filename='js/signatures.js')}}" type="module"></script>
 {%endblock%}

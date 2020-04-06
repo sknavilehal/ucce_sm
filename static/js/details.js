@@ -3,7 +3,6 @@ import suggestions from './suggestions.js';
 var flaskData = document.getElementById("flaskvar")
 var filename = flaskData.getAttribute("filename")
 document.getElementById("home").classList.remove("active")
-document.getElementById("details").classList.add("active")
 get_table(filename)
 window.seq = seq
 window.sign = sign
@@ -18,7 +17,6 @@ $.ajax({
     success: function (data) {
         //alert('Success!');
         if (data.length > 0) {
-            console.log(data)
             var d=document.getElementById("files")
             var temp=""
             for(let i=0;i<data.length;i++)
@@ -58,15 +56,6 @@ function appendData(data) {
     document.getElementById('call_details').innerHTML = ""
     $('#call_details').DataTable({
         data: GUIDs,
-        //add error codes
-        "createdRow": function (row, data, dataIndex) {
-            if (data[12] > 500) {
-                $(row).addClass('red');
-            }
-            else if (data[12] > 400) {
-                $(row).addClass('maroon');
-            }
-        },
         //columns for database
         columns: [
             { title: "GUID" },
@@ -89,14 +78,12 @@ $('#autocomplete').autocomplete({
         // alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
     },
     beforeRender: function (container) {
-        console.log(document.getElementById("autocomplete").value)
     }
 });
 
 $('#submit').click(function () {
     //alert("ggg")
     var p = document.getElementById("autocomplete").value
-    console.log(p)
     //document.getElementById("entered_query").innerHTML=p
     var person = {
         filter: p,
@@ -126,7 +113,6 @@ function sign(data) {
         cache: false,
         processData: false,
         success: function (data) {
-            console.log(data.signatures)
             var temp=""
             var i
             for(i=0;i<data.signatures.length;i++)

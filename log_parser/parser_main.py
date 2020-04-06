@@ -3,11 +3,6 @@ from .callMapping import callMapping
 from .sequence import sequence
 from .constants import CVP, UNKNOWN, device_map, devices
 
-def parse_cvp_addr(line):
-    cvp = line.split()[1]
-    cvp = cvp[:-1]
-    return cvp
-
 def detect_device(contents):
     delimeters = [": //", ": %CVP_", ": %CCBU"]
 
@@ -21,14 +16,10 @@ def detect_device(contents):
 def parser_main(filename, contents):
     contents = contents.getvalue().decode('latin1').splitlines()
     
-    cvp = None
     device = detect_device(contents)
-    if device == CVP:
-        cvp = parse_cvp_addr(contents[0])
-    elif device == UNKNOWN:
-        return device
+    if device == UNKNOWN: return ("Unknown", {})
     callmapping, msgs = callMapping(device, contents)
     guids = GUIDS(callmapping, msgs)
-    sequence(filename,cvp, guids)
+    sequence(filename, guids)
 
     return (devices[device], guids)

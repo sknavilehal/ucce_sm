@@ -1,6 +1,9 @@
 import re
 import ast
 
+def enc_quotes(text):
+    return "'" + text + "'"
+
 def query_parser(query):
     parts = query.split(' or ')
     output = "{ '$or': ["
@@ -15,9 +18,9 @@ def query_parser(query):
             except IndexError:
                 return {}
             if "==" in _and:
-                output += key + ":" + value
+                output += enc_quotes(key) + ":" + enc_quotes(value)
             elif "!=" in _and:
-                output += key + ":" + "{'$ne':" + value + "}"
+                output += enc_quotes(key) + ":" + "{'$ne':" + enc_quotes(value) + "}"
             else: return {}    
             output += ","
 
