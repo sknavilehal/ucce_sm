@@ -16,7 +16,7 @@ _mailinglist
 .idea/
 docs/_build/
 .vscode
-/instance
+instance/*
 
 # Coverage reports
 htmlcov/
