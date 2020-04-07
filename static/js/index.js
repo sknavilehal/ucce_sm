@@ -55,6 +55,7 @@ options = {
     addRemoveLinks: true,
     dictDefaultMessage: 'Drag a log file here to save, or click to select one',
     thumbnailWidth: '50px',
+    timeout: 300000,
     removedfile: function (file) {
         file.previewElement.remove();
     },
