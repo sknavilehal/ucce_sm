@@ -114,10 +114,12 @@ function sign(data) {
         cache: false,
         processData: false,
         success: function (data) {
-            var temp = ""
-            for (var i = 0; i < data.signatures.length; i++) {
-                temp = temp + data.signatures[i]
+            var temp="<ol>"
+            for(var i=0;i<data.signatures.length;i++)
+            {
+                temp=temp+`<li>${data.signatures[i]}</li>`
             }
+            temp = temp + "</ol>"
             document.getElementById("signatures1").innerHTML = temp
         }
     });

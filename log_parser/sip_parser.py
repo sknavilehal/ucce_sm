@@ -87,7 +87,8 @@ def parse_sip_msg(sip_msg):
         if "User-Agent:" in line: msg["usr_agent"] = line.split()[1]
         if "Content-Type:" in line: msg["cont_type"] = line.split()[1]
         if "Cisco-Guid:" in line: msg["cisco-guid"] = line.split()[1]
-        if "contact:" in line: msg["contact"] = parse_contact(line)
+        if "Contact:" in line: msg["contact"] = parse_contact(line)
+        if "Date:" in line: msg["dateformat"] = line.split()[-1]
         if "Content-Length:" in line:
             content_len = int(line.split()[1])
     

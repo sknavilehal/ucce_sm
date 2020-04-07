@@ -36,9 +36,12 @@ def parse_codecs(keys, codecs):
     return (codecs, attrs, modes)
 
 def parse_connection(keys):
-    conn = keys['c'][0].split()
+    conns = []
+    for con in keys['c']:
+        parts = con.split()
+        conns.append({"net_type":parts[0] ,"addr_type":parts[1], "addr": parts[2]})
 
-    return (conn[0],conn[1],conn[2])
+    return conns
 
 def parse_origin(keys):
     parts = keys['o'][0].split()
@@ -56,7 +59,7 @@ def sdp_parser(body):
     if not keys: return {}
     medias, codecs = parse_media(keys)
     codecs, attrs, modes = parse_codecs(keys, codecs)
-    net_type, addr_type, addr = parse_connection(keys)
+    connections = parse_connection(keys)
     username, sess_version = parse_origin(keys)
 
     for k,v in codecs.items():
@@ -67,11 +70,10 @@ def sdp_parser(body):
     {
         "medias":medias,
         "codecs":codecs,
-        "connection": {"addr_type":addr_type, "addr": addr},
+        "connections": connections,
         "username":username,
         "sess_version":sess_version,
         "modes": modes,
-        "net_type": net_type
     }
     for attr in attrs.keys():
         sdp[attr] = attrs[attr]
