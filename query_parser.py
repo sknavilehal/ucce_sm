@@ -1,16 +1,13 @@
 import re
 import ast
 
-def enc_quotes(text):
-    return "'" + text + "'"
-
 def query_parser(query):
     parts = query.split(' or ')
-    output = "{ '$or': ["
+    output = {"$or": []}
 
     for part in parts:
         ands = part.split(' and ')
-        output += "{"
+        field = {}
         for _and in ands:
             ops = re.split(r'(?:==|!=)', _and)
             try:
@@ -18,13 +15,11 @@ def query_parser(query):
             except IndexError:
                 return {}
             if "==" in _and:
-                output += enc_quotes(key) + ":" + enc_quotes(value)
+                field[key] = value
             elif "!=" in _and:
-                output += enc_quotes(key) + ":" + "{'$ne':" + enc_quotes(value) + "}"
+                field[key] = {"$ne": value}
             else: return {}    
-            output += ","
 
-        output += "},"
+        output["$or"].append(field)
         
-    output += "]}"
-    return ast.literal_eval(output)
+    return output

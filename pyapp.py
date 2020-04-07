@@ -190,6 +190,7 @@ def call_filter():
     filename = request.get_json()["filename"]
     filename=filename.split(",")[0]
     query = query_parser(filter)
+    print(query)
     if not query:
         return "Invalid call filter", 400
     query["_id.filename"] = filename
