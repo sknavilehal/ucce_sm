@@ -21,7 +21,7 @@ client = MongoClient("mongodb://localhost:27017")
 @bp.route('/setSession/<string:username>')
 def setSession(username):
     # username here is name of the database
-    session["username"] = username
+    session["username"] = "UCCE_" + username
 
     return "Session set", 200
     
@@ -34,7 +34,7 @@ def clearSession():
 @bp.before_request
 def before_request():
     #Before a request is made get username from session and store database connection in g object
-    username = session.get("username", "Guest")
+    username = session.get("username", "UCCE_Guest")
     g.db = client[username] # Gets reset after a request and has to be set again
     endpoint = request.endpoint.split('.')[1]
     
@@ -190,11 +190,10 @@ def call_filter():
     filename = request.get_json()["filename"]
     filename=filename.split(",")[0]
     query = query_parser(filter)
-    print(query)
     if not query:
         return "Invalid call filter", 400
     query["_id.filename"] = filename
-    guids = g.db.msgs.distinct("guid",query)
+    guids = g.db.msgs.distinct("GUID",query)
     cursor = g.db.GUIDs.find({"_id.guid": {"$in":guids}, "_id.filename":filename})
     GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
 
@@ -236,7 +235,7 @@ def match_signtures():
         query = query_parser(filter[0])
         if not query: continue
         if guid is not None:
-            query["guid"] = guid
+            query["GUID"] = guid
         query["_id.filename"] = filename
         if g.db.msgs.find_one(query, {"_id":1}):
             signatures.append(filter[1])
@@ -257,7 +256,7 @@ def download_file():
     cursor = g.db.msgs.find({"_id.filename":filename}, {"text":1}).sort("count",1)
     file = BytesIO()
     for res in cursor:
-        file.write(res["text"].encode('latin1'))
+        file.write((res["text"]+"\n").encode('latin1'))
     file.seek(0)
     return send_file(file, attachment_filename=os.path.basename(filename), mimetype='text/plain', as_attachment=True)
 

@@ -89,7 +89,7 @@ def parse_datetime(line):
 
 def parse_ged125_msg(ged_msg):
     msg = {}
-    msg["guid"] = parse_guid(ged_msg)
+    msg["GUID"] = parse_guid(ged_msg)
     #msg["datetime"] = parse_datetime(ged_msg.splitlines()[0])
     
     if "publishing to " in ged_msg.lower():
@@ -102,7 +102,7 @@ def parse_ged125_msg(ged_msg):
         msg["from"] = parse_tofro(ged_msg)
         if check_icmss_ivrss(msg): return {}
 
-    msg["event"] = parse_status(ged_msg)
+    msg["Event"] = parse_status(ged_msg)
     msg["status"] = parse_status(ged_msg)
     rename_ucce(msg)
 

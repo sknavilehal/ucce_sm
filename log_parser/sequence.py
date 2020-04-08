@@ -28,12 +28,12 @@ def sequence(filename, guids):
                 text = msg["exchange"]["text"]
                 if msg["exchange"]["type"] == "request":
                     try:
-                        src, dest = msg["via"][0]["addr"], msg["to"]["addr"]
+                        src, dest = msg["Via"][0]["addr"], msg["to"]["addr"]
                     except IndexError:
                         src, dest = msg["from"]["addr"], msg["to"]["addr"]
                 else:
                     try:
-                        src, dest = msg["to"]["addr"], msg["via"][0]["addr"]
+                        src, dest = msg["to"]["addr"], msg["Via"][0]["addr"]
                     except IndexError:
                         src, dest = msg["to"]["addr"], msg["from"]["addr"]
                 if "sdp" in msg.keys():

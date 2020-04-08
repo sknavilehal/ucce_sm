@@ -12,6 +12,8 @@ def query_parser(query):
             ops = re.split(r'(?:==|!=)', _and)
             try:
                 key, value = ops[0].strip(), ops[1].strip()
+                idx = key.find('.')+1
+                key = key[idx:]
             except IndexError:
                 return {}
             if "==" in _and:

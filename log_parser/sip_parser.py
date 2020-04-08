@@ -87,13 +87,13 @@ def parse_sip_msg(sip_msg):
         if "User-Agent:" in line: msg["usr_agent"] = line.split()[1]
         if "Content-Type:" in line: msg["cont_type"] = line.split()[1]
         if "Cisco-Guid:" in line: msg["cisco-guid"] = line.split()[1]
-        if "Contact:" in line: msg["contact"] = parse_contact(line)
-        if "Date:" in line: msg["dateformat"] = line.split()[-1]
+        if "Contact:" in line: msg["Contact"] = parse_contact(line)
+        if "Date:" in line: msg["DateFmt"] = line.split()[-1]
         if "Content-Length:" in line:
             content_len = int(line.split()[1])
     
     msg["type"] = "sip"
-    msg["via"] = via
+    msg["Via"] = via
     msg["text"] = sip_msg
     msg["error_code"] = parse_error_code(msg["exchange"]["text"])
     if "Sent" in lines[1] or "Sending" in lines[0]: msg["sent"] = True
