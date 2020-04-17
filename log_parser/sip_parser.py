@@ -1,4 +1,5 @@
 import re
+from .constants import SIP
 from datetime import datetime
 from flask import current_app as app, abort
 from .sdp_parser import sdp_parser

@@ -41,7 +41,10 @@ function get_table(filename) {
         });
 }
 
-function appendData(data) {
+function appendData(table) {
+    console.log(table)
+    var data = table["GUIDs"]
+    var headers = table["headers"]
     var GUIDs = [];
     for (var i = 0; i < data.length; i++) {
         GUIDs[i] = [];
@@ -57,13 +60,7 @@ function appendData(data) {
     $('#call_details').DataTable({
         data: GUIDs,
         //columns for database
-        columns: [
-            { title: "GUID" },
-            { title: "ANI" },
-            { title: "DNIS" },
-            { title: "Details" },
-            { title: "Signature"}
-        ]
+        columns: headers
     });
 
     var table = $('#call_details').DataTable();
@@ -71,7 +68,7 @@ function appendData(data) {
 
 let re = /and\s|or\s|&&\s|\|\|\s|\'/gi;
 $('#autocomplete').autocomplete({
-    lookupLimit: 5,
+    lookupLimit: 6,
     lookup: suggestions,
     delimiter: re,
     onSelect: function (suggestion) {

@@ -2,7 +2,7 @@ import re
 from .constants import CUBE,CVP,FINESSE,SIP,GED125,GED188
 
 filtered_cvp_logs = {"Sending", "BEGINING PROCESSING NEW MESSAGE"}
-filtered_finesse_logs = {"DECODED_MESSAGE_FROM_CTI_SERVER", "XMPP_PUBLISH_ASYNCHRONOUS"}
+filtered_finesse_logs = {"DECODED_MESSAGE_FROM_CTI_SERVER:", "XMPP_PUBLISH_ASYNCHRONOUS:"}
 ingnored_finesse_logs = {"CTIQuerySkillGroupStatisticsConf", "Payload=BEFORE PUBLISH"}
 
 def parse_ids(line):
@@ -14,9 +14,17 @@ def parse_ids(line):
     legid = legid.split(',')[0]
     return guid,legid
 
-def parse_callid(line):
+def parse_call_id(line):
     call_id = line.split()[1].split('@')[0]
     return call_id
+
+def parse_callid(line):
+    callid = line.split('callId=')[1].split(',')[0]
+    return callid
+
+def parse_agent_ext(line):
+    ext = line.split('dnis=')[1].split(',')[0]
+    return ext
 
 def isDelimeter(device, line):
     if device == CVP:
@@ -64,13 +72,22 @@ def callMapping(device, lines):
                 elif not match:
                     ignore_sip_msg = False
         elif device == FINESSE:
+            if " callId=" in line and " dnis=" in line and "dnis=null" not in line:
+                callid = line.split(' callId=')[1].split(',')[0]
+                agent_ext = line.split(' dnis=')[1].split(',')[0]
+                if agent_ext != '': callmapping[callid] = agent_ext
+            if " agentExtension=" in line and " agentID=" in line:
+                agent_id = line.split(' agentID=')[1].split(',')[0]
+                agent_ext = line.split(' agentExtension=')[1].split(',')[0]
+                callmapping[agent_id] = agent_ext
+            
             for log in filtered_finesse_logs:
                 if log in line: ignore_ged188_msg = False
             for log in ingnored_finesse_logs:
                 if log in line: ignore_ged188_msg = True
         
         if "Call-ID: " in line:
-            call_id = parse_callid(line)
+            call_id = parse_call_id(line)
             if ccapi:
                 callmapping[call_id] = ccapi
 

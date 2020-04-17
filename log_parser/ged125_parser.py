@@ -1,5 +1,6 @@
 import re
 from datetime import datetime
+from .constants import GED125
 
 def check_icmss_ivrss(msg):
     if msg["from"] == "ICM_SS" and msg["to"] == "IVR_SS" or msg["from"] == "IVR_SS" and msg["to"] == "ICM_SS":
@@ -111,7 +112,7 @@ def parse_ged125_msg(ged_msg):
     #Sending the ged message line to parse the attributes from it.
     parse_attributes(ged_msg, msg)
 
-    msg["type"] = "ged"
+    msg["type"] = "ged125"
     msg["text"] = ged_msg
 
     return msg

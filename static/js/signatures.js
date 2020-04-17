@@ -8,7 +8,7 @@ window.signature = signature
 
 let re = /and\s|or\s|&&\s|\|\|\s|\'/gi;
 $('#signature').autocomplete({
-    lookupLimit: 5,
+    lookupLimit: 6,
     lookup: suggestions,
     delimiter: re,
 });

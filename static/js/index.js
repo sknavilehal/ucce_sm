@@ -85,6 +85,7 @@ $("#button").click(function (e) {
 });
 
 function analyse(i) {
+    console.log("friend")
     var table = $('#table_id').DataTable();
     data = table.rows(i).data()[0][0]
     //alert(data)
@@ -96,14 +97,16 @@ function analyse(i) {
 function del(i) {
     var table = $('#table_id').DataTable();
     data = table.rows(i).data()[0][0]
+    console.log("hello")
     $.ajax({
         type: 'GET',
         url: `/Files-History/delete?filename=${data}`,
         success: function (data) {
+            location.reload()
         }
     });
     //initial()
-    location.reload()
+    //
 }
 
 function sign(data) {

@@ -47,7 +47,7 @@ def before_request():
     eventLog = open(filePath, 'a', newline='')
     writer = csv.writer(eventLog)
 
-    # Only endpoints in this list are logged to eventLog.log
+    # Only endpoints in this list are logged to event_log.csv
     important_endpoints = ["get_calls", "ladder_diagram", "get_message", "upload_files","call_filter", "post_signature", "match_signtures", "delete_file", "delete_signature"]
     if endpoint not in important_endpoints: return None
 
@@ -104,12 +104,28 @@ def call_summary():
 def signatures_page():
     return render_template("signatures.html")
 
+def get_table_data(device, cursor):
+    headers = [{}, {}, {}, {"title": "Details"}, {"title": "Signature"}]
+    if device == "FINESSE":
+        GUIDs = [[res["_id"]["guid"],res["agent_id"], res["to"]] for res in cursor]
+        headers[1]["title"] = "Agent ID"; headers[0]["title"] = "Agent Extenstion"; headers[2]["title"] = "-"
+    elif device == "CUBE":
+        GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
+        headers[0]["title"] = "CCAPI ID"; headers[1]["title"] = "From"; headers[2]["title"] = "To"
+    elif device == "CVP":
+        GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
+        headers[0]["title"] = "GUID"; headers[1]["title"] = "ANI"; headers[2]["title"] = "DNIS"
+    
+    return {"GUIDs": GUIDs, "headers":headers}
+
 @bp.route("/Files-History/analyze")
 def get_calls():
     filename = request.args.get('filename', None)
     cursor = g.db.GUIDs.find({"_id.filename":filename})
-    GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
-    return jsonify(GUIDs),200
+    device = g.db.files.find_one({"_id": filename}, {"device"})["device"]
+    table = get_table_data(device, cursor)
+    #GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
+    return table,200
 
 @bp.route("/Call-Summary/details")
 def ladder_diagram():
@@ -194,10 +210,13 @@ def call_filter():
         return "Invalid call filter", 400
     query["_id.filename"] = filename
     guids = g.db.msgs.distinct("GUID",query)
+    print(guids)
+    device = g.db.files.find_one({"_id": filename}, {"device"})["device"]
     cursor = g.db.GUIDs.find({"_id.guid": {"$in":guids}, "_id.filename":filename})
-    GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
+    #GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
+    table = get_table_data(device, cursor)
 
-    return jsonify(GUIDs), 200
+    return table, 200
 
 @bp.route("/Signatures/new-sig", methods=["POST"])
 def post_signature():

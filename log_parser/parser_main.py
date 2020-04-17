@@ -1,3 +1,4 @@
+from pprint import pprint
 from .GUIDS import GUIDS
 from .callMapping import callMapping
 from .sequence import sequence
@@ -20,6 +21,6 @@ def parser_main(filename, contents):
     if device == UNKNOWN: return ("Unknown", {})
     callmapping, msgs = callMapping(device, contents)
     guids = GUIDS(callmapping, msgs)
-    sequence(filename, guids)
+    sequence(device, filename, guids)
 
     return (devices[device], guids)
