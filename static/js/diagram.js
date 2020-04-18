@@ -43,19 +43,16 @@ $.ajax({
             all1[i].setAttribute("font-family", "'Poppins', sans-serif")
             all1[i].setAttribute("text-decoration", "none")
             all1[i].setAttribute("font-weight", "300px")
-            if (all1[i].innerHTML.search("INVITE") >= 0) {
-
-                all1[i].setAttribute("fill", "black")
-            }
-            if (all1[i].innerHTML.search("BYE") >= 0) {
+            if (all1[i].innerHTML.search("INVITE") >= 0)
+                all1[i].setAttribute("fill", "blue")
+            if (all1[i].innerHTML.search("BYE") >= 0)
                 all1[i].setAttribute("fill", "orange")
-            }
             if (all1[i].innerHTML.search("2") == 0)
                 all1[i].setAttribute("fill", "green")
             if (all1[i].innerHTML.search("3") == 0)
                 all1[i].setAttribute("fill", "yellow")
-            if (all1[i].innerHTML.search("1") == 0 && all1[i].innerHTML.length < 4)
-                all1[i].setAttribute("fill", "blue")
+            if (all1[i].innerHTML.search("1") == 0)
+                all1[i].setAttribute("fill", "black")
             if (all1[i].innerHTML.search("4") == 0 || all1[i].innerHTML.search("5") == 0 || all1[i].innerHTML.search("6") == 0)
                 all1[i].setAttribute("fill", "red")
         }

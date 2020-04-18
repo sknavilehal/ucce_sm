@@ -107,8 +107,8 @@ def signatures_page():
 def get_table_data(device, cursor):
     headers = [{}, {}, {}, {"title": "Details"}, {"title": "Signature"}]
     if device == "FINESSE":
-        GUIDs = [[res["_id"]["guid"],res["agent_id"], res["to"]] for res in cursor]
-        headers[1]["title"] = "Agent ID"; headers[0]["title"] = "Agent Extenstion"; headers[2]["title"] = "-"
+        GUIDs = [[res["_id"]["guid"],res["agent_id"], res["agent_name"]] for res in cursor]
+        headers[1]["title"] = "Agent ID"; headers[0]["title"] = "Agent Extenstion"; headers[2]["title"] = "Agent Name"
     elif device == "CUBE":
         GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
         headers[0]["title"] = "CCAPI ID"; headers[1]["title"] = "From"; headers[2]["title"] = "To"
@@ -210,7 +210,6 @@ def call_filter():
         return "Invalid call filter", 400
     query["_id.filename"] = filename
     guids = g.db.msgs.distinct("GUID",query)
-    print(guids)
     device = g.db.files.find_one({"_id": filename}, {"device"})["device"]
     cursor = g.db.GUIDs.find({"_id.guid": {"$in":guids}, "_id.filename":filename})
     #GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]

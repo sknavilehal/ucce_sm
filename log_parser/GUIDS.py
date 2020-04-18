@@ -38,7 +38,7 @@ def GUIDS(callmapping, msgs):
             agent_id = parsed_msg["agent_id"]
             if callid in callmapping.keys():
                 guid = callmapping[callid]
-            elif agent_id and agent_id in callmapping.keys():
+            elif agent_id in callmapping.keys():
                 guid = callmapping[agent_id]
                 
             if guid in guid_set:

@@ -3,7 +3,7 @@ from .constants import CUBE,CVP,FINESSE,SIP,GED125,GED188
 
 filtered_cvp_logs = {"Sending", "BEGINING PROCESSING NEW MESSAGE"}
 filtered_finesse_logs = {"DECODED_MESSAGE_FROM_CTI_SERVER:", "XMPP_PUBLISH_ASYNCHRONOUS:"}
-ingnored_finesse_logs = {"CTIQuerySkillGroupStatisticsConf", "Payload=BEFORE PUBLISH"}
+ignored_finesse_logs = {"CTIQuerySkillGroupStatisticsConf", "Payload=BEFORE PUBLISH"}
 
 def parse_ids(line):
     idx = line.lower().find("guid")
@@ -83,7 +83,7 @@ def callMapping(device, lines):
             
             for log in filtered_finesse_logs:
                 if log in line: ignore_ged188_msg = False
-            for log in ingnored_finesse_logs:
+            for log in ignored_finesse_logs:
                 if log in line: ignore_ged188_msg = True
         
         if "Call-ID: " in line:

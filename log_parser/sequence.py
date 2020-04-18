@@ -16,6 +16,27 @@ def add_to_and_from(doc, msg):
         doc["from"] = msg["from"]["ext"] 
         doc["to"] = msg["exchange"]["ext"] 
 
+def sequence_line_sip(msg):
+    text = msg["exchange"]["text"]
+    if msg["exchange"]["type"] == "request":
+        try:
+            src, dest = msg["Via"][0]["addr"], msg["to"]["addr"]
+        except IndexError:
+            src, dest = msg["from"]["addr"], msg["to"]["addr"]
+    else:
+        try:
+            src, dest = msg["to"]["addr"], msg["Via"][0]["addr"]
+        except IndexError:
+            src, dest = msg["to"]["addr"], msg["from"]["addr"]
+    if "sdp" in msg.keys():
+        text = text + " W/ SDP"
+
+    if msg["exchange"]["text"] == "ACK": dest = msg["exchange"]["addr"]
+    src = src.replace('-', '_')
+    dest = dest.replace('-', '_')
+
+    return src,dest,text
+
 def sequence(device, filename, guids):
     for guid in guids.keys():
         doc = {}
@@ -24,34 +45,16 @@ def sequence(device, filename, guids):
         src = dest = text = ""
         doc["_id"] = {"filename":filename, "guid":guid}
         if device == FINESSE:
-            try:
-                doc["agent_id"] = guids[guid]["agent_id"]
-            except:
-                doc["agent_id"] = '-'
+            doc["agent_name"] = '-'
+            doc["agent_id"] = '-'
 
         sequence = "@startuml\nskinparam sequence {\nLifeLineBorderColor black\nParticipantBorderColor #00bceb\nParticipantBackgroundColor white\nParticipantFontName Consolas\nParticipantFontSize 17\nParticipantFontColor black\n}\n"
         for msg in guids[guid]["msgs"]:
             if msg["type"] == "sip":
-                text = msg["exchange"]["text"]
-                if msg["exchange"]["type"] == "request":
-                    try:
-                        src, dest = msg["Via"][0]["addr"], msg["to"]["addr"]
-                    except IndexError:
-                        src, dest = msg["from"]["addr"], msg["to"]["addr"]
-                else:
-                    try:
-                        src, dest = msg["to"]["addr"], msg["Via"][0]["addr"]
-                    except IndexError:
-                        src, dest = msg["to"]["addr"], msg["from"]["addr"]
-                if "sdp" in msg.keys():
-                    text = text + " W/ SDP"
-
-                if msg["exchange"]["text"] == "ACK": dest = msg["exchange"]["addr"]
+                src,dest,text = sequence_line_sip(msg)
                 if device == CVP:
                     if src == guids[guid]["cvp"]: src = "SIP_SS"
                     if dest == guids[guid]["cvp"]: dest = "SIP_SS"
-                src = src.replace('-', '_')
-                dest = dest.replace('-', '_')
 
                 #Using the first sip message to get the 'to' and 'from' for the call summary table
                 if doc["from"] == '-' and doc["to"] == '-':
@@ -66,6 +69,15 @@ def sequence(device, filename, guids):
             elif msg["type"] == "ged188":
                 src, dest = msg["from"], msg["to"]
                 text = msg["event"]
+                try: 
+                    agent_name = msg["xmltodict"]["Update"]["data"]["user"]["firstName"]
+                    agent_id = msg["agent_id"]
+                    if doc["agent_name"] == '-':
+                        doc["agent_name"] = agent_name
+                    if doc["agent_id"] == '-':
+                        doc["agent_id"] = agent_id
+                except Exception as e:
+                    print(e)
 
             code = text[0]
             oid = str(ObjectId())

@@ -13,7 +13,7 @@ def parse_ged188_msg(ged_msg):
     msg = {}
     msg["type"] = "ged188"
     msg["text"] = ged_msg
-    msg["agent_ext"] = msg["agent_id"] = msg["callid"] = None
+    msg["agent_id"] = msg["callid"] = msg["agent_name"] = '-'
 
     if "FROM_CTI_SERVER:" in ged_msg:
         msg["from"] = "CTI_SERVER"
@@ -28,12 +28,10 @@ def parse_ged188_msg(ged_msg):
         msg["to"] = "Agent_Desktop"
         msg["event"] = "XMPP_PUB_ASYNC"
         msg["agent_id"] = parse_agent_id(ged_msg)
-        #    xml = ged_msg.split('[Payload=')[1].split(']: Publishing')[0]
-        #xml = ged_msg.split('[Payload=')[1].split(']: Publishing')[0]
-        #xml = xml.replace('&lt;', '<')
-        #xml = xml.replace('&gt;', '>')
-        #msg["text"] = json.dumps(xmltodict.parse(xml), indent=2)
-        msg["text"] = ged_msg
+        xml = ged_msg.split('[Payload=')[1].split(']: Publishing')[0]
+        xml = xml.replace('&lt;', '<')
+        xml = xml.replace('&gt;', '>')
+        msg["xmltodict"] = xmltodict.parse(xml)
     else: return {}
 
     return msg
