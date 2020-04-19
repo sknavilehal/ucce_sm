@@ -14,18 +14,6 @@ def parse_ids(line):
     legid = legid.split(',')[0]
     return guid,legid
 
-def parse_call_id(line):
-    call_id = line.split()[1].split('@')[0]
-    return call_id
-
-def parse_callid(line):
-    callid = line.split('callId=')[1].split(',')[0]
-    return callid
-
-def parse_agent_ext(line):
-    ext = line.split('dnis=')[1].split(',')[0]
-    return ext
-
 def isDelimeter(device, line):
     if device == CVP:
         return ": %" in line and line.split("%")[1].split()[0][-1]==":"
@@ -87,7 +75,7 @@ def callMapping(device, lines):
                 if log in line: ignore_ged188_msg = True
         
         if "Call-ID: " in line:
-            call_id = parse_call_id(line)
+            call_id = line.split()[1].split('@')[0]
             if ccapi:
                 callmapping[call_id] = ccapi
 

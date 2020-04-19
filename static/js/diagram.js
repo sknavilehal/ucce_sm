@@ -87,6 +87,7 @@ function get_msgs(id) {
         processData: false,
         success: function (data) {
             msg = data.msg_text
+            /*
             msg = msg.replace(/</g, "&lt;")
 
             msg = msg.replace(/>/g, "&gt;")
@@ -138,7 +139,9 @@ function get_msgs(id) {
             temp = temp.replace(/(?:\r\n|\r|\n)/g, '<br>')
 
             msg = temp.replace(/(?:\r\n|\r|\n)/g, '<br>')
-            document.getElementById("msg").innerHTML = msg
+            */
+            msg = "<pre>" + msg + "</pre>";
+            document.getElementById("msg").innerHTML = msg;
         }
     });
 }

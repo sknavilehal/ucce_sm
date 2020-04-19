@@ -68,7 +68,7 @@ def sequence(device, filename, guids):
                     add_dnis_and_ani(doc,msg)
             elif msg["type"] == "ged188":
                 src, dest = msg["from"], msg["to"]
-                text = msg["event"]
+                text = msg["message"]
                 try: 
                     agent_name = msg["xmltodict"]["Update"]["data"]["user"]["firstName"]
                     agent_id = msg["agent_id"]
@@ -76,8 +76,8 @@ def sequence(device, filename, guids):
                         doc["agent_name"] = agent_name
                     if doc["agent_id"] == '-':
                         doc["agent_id"] = agent_id
-                except Exception as e:
-                    print(e)
+                except KeyError as e:
+                    print("Key Error: ", str(e))
 
             code = text[0]
             oid = str(ObjectId())

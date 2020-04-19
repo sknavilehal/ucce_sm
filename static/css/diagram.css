@@ -1,51 +1,53 @@
 body.cui .btn
 {
-    background-color: #0094eb;
-border-color: #0175a2;
-color: #f8f8f8;
+  background-color: #0094eb;
+  border-color: #0175a2;
+  color: #f8f8f8;
 }
-
 
 .center
 {
-
-max-width: 900px;
-    margin-top: 4rem;
+  max-width: 900px;
+  margin-top: 4rem;
   margin-left: auto;
   margin-right: auto;
   background: white;
   overflow: scroll;
 }
-#diagram
-{
+#diagram {
   width: auto;
-background: white;
-text-align: center;
-padding: 2rem;
-background: white;
-text-align: center;
-
-
+  background: white;
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  text-align: center;
 }
 
 #svg1 path,
-#svg1 rect{
+#svg1 rect {
   fill: #00bceb;
 
 }
-.modal-body{
+.modal-body {
   word-break: break-all;
 }
-.col
-{
+.col {
   overflow:auto
 }
 
-
-
-#logo
-{
+#logo {
     position:absolute;
     top:0;
     margin-left: 30%;
+}
+
+pre {
+  /* font-family: "courier new", courier, monospace; */
+  font-size: 13px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
 }
