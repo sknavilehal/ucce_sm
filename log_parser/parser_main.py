@@ -20,7 +20,7 @@ def parser_main(filename, contents):
     device = detect_device(contents)
     if device == UNKNOWN: return ("Unknown", {})
     callmapping, msgs = callMapping(device, contents)
-    guids = GUIDS(callmapping, msgs)
+    guids = GUIDS(device, callmapping, msgs)
     sequence(device, filename, guids)
 
     return (devices[device], guids)

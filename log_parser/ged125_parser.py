@@ -75,6 +75,8 @@ def parse_attributes(ged_msg, msg):
             #Error case where splitting by ' ' wasn't sufficient and gave the format - 'randomtext,key=value'
             if ',' in attribute[0]:
                 attribute[0] = attribute[0].split(',')[-1]
+            if ',' in attribute[1]:
+                attribute[1] = attribute[1].split(',')[0]
 
             #If the attribute is not in the dictionary then add it 
             if attribute[0] not in msg.keys():
