@@ -62,7 +62,7 @@ def parse_ged188_msg(ged_msg):
         msg["from"] = "FINESSE"
         msg["to"] = "Agent_Desktop"
         msg["message"] = "XMPP_PUB_ASYNC"
-
+        msg["agent_id"] = parse_agent_id(ged_msg)
         xml = ged_msg.split('[Payload=')[1].split(']: Publishing')[0]
         xml = xml.replace('&lt;', '<')
         xml = xml.replace('&gt;', '>')
@@ -87,7 +87,6 @@ def parse_ged188_msg(ged_msg):
             msg["message"] += ", State:" + state
             msg["message"] += ", Method:" +  event
             
-        msg["agent_id"] = parse_agent_id(ged_msg)
         msg["text"] = json.dumps(xmltodict.parse(xml), indent=2)
     else: return {}
 
