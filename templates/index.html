@@ -10,11 +10,21 @@
 {%block content %}
 <div class="container-fluid">
     <div class="row p-4">
-        <div class="col col-md-3 ">
+        <div class="col col-md-3 " style="height:min-content;">
             <div class="item ">
                 <form id="upload-widget" method="post" action="" class="dropzone"></form>
             </div>
-            <button type="button" id="upload" class="btn btn-primary btn-sm float-right mr-3 mb-2">Upload</button>
+        <div class="">
+            <div class="row">
+                <div class="col-6 ml-4">
+                    Accepts txt,log,zip
+                </div>
+                <div class="col-4">
+                    <button type="button" id="upload" class="btn btn-primary btn-sm float-right mr-3 mb-2">Upload</button>
+                </div>
+            </div>
+        </div>
+            
         </div>
         <div class="col col-md-8.5">
             <div class="item">

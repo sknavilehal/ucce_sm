@@ -61,6 +61,7 @@ function signature(){
         }
 
     });
+    
 }
 function del(i){
     var data = $("#table_id").DataTable().row(i).data()

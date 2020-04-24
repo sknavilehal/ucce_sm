@@ -8,7 +8,10 @@
     margin-left: auto;
     margin-right: auto;
 }
-
+#upload-widget
+{
+    text-align: center;
+}
 .center {
     max-width: 300px;
     margin-top: 4rem;
