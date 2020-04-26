@@ -49,10 +49,13 @@ def parse_ged188_msg(ged_msg):
         msg["from"] = "CTI_SERVER"
         msg["to"] = "FINESSE"
         msg["message"] = ged_msg.split('cti_message=')[1].split()[0]
-        add_event_data("agentState", ", State:", msg)
-        add_event_data("eventReasonCode", ", Reason Code:", msg)
-        add_event_data("skillGroupNumber", ", SG:", msg)
-        add_event_data("skillGroupState", ", SG State:", msg)
+        if "agentState=" in ged_msg:
+            idx = ged_msg.index("agentState=")
+            try:
+                msg["message"] += ", State: " + re.split(r'[\(\)]', ged_msg[idx:])[1]
+            except: pass
+        add_event_data("eventReasonCode", ", Code: ", msg)
+        add_event_data("skillGroupNumber", ", SG: ", msg)
 
         if " callId=" in ged_msg in ged_msg:
             msg["callid"] = ged_msg.split(' callId=')[1].split(',')[0]
@@ -61,16 +64,13 @@ def parse_ged188_msg(ged_msg):
     elif "%[NodeId=/finesse/api/User/" in ged_msg:
         msg["from"] = "FINESSE"
         msg["to"] = "Agent_Desktop"
-        msg["message"] = "XMPP_PUB_ASYNC"
+        msg["message"] = ' '.join(ged_msg.split()[2:6])
         msg["agent_id"] = parse_agent_id(ged_msg)
         xml = ged_msg.split('[Payload=')[1].split(']: Publishing')[0]
         xml = xml.replace('&lt;', '<')
         xml = xml.replace('&gt;', '>')
         msg["xmltodict"] = xmltodict.parse(xml)
-        state = event = '-'
-        try:
-            event = msg["xmltodict"]["Update"]["event"]
-        except: pass
+        state = '-'
         try:
             state = msg["xmltodict"]["Update"]["data"]["user"]["state"]
         except: pass
@@ -83,9 +83,11 @@ def parse_ged188_msg(ged_msg):
         try:
             state = msg["xmltodict"]["Update"]["data"]["dialog"]["participants"]["Participant"]["state"]
         except: pass
-        if state != '-' and event != '-':
-            msg["message"] += ", State:" + state
-            msg["message"] += ", Method:" +  event
+        try:
+            state = msg["xmltodict"]["Update"]["data"]["dialog"]["participants"]["Participant"][0]["state"]
+        except: pass
+        if state != '-':
+            msg["message"] += ", State: " + state
             
         msg["text"] = json.dumps(xmltodict.parse(xml), indent=2)
     else: return {}
