@@ -81,6 +81,8 @@ def parse_attributes(ged_msg, msg):
             #If the attribute is not in the dictionary then add it 
             if attribute[0] not in msg.keys():
                 msg[attribute[0]] = attribute[1]
+    if ":application=" in ged_msg:
+        msg["application"] = ged_msg.split(':application=')[1].split(',')[0].split(';')[0]
 
 def parse_datetime(line):
     match = re.search(r'\w{3}\s+\d{1,2}\s+\d{4}\s+\d\d:\d\d:\d\d.\d{3}', line)
@@ -113,7 +115,7 @@ def parse_ged125_msg(ged_msg):
 
     #Sending the ged message line to parse the attributes from it.
     parse_attributes(ged_msg, msg)
-
+    if "application" in msg: msg["status"] += ", app=" + msg["application"]
     msg["type"] = "ged125"
     msg["text"] = ged_msg
 

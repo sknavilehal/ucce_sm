@@ -35,6 +35,7 @@ def clearSession():
 def before_request():
     #Before a request is made get username from session and store database connection in g object
     username = session.get("username", "UCCE_Guest")
+    g.username = username
     g.db = client[username] # Gets reset after a request and has to be set again
     endpoint = request.endpoint.split('.')[1]
     
@@ -222,7 +223,7 @@ def post_signature():
     signature = request.get_json()["signature"]
     description = request.get_json()["description"]
     try:
-        id = g.db.signatures.insert_one({"_id":signature, "description":description})
+        id = client["UCCE_Global"].signatures.insert_one({"user": g.username,"filter":signature, "description":description, "published": False})
     except Exception:
         return "signature already exists", 400
     return id.inserted_id, 200
@@ -230,14 +231,14 @@ def post_signature():
 @bp.route("/Signatures/delete-sig")
 def delete_signature():
     signature = request.args.get("signature", None)
-    g.db.signatures.delete_one({"_id":signature})
+    client["UCCE_Global"].signatures.delete_one({"user":g.username,"filter":signature})
 
     return "Signature deleted", 200
 
 @bp.route("/get-signatures")
 def get_signatures():
-    cursor = g.db.signatures.find({})
-    result = [[res["_id"], res["description"]] for res in cursor]
+    cursor = client["UCCE_Global"].signatures.find({"$or":[{"user":g.username},{"published":True}]})
+    result = [[res["filter"], res["description"]] for res in cursor]
 
     return jsonify(result)
 
@@ -247,8 +248,8 @@ def match_signtures():
     signatures = []
     filename = request.args.get("filename", None)
     guid = request.args.get("guid", None)
-    cursor = g.db.signatures.find({})
-    filters = [(res["_id"],res["description"]) for res in cursor]
+    cursor = client["UCCE_Global"].signatures.find({"$or":[{"user":g.username},{"published":True}]})
+    filters = [(res["filter"],res["description"]) for res in cursor]
     for filter in filters:
         query = query_parser(filter[0])
         if not query: continue

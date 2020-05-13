@@ -8,6 +8,7 @@ const suggestions = [
     "GED125.GUID",
     "GED125.Event",
     "GED125.DialogId",
+    "GED125.scriptId",
     "GED125.DialogID",
     "GED125.SendSeqNo",
     "GED125.ErrorCode",
