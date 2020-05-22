@@ -70,15 +70,18 @@ def before_request():
         writer.writerow(row)
 
     eventLog.close()
+    client["UCCE_Global"].event_log.insert_one({"datetime":row[0], "username":row[1], "category":row[2], "action":row[3], "param1":row[4]})
 
     return None
 
 def threaded_task(_g, app, filename, contents):
     # _g and app are flask objects required for threaded task running outside application context
-    _g.db.files.insert_one({"_id":filename,"device":"unknown", "status": "Processing..."})
+    _g.db.files.insert_one({"_id":filename,"device":"unknown", "status": "Processing...", "prelim_sigs": []})
+
+    prelim_sigs = client["UCCE_Global"].signatures.distinct("filter", {"type" : "freeflow"})
     try:
-        device, guids = parser_main(filename, contents)
-        _g.db.files.update({"_id":filename},  {"$set": {"status": "Processed", "device": device}})
+        device,guids,prelim_sigs = parser_main(filename, contents, prelim_sigs)
+        _g.db.files.update({"_id":filename},  {"$set": {"status": "Processed", "device": device, "prelim_sigs": prelim_sigs}})
         
         for guid in guids.keys():
             _g.db.GUIDs.insert_one(guids[guid]["doc"])
@@ -87,6 +90,7 @@ def threaded_task(_g, app, filename, contents):
     except Exception:
         app.logger.error(traceback.format_exc())
         _g.db.files.update({"_id":filename}, {"$set": {"status": "Failed"}})
+        print(device, type(guids), prelim_sigs)
 
 @bp.route("/")
 def login():
@@ -198,7 +202,7 @@ def diagram_page():
 @bp.route("/files")
 def get_files():
     cursor = g.db.files.find({})
-    files = [[res["_id"], res["device"], res["status"]] for res in cursor]
+    files = [[res["_id"], res["device"], res["status"], res["prelim_sigs"]] for res in cursor]
     return jsonify(files),200
 
 @bp.route("/Call-Summary/filter", methods=["POST"])
@@ -222,8 +226,13 @@ def call_filter():
 def post_signature():
     signature = request.get_json()["signature"]
     description = request.get_json()["description"]
+    if signature[:3] in ["SIP", "GED"]:
+        _type = "nosql"
+    elif signature[0] == '/':
+        _type = "regex"
+    else: _type = "freeflow"
     try:
-        id = client["UCCE_Global"].signatures.insert_one({"user": g.username,"filter":signature, "description":description, "published": False})
+        id = client["UCCE_Global"].signatures.insert_one({"user": g.username,"filter":signature, "description":description, "published": False, "type":_type})
     except Exception:
         return "signature already exists", 400
     return id.inserted_id, 200
@@ -231,6 +240,7 @@ def post_signature():
 @bp.route("/Signatures/delete-sig")
 def delete_signature():
     signature = request.args.get("signature", None)
+    print(signature)
     client["UCCE_Global"].signatures.delete_one({"user":g.username,"filter":signature})
 
     return "Signature deleted", 200
@@ -248,7 +258,7 @@ def match_signtures():
     signatures = []
     filename = request.args.get("filename", None)
     guid = request.args.get("guid", None)
-    cursor = client["UCCE_Global"].signatures.find({"$or":[{"user":g.username},{"published":True}]})
+    cursor = client["UCCE_Global"].signatures.find({"type": "nosql", "$or":[{"user":g.username},{"published":True}]})
     filters = [(res["filter"],res["description"]) for res in cursor]
     for filter in filters:
         query = query_parser(filter[0])

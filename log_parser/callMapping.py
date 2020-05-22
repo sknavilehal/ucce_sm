@@ -80,5 +80,5 @@ def callMapping(device, lines):
                 callmapping[call_id] = ccapi
 
         msg=msg+"\n"+line
-    
+
     return callmapping, messages
