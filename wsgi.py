@@ -16,10 +16,12 @@ path = app.instance_path
 if not os.path.exists(path):
     os.makedirs(path)
 
+"""
 filePath = os.path.join(app.instance_path, 'event_log.csv')
 with open(filePath, 'w', newline='') as eventLog:
     writer = csv.writer(eventLog)
     writer.writerow(["Date", "User", "Category", "Action", "Param1", "Param2"])
+"""
 
 if __name__ != "__main__":
     gunicorn_logger = logging.getLogger('gunicorn.error')
