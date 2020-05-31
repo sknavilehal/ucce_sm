@@ -133,18 +133,19 @@ def get_table_data(device, cursor):
     if device == "FINESSE":
         GUIDs = [[res["_id"]["guid"],res["agent_id"], res["agent_name"]] for res in cursor]
         headers.append({"title": "Agent Extenstion"}); 
+        headers.append({"title": "Start Time"});
         headers.append({"title": "Agent ID"}); 
         headers.append({"title": "Agent Name"}); 
     elif device == "CUBE":
         GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
         headers.append({"title": "CCAPI ID"}); 
+        headers.append({"title": "Start Time"});
         headers.append({"title": "From"}); 
         headers.append({"title": "To"});
     elif device == "CVP":
-        GUIDs = [[res["_id"]["guid"], res["start_time"], res["end_time"], res["from"], res["to"]] for res in cursor]
+        GUIDs = [[res["_id"]["guid"], res["start_time"], res["from"], res["to"]] for res in cursor]
         headers.append({"title": "GUID"}); 
-        headers.append({"title": "Start Time"}); 
-        headers.append({"title": "End Time"});
+        headers.append({"title": "Start Time"});
         headers.append({"title": "ANI"}); 
         headers.append({"title": "DNIS"}); 
     

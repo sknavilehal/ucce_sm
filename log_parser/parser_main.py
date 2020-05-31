@@ -21,8 +21,8 @@ def preliminary_run(contents, alerts):
     for content in contents:
         if device == CVP and ": %" in content:
             if time_data[0] == '-':
-                time_data[0] = content.split(": ")[2].split('-')[0].strip()
-            time_data[1] = content.split(": ")[2].split('-')[0].strip()
+                time_data[0] = content.split(": ")[2].split('-')[0].split('+')[0].strip()
+            time_data[1] = content.split(": ")[2].split('-')[0].split('+')[0].strip()
     
     alerts = [sig for sig in sig_matches]
     return (alerts, device, time_data)

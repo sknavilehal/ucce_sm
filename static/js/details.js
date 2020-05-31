@@ -49,7 +49,7 @@ function appendData(table) {
     for (var i = 0; i < data.length; i++) {
         GUIDs[i] = [];
         //for Details hyperlink to work
-        GUIDs[i] = [data[i][0], data[i][1], data[i][2], data[i][3], data[i][4], `<a href='#' id='seq_diag' onclick='seq("${data[i][0]}")'>Details</a>`, `<a href='#' id='sign' data-toggle='modal' data-target='#exampleModal' onclick='sign("${data[i][0]}")'>Signature</a>`];
+        GUIDs[i] = [data[i][0], data[i][1], data[i][2], data[i][3], `<a href='#' id='seq_diag' onclick='seq("${data[i][0]}")'>Details</a>`, `<a href='#' id='sign' data-toggle='modal' data-target='#exampleModal' onclick='sign("${data[i][0]}")'>Signature</a>`];
     }
     //destroy the tables content when switching b/w files
     if (document.getElementById("call_details").innerHTML != "") {

@@ -43,16 +43,13 @@ def sequence(device, filename, guids):
         doc = {}
         doc["from"] = '-'
         doc["to"] = '-'
+        doc["start_time"] = '-'
         src = dest = text = ""
         doc["_id"] = {"filename":filename, "guid":guid}
         if device == FINESSE:
             doc["agent_name"] = '-'
             doc["agent_id"] = '-'
         
-        if device == CVP:
-            doc["start_time"] = guids[guid]["msgs"][0]["text"].split(": ")[2].split('-')[0].strip()
-            doc["end_time"] = guids[guid]["msgs"][-1]["text"].split(": ")[2].split('-')[0].strip()
-
         sequence = "@startuml\nskinparam sequence {\nLifeLineBorderColor black\nParticipantBorderColor #00bceb\nParticipantBackgroundColor white\nParticipantFontName Consolas\nParticipantFontSize 17\nParticipantFontColor black\n}\n"
         for msg in guids[guid]["msgs"]:
             if msg["type"] == "sip":
@@ -67,6 +64,8 @@ def sequence(device, filename, guids):
             elif msg["type"] == "ged125":
                 src, dest = msg["from"], msg["to"]
                 text = msg["status"]
+                if doc["start_time"] == '-':
+                    doc["start_time"] = msg["text"].split(": ")[2].split('-')[0].split('+')[0].strip()
 
                 #If there are no sip messages, then using 'dnis' and 'ani' attributes to get 'to' and 'from' 
                 if doc["from"] == '-' and doc["to"] == '-':
