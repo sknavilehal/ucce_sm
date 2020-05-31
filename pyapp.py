@@ -1,5 +1,6 @@
 import os
 import csv
+import json
 import pickle
 import logging
 import traceback
@@ -8,13 +9,16 @@ from zipfile import ZipFile
 from threading import Thread
 from datetime import datetime
 from natsort import natsorted
-from analytics import analytics
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from plantweb.render import render
 from query_parser import query_parser
+from analytics import preprocess, make_plot
 from log_parser.parser_main import parser_main
 from flask import jsonify, Blueprint, render_template, request, Response, current_app, send_file, session, g, redirect
+
+from bokeh.resources import CDN
+from bokeh.embed import json_item
 
 bp = Blueprint("bp", __name__)
 
@@ -83,12 +87,12 @@ def before_request():
 
 def threaded_task(_g, app, filename, contents):
     # _g and app are flask objects required for threaded task running outside application context
-    _g.db.files.insert_one({"_id":filename,"device":"unknown", "status": "Processing...", "prelim_sigs": []})
+    _g.db.files.insert_one({"_id":filename,"device":"unknown", "status": "Processing...", "alerts": [], "start_time": "-", "end_time": "-"})
 
-    prelim_sigs = client["UCCE_Global"].signatures.distinct("filter", {"type" : "freeflow"})
+    alerts = client["UCCE_Global"].signatures.distinct("filter", {"type" : "freeflow"})
     try:
-        device,guids,prelim_sigs = parser_main(filename, contents, prelim_sigs)
-        _g.db.files.update({"_id":filename},  {"$set": {"status": "Processed", "device": device, "prelim_sigs": prelim_sigs}})
+        device,guids,alerts,time_data = parser_main(filename, contents, alerts)
+        _g.db.files.update({"_id":filename},  {"$set": {"status": "Processed", "device": device, "alerts": alerts, "start_time": time_data[0], "end_time":time_data[1]}})
 
         for guid in guids.keys():
             _g.db.GUIDs.insert_one(guids[guid]["doc"])
@@ -99,7 +103,7 @@ def threaded_task(_g, app, filename, contents):
             path = os.path.join(app.instance_path, _g.username, "CVP", filename)
             with open(path, 'wb') as f:
                 f.write(contents.getvalue())
-            series = analytics(os.path.dirname(path), app)
+            series = preprocess(os.path.dirname(path))
             with open(os.path.join(app.instance_path, _g.username ,'series.pickle'), 'wb') as f:
                 pickle.dump(series, f)
             
@@ -113,7 +117,7 @@ def login():
 
 @bp.route("/home")
 def home():
-    return render_template("index.html")
+    return render_template("index.html", resources=CDN.render())
 
 @bp.route("/call-summary")
 def call_summary():
@@ -125,16 +129,27 @@ def signatures_page():
     return render_template("signatures.html")
 
 def get_table_data(device, cursor):
-    headers = [{}, {}, {}, {"title": "Details"}, {"title": "Signature"}]
+    headers = []
     if device == "FINESSE":
         GUIDs = [[res["_id"]["guid"],res["agent_id"], res["agent_name"]] for res in cursor]
-        headers[1]["title"] = "Agent ID"; headers[0]["title"] = "Agent Extenstion"; headers[2]["title"] = "Agent Name"
+        headers.append({"title": "Agent Extenstion"}); 
+        headers.append({"title": "Agent ID"}); 
+        headers.append({"title": "Agent Name"}); 
     elif device == "CUBE":
         GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
-        headers[0]["title"] = "CCAPI ID"; headers[1]["title"] = "From"; headers[2]["title"] = "To"
+        headers.append({"title": "CCAPI ID"}); 
+        headers.append({"title": "From"}); 
+        headers.append({"title": "To"});
     elif device == "CVP":
-        GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
-        headers[0]["title"] = "GUID"; headers[1]["title"] = "ANI"; headers[2]["title"] = "DNIS"
+        GUIDs = [[res["_id"]["guid"], res["start_time"], res["end_time"], res["from"], res["to"]] for res in cursor]
+        headers.append({"title": "GUID"}); 
+        headers.append({"title": "Start Time"}); 
+        headers.append({"title": "End Time"});
+        headers.append({"title": "ANI"}); 
+        headers.append({"title": "DNIS"}); 
+    
+    headers.append({"title": "Details"}); 
+    headers.append({"title": "Signature"});
     
     return {"GUIDs": GUIDs, "headers":headers}
 
@@ -208,7 +223,7 @@ def upload_files():
     else:
         return "Invalid file type", 400
     
-    return render_template("index.html"), 200
+    return render_template("index.html", resources=CDN.render()), 200
 
 @bp.route('/diagram-page',methods=["GET"])
 def diagram_page():
@@ -219,7 +234,7 @@ def diagram_page():
 @bp.route("/files")
 def get_files():
     cursor = g.db.files.find({})
-    files = [[res["_id"], res["device"], res["status"], res["prelim_sigs"]] for res in cursor]
+    files = [[res["_id"], res["device"], res["start_time"], res["end_time"], res["status"], res["alerts"]] for res in cursor]
     return jsonify(files),200
 
 @bp.route("/Call-Summary/filter", methods=["POST"])
@@ -315,3 +330,13 @@ def download_eventlog():
     file = os.path.join(current_app.instance_path, 'event_log.csv')
 
     return send_file(file, attachment_filename=os.path.basename(file), mimetype='text/plain', as_attachment=True)
+
+@bp.route('/plot')
+def plot():
+    try:
+        with open(os.path.join(current_app.instance_path, g.username ,'series.pickle'), 'rb') as f:
+            data = pickle.load(f)
+    except:
+        return {}
+    p = make_plot(data)
+    return json.dumps(json_item(p, "myplot"))

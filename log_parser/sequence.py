@@ -1,4 +1,5 @@
 import os
+from dateutil.parser import parse
 from .constants import r_to_color
 from bson.objectid import ObjectId
 from plantweb.render import render
@@ -47,6 +48,10 @@ def sequence(device, filename, guids):
         if device == FINESSE:
             doc["agent_name"] = '-'
             doc["agent_id"] = '-'
+        
+        if device == CVP:
+            doc["start_time"] = guids[guid]["msgs"][0]["text"].split(": ")[2].split('-')[0].strip()
+            doc["end_time"] = guids[guid]["msgs"][-1]["text"].split(": ")[2].split('-')[0].strip()
 
         sequence = "@startuml\nskinparam sequence {\nLifeLineBorderColor black\nParticipantBorderColor #00bceb\nParticipantBackgroundColor white\nParticipantFontName Consolas\nParticipantFontSize 17\nParticipantFontColor black\n}\n"
         for msg in guids[guid]["msgs"]:

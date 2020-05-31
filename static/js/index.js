@@ -14,21 +14,21 @@ function initial() {
 
             for (i = 0; i < data.length; i++) {
                 files[i] = []
-                if(data[i][3].length == 0)
+                if(data[i][5].length == 0)
                     errors_html = "";
                 else
                     errors_html = `<i class='fa fa-exclamation-circle fa-2x' data-toggle='modal' data-target='#error_modal' style='color:#FFC107;margin-left:5px;cursor:pointer' title='Errors' onclick='errors(${i})' aria-hidden='true'></i>`;
-                if (data[i][2] === "Processed")
-                    files[i] = [data[i][0], data[i][1], `<button type='button' class='btn btn-primary btn-sm btn-success processed' disabled >${data[i][2]}</button>`,
+                if (data[i][4] === "Processed")
+                    files[i] = [data[i][0], data[i][1], data[i][2], data[i][3], `<button type='button' class='btn btn-primary btn-sm btn-success processed' disabled >${data[i][4]}</button>`,
                     "<div class='btn-group' role='group' aria-label='Basic example'><i class='fa fa-play-circle fa-2x ' style='color:#28a745;cursor:pointer' title='View Details' aria-hidden='true' onclick='analyse(" + i + ")'></i><i class='fa fa-minus-circle fa-2x' style='color:#dc3545;margin-left:5px;cursor:pointer' title='Remove' aria-hidden='true' onclick='del(" + i + ")'></i><i class='fa fa-arrow-circle-down fa-2x' style='color:#FFC107;margin-left:5px;cursor:pointer' title='Download' onclick='download(" + i + ")' aria-hidden='true'></i>"+errors_html+"</div>",
-                    `<button type='button' class='btn btn-sm btn-outline-primary signature'  data-toggle='modal' data-target='#exampleModal1' onclick='sign("${data[i][0]}")'>Signature</button>`,data[i][3]]
+                    `<button type='button' class='btn btn-sm btn-outline-primary signature'  data-toggle='modal' data-target='#exampleModal1' onclick='sign("${data[i][0]}")'>Signature</button>`,data[i][5]]
 
                 //  " <div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-warning view' onclick='analyse(" + i + ")'>View</button><button type='button' class='btn btn-sm btn-danger remove' onclick='del(" + i + ")'>Remove</button></div>"   ]
-                else if (data[i][2] === "Processing...")
-                    files[i] = [data[i][0], data[i][1], `<button type='button' class='btn btn-primary btn-sm btn-warning'disabled >${data[i][2]}</button>`
+                else if (data[i][4] === "Processing...")
+                    files[i] = [data[i][0], data[i][1], data[i][2], data[i][3], `<button type='button' class='btn btn-primary btn-sm btn-warning'disabled >${data[i][4]}</button>`
                         , "<button type='button' class='btn btn-sm btn-primary refresh'  onclick='initial()' title='Refresh'>Refresh</button>", "", ""]
                 else
-                    files[i] = [data[i][0], data[i][1], `<button type='button' class='btn btn-primary btn-sm btn-danger' disabled >${data[i][2]}</button>`, "<i class='fa fa-minus-circle fa-2x' style='color:#dc3545;margin-left:5px;cursor:pointer' title='Remove' aria-hidden='true' onclick='del(" + i + ")'>", "", ""]
+                    files[i] = [data[i][0], data[i][1], data[i][2], data[i][3], `<button type='button' class='btn btn-primary btn-sm btn-danger' disabled >${data[i][4]}</button>`, "<i class='fa fa-minus-circle fa-2x' style='color:#dc3545;margin-left:5px;cursor:pointer' title='Remove' aria-hidden='true' onclick='del(" + i + ")'>", "", ""]
             }
 
             if ($.fn.dataTable.isDataTable('#table_id')) {
@@ -41,6 +41,8 @@ function initial() {
                     columns: [
                         { title: "Filename" },
                         { title: "Device" },
+                        { title: "Start Time" },
+                        { title: "End Time" },
                         { title: "Status" },
                         { title: "Actions", "width": "20%" },
                         { title: "Signature" }
@@ -109,7 +111,7 @@ function del(i) {
 }
 
 function errors(i) {
-    var data = $('#table_id').DataTable().rows(i).data()[0][5];
+    var data = $('#table_id').DataTable().rows(i).data()[0][7];
     var temp="<ol>"
     for(var i=0;i<data.length;i++)
         temp=temp+`<li>${data[i]}</li>`
