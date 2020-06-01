@@ -64,7 +64,7 @@ def sequence(device, filename, guids):
             elif msg["type"] == "ged125":
                 src, dest = msg["from"], msg["to"]
                 text = msg["status"]
-                if doc["start_time"] == '-':
+                if doc["start_time"] == '-' and msg["Event"] == "NEW_CALL":
                     doc["start_time"] = msg["text"].split(": ")[2].split('-')[0].split('+')[0].strip()
 
                 #If there are no sip messages, then using 'dnis' and 'ani' attributes to get 'to' and 'from' 

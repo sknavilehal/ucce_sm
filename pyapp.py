@@ -89,7 +89,7 @@ def threaded_task(_g, app, filename, contents):
     # _g and app are flask objects required for threaded task running outside application context
     _g.db.files.insert_one({"_id":filename,"device":"unknown", "status": "Processing...", "alerts": [], "start_time": "-", "end_time": "-"})
 
-    alerts = client["UCCE_Global"].signatures.distinct("filter", {"type" : "freeflow"})
+    alerts = client["UCCE_Global"].signatures.distinct("filter", {"category" : "system"})
     try:
         device,guids,alerts,time_data = parser_main(filename, contents, alerts)
         _g.db.files.update({"_id":filename},  {"$set": {"status": "Processed", "device": device, "alerts": alerts, "start_time": time_data[0], "end_time":time_data[1]}})
@@ -260,12 +260,10 @@ def post_signature():
     signature = request.get_json()["signature"]
     description = request.get_json()["description"]
     if signature[:3] in ["SIP", "GED"]:
-        _type = "nosql"
-    elif signature[0] == '/':
-        _type = "regex"
-    else: _type = "freeflow"
+        _type = "feature"
+    else: _type = "system"
     try:
-        id = client["UCCE_Global"].signatures.insert_one({"user": g.username,"filter":signature, "description":description, "published": False, "type":_type})
+        id = client["UCCE_Global"].signatures.insert_one({"user": g.username,"filter":signature, "description":description, "published": False, "category":_type})
     except Exception:
         return "signature already exists", 400
     return id.inserted_id, 200
@@ -290,7 +288,7 @@ def match_signtures():
     signatures = []
     filename = request.args.get("filename", None)
     guid = request.args.get("guid", None)
-    cursor = client["UCCE_Global"].signatures.find({"type": "nosql", "$or":[{"user":g.username},{"published":True}]})
+    cursor = client["UCCE_Global"].signatures.find({"category": "feature", "$or":[{"user":g.username},{"published":True}]})
     filters = [(res["filter"],res["description"]) for res in cursor]
     for filter in filters:
         query = query_parser(filter[0])
