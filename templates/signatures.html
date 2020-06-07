@@ -5,7 +5,7 @@
 
 {%block content %}
 <div class="container-fluid">
-    <div class="row p-4">
+    <div class="row justify-content-md-center">
         <div class="col col-md-5 ml-2 ">
             <div class="item ">
                 <h4 style="margin-bottom: 20px;">Create Signature</h4>
@@ -19,18 +19,27 @@
                         <input type="text" class="form-control" id="description">
                         <!-- <small id="" class="form-text text-muted">Add a name to your signature</small> -->
                     </div>
+                    <div class="form-group">
+                        <label for="checkpoint">Checkpoint</label>
+                        <select name="checkpoint" id="checkpoint" class="form-control">
+                            <option value="info">Info</option>
+                            <option value="warning">Warning</option>
+                            <option value="error">Error</option>
+                        </select>
+                    </div>
 
                     <button type="submit" class="btn btn-sm btn-primary" id="add">Add</button>
                 </form>
             </div>
         </div>
-        <div class="col col-md-6 ml-5">
+    </div>
+    <div class="row p-4">
+        <div class="col">
             <div class="item">
                 <h4 style="margin-bottom: 20px;">Signatures</h4>
                 <div id="no-sign">
                     <table id="table_id" style="width:100%;" class=" table"> </table>
                 </div>
-
             </div>
         </div>
     </div>
@@ -38,7 +47,8 @@
 {%endblock %}
 
 {%block script%}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.10/jquery.autocomplete.min.js"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.10/jquery.autocomplete.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 <script src="{{url_for('static' ,filename='js/signatures.js')}}" type="module"></script>

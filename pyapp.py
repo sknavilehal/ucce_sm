@@ -79,9 +79,11 @@ def before_request():
         for key in request.get_json().keys():
             row.append(request.get_json()[key])
         #writer.writerow(row)
+    if len(row) < 6:
+        row.append('')
 
     #eventLog.close()
-    client["UCCE_Global"].event_log.insert_one({"datetime":row[0], "username":row[1], "category":row[2], "action":row[3], "param1":row[4]})
+    client["UCCE_Global"].event_log.insert_one({"datetime":row[0], "username":row[1], "category":row[2], "action":row[3], "param1":row[4], "param2":row[5]})
 
     return None
 
@@ -132,25 +134,25 @@ def get_table_data(device, cursor):
     headers = []
     if device == "FINESSE":
         GUIDs = [[res["_id"]["guid"],res["agent_id"], res["agent_name"]] for res in cursor]
-        headers.append({"title": "Agent Extenstion"}); 
-        headers.append({"title": "Start Time"});
-        headers.append({"title": "Agent ID"}); 
-        headers.append({"title": "Agent Name"}); 
+        headers.append({"title": "Agent Extenstion"})
+        headers.append({"title": "Start Time"})
+        headers.append({"title": "Agent ID"})
+        headers.append({"title": "Agent Name"})
     elif device == "CUBE":
         GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
-        headers.append({"title": "CCAPI ID"}); 
-        headers.append({"title": "Start Time"});
-        headers.append({"title": "From"}); 
-        headers.append({"title": "To"});
+        headers.append({"title": "CCAPI ID"})
+        headers.append({"title": "Start Time"})
+        headers.append({"title": "From"})
+        headers.append({"title": "To"})
     elif device == "CVP":
         GUIDs = [[res["_id"]["guid"], res["start_time"], res["from"], res["to"]] for res in cursor]
-        headers.append({"title": "GUID"}); 
-        headers.append({"title": "Start Time"});
-        headers.append({"title": "ANI"}); 
-        headers.append({"title": "DNIS"}); 
+        headers.append({"title": "GUID"})
+        headers.append({"title": "Start Time"})
+        headers.append({"title": "ANI"}) 
+        headers.append({"title": "DNIS"})
     
-    headers.append({"title": "Details"}); 
-    headers.append({"title": "Signature"});
+    headers.append({"title": "Details"})
+    headers.append({"title": "Signature"})
     
     return {"GUIDs": GUIDs, "headers":headers}
 
@@ -259,11 +261,12 @@ def call_filter():
 def post_signature():
     signature = request.get_json()["signature"]
     description = request.get_json()["description"]
+    checkpoint = request.get_json()["checkpoint"]
     if signature[:3] in ["SIP", "GED"]:
         _type = "feature"
     else: _type = "system"
     try:
-        id = client["UCCE_Global"].signatures.insert_one({"user": g.username,"filter":signature, "description":description, "published": False, "category":_type})
+        id = client["UCCE_Global"].signatures.insert_one({"user": g.username,"filter":signature, "description":description, "checkpoint":checkpoint, "published": False, "category":_type})
     except Exception:
         return "signature already exists", 400
     return id.inserted_id, 200
@@ -278,7 +281,7 @@ def delete_signature():
 @bp.route("/get-signatures")
 def get_signatures():
     cursor = client["UCCE_Global"].signatures.find({"$or":[{"user":g.username},{"published":True}]})
-    result = [[res["filter"], res["description"]] for res in cursor]
+    result = [[res["filter"], res["description"], res["category"], res["checkpoint"]] for res in cursor]
 
     return jsonify(result)
 
