@@ -1,0 +1,64 @@
+{
+    "chart": {
+        "type": "spline"
+    },
+    "title": {
+        "text": "Title"
+    },
+    "subtitle": {
+        "text": ""
+    },
+    "xAxis": {
+        "type": "datetime",
+        "dateTimeLabelFormats": {
+            "month": "%e. %b",
+            "year": "%b"
+        },
+        "title": {
+            "text": "x-axis Date"
+        }
+    },
+    "yAxis": {
+        "title": {
+            "text": "y-axis text"
+        },
+        "min": 0
+    },
+    "tooltip": {
+        "headerFormat": "<b>{series.name}</b><br>",
+        "pointFormat": "{point.x:%e. %b}: {point.y: f}"
+    },
+    "plotOptions": {
+        "series": {
+            "marker": {
+                "enabled": true
+            }
+        }
+    },
+    "colors": [
+        "#6CF",
+        "#39F",
+        "#06C",
+        "#036",
+        "#000"
+    ],
+    "series": null,
+    "responsive": {
+        "rules": [
+            {
+                "condition": {
+                    "maxWidth": 500
+                },
+                "chartOptions": {
+                    "plotOptions": {
+                        "series": {
+                            "marker": {
+                                "radius": 2.5
+                            }
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}

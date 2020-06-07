@@ -10,10 +10,10 @@ from threading import Thread
 from datetime import datetime
 from natsort import natsorted
 from pymongo import MongoClient
+from analytics import analytics
 from bson.objectid import ObjectId
 from plantweb.render import render
 from query_parser import query_parser
-from analytics import preprocess, make_plot
 from log_parser.parser_main import parser_main
 from flask import jsonify, Blueprint, render_template, request, Response, current_app, send_file, session, g, redirect
 
@@ -105,7 +105,7 @@ def threaded_task(_g, app, filename, contents):
             path = os.path.join(app.instance_path, _g.username, "CVP", filename)
             with open(path, 'wb') as f:
                 f.write(contents.getvalue())
-            series = preprocess(os.path.dirname(path))
+            series = analytics(os.path.dirname(path))
             with open(os.path.join(app.instance_path, _g.username ,'series.pickle'), 'wb') as f:
                 pickle.dump(series, f)
             
@@ -333,12 +333,23 @@ def download_eventlog():
 
     return send_file(file, attachment_filename=os.path.basename(file), mimetype='text/plain', as_attachment=True)
 
-@bp.route('/plot')
-def plot():
-    try:
-        with open(os.path.join(current_app.instance_path, g.username ,'series.pickle'), 'rb') as f:
-            data = pickle.load(f)
-    except:
-        return {}
-    p = make_plot(data)
-    return json.dumps(json_item(p, "myplot"))
+@bp.route("/plot")
+def graph():
+    path = os.path.join(current_app.instance_path, g.username, 'series.pickle')
+    with open(path, 'rb') as f:
+        series = pickle.load(f)
+    with open('graph_template.json', 'rb') as f:
+        chart_obj = json.load(f)
+    series_name = request.args.get('series')
+
+    chart_obj["xAxis"]["title"]["text"] = "Time"
+    if series_name == 'licenses':
+        chart_obj["series"] = series[1]
+        chart_obj["yAxis"]["title"]["text"] = 'Licenses Count'
+        chart_obj["title"]["text"] = "CVP License Analysis"
+    elif series_name == 'calls':
+        chart_obj["series"] = series[0]
+        chart_obj["yAxis"]["title"]["text"] = 'Call Count'
+        chart_obj["title"]["text"] = 'CVP Call Analysis'
+
+    return chart_obj

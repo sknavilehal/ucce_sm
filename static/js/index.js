@@ -142,3 +142,18 @@ function download(i) {
     var data = $('#table_id').DataTable().row(i).data()[0]
     window.open(`/download-file?filename=${data}`)
 }
+
+$.ajax({
+    type: 'GET',
+    url: `/plot?series=calls`,
+    success: function (data) {
+        Highcharts.chart('calls', data);
+    }
+});
+$.ajax({
+    type: 'GET',
+    url: `/plot?series=licenses`,
+    success: function (data) {
+        Highcharts.chart('licenses', data);
+    }
+});

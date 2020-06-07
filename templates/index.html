@@ -37,17 +37,22 @@
         </div>
     </div>
     
-    <div class="row p-4">
-        <div id="myplot">
-            <script>
-                fetch('/plot')
-                  .then(function(response) { return response.json(); })
-                  .then(function(item) { Bokeh.embed.embed_item(item); })
-            </script>
+    <div class="row">
+        <div class="col-6">
+            <figure class="highcharts-figure">
+                <div id="calls"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
         </div>
+        <div class="col-6">
+            <figure class="highcharts-figure">
+                <div id="licenses"></div>
+                <p class="highcharts-description">
+                </p>
+            </figure>
+		</div>
     </div>
-    
-
 </div>
 
 <div class="modal fade " id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="title" aria-hidden="true">
@@ -89,5 +94,10 @@
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
 <script src="{{url_for('static' ,filename='js/index.js')}}"></script>
 {%endblock%}
