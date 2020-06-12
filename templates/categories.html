@@ -57,7 +57,7 @@
           </nav>
       <div class="container-fluid">  
         <div class="row p-4 m-4" >
-          <div class="col-3" style="margin:3.5rem;margin-left: 5rem;">  <h1 class="box">CVP</h1></div>
+          <div class="col-3" style="margin:3.5rem;margin-left: 5rem;"> <a href="/home" style="text-decoration: none;"> <h1 class="box">CVP</h1></a></div>
           <div class="col-3" style="margin:3.5rem">    <h1 class="box" style="color: #FF5722;">VVB</h1></div>
          
           <div class="col-3" style="margin:3.5rem">  <h1 class="box" style="color: #9c27b0;">FINESSE</h1></div>
@@ -73,8 +73,27 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
-    <script src="{{url_for('static' ,filename='js/base.js')}}"></script>
    
+   <script type="text/javascript">
+var username=sessionStorage.getItem("session")
+    document.getElementById("log").innerHTML="Hi ,"+username+` <img src="https://image.flaticon.com/icons/svg/1738/1738691.svg" width="40" height="40" class="rounded-circle ml-2 mr-2">
+    `+`<i class="fa fa-2x fa-sign-out" aria-hidden="true" title="Sign Out" onclick="logout()" style="cursor:pointer;position:relative;top:0.2rem;color:#0b519b"></i>`
+
+
+    function logout()
+{
+    sessionStorage.removeItem("session")
+    $.ajax({
+        type: 'GET',
+        url: `/clearSession`,
+        success: function(data){
+            //window.alert(`${username} session set`)
+            //initial()
+            location.href="/"
+        }
+    })
+    
+}</script>
   
 
  

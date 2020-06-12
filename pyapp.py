@@ -117,13 +117,19 @@ def threaded_task(_g, app, filename, contents):
 def login():
     return render_template("login.html")
 
+
+
+@bp.route("/categories")
+def cat():
+    return render_template("categories.html")
+
 @bp.route("/log_analyzer")
 def log_analyzer():
     return render_template("log_analyzer.html")
 
 @bp.route("/home")
 def home():
-    return render_template("try.html", resources=CDN.render())
+    return render_template("index.html", resources=CDN.render())
 
 @bp.route("/call-summary")
 def call_summary():
