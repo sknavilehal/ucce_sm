@@ -61,7 +61,7 @@ def parse_attributes(ged_msg, msg):
 
         #Checking for words which have "key=value" format. 
         #Note: If the value is an empty string then adding it the same way it exists.
-        if "=" in word:
+        if "=" in word and len(word) > 1:
             attribute = word.split("=")  #attribute[0] becomes key and attribute[1] becomes value
 
             #Error case where value is ending with a ',' or '}'
@@ -69,8 +69,11 @@ def parse_attributes(ged_msg, msg):
                 attribute[1]=attribute[1][:-1]
 
             #Error case where key is starting a '{'
-            if attribute[0][0] in ['{','_']:
-                attribute[0] = attribute[0][1:]
+            try:
+                if attribute[0][0] in ['{','_']:
+                    attribute[0] = attribute[0][1:]
+            except:
+                print(attribute)
 
             #Error case where splitting by ' ' wasn't sufficient and gave the format - 'randomtext,key=value'
             if ',' in attribute[0]:
