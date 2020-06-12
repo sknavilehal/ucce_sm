@@ -1,6 +1,6 @@
 var username=sessionStorage.getItem("session")
-document.getElementById("welcome").innerHTML="Hi ,"+username+` <img src="https://image.flaticon.com/icons/svg/1738/1738691.svg" width="40" height="40" class="rounded-circle ml-2 mr-2">
-    `+`<i class="fa fa-2x fa-sign-out" aria-hidden="true" title="Sign Out" onclick="logout()" style="cursor:pointer;position:relative;top:0.2rem;color:#0b519b"></i>`
+document.getElementById("welcome").innerHTML=username;
+document.getElementById("log").innerHTML=`<i class="fa fa-2x fa-sign-out" aria-hidden="true" title="Sign Out" onclick="logout()" style="cursor:pointer;position:relative;top:0.2rem;color:#0b519b"></i>`
 
 function logout()
 {
@@ -17,3 +17,24 @@ function logout()
     
 }
 
+
+(function($) {
+
+    "use strict";
+    
+    var fullHeight = function() {
+    
+      $('.js-fullheight').css('height', $(window).height());
+      $(window).resize(function(){
+        $('.js-fullheight').css('height', $(window).height());
+      });
+    
+    };
+    fullHeight();
+    
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+    });
+    
+    })(jQuery);
+    

@@ -26,11 +26,18 @@
     height: 100px;
 }
 
+.info{
+    font-size: 1rem;
+}
 
 
 .item
 {
     padding: 1rem;
+    text-align: center;
+    margin: auto;
+    vertical-align: middle;
+    display: table-cell;
 }
 .processed:disabled{
     background-color: rgba(29,201,183,.1);
@@ -118,3 +125,10 @@ font-size: 0.7rem;
         font-size: 0.7rem;
 
 }
+
+#container,#container1,#container2,#container3{
+    margin: 12px;
+    width: 120px;
+    height: 120px;
+    position: relative;
+  }

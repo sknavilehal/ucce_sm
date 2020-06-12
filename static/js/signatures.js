@@ -1,7 +1,7 @@
 import suggestions from './suggestions.js'
 
-document.getElementById("home").classList.remove("active")
-document.getElementById("signatures").classList.add("active")
+document.getElementById("signatures").style.color="#ff4a7c"
+
 document.getElementById("body").setAttribute("onload","signature()")
 window.del = del
 window.signature = signature

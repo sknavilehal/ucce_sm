@@ -4,166 +4,68 @@
         <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
         <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.10/jquery.autocomplete.min.js"></script>
-     
+        <script src="../static/progressbar.js-master/progressbar.js-master/dist/progressbar.js"></script>
+      
 
+   
+<style>
 
-        <style>
-
-* {
-  box-sizing: border-box;
-}
-
-body {
+#container {
+  margin: 20px;
+  width: 200px;
+  height: 200px;
   position: relative;
-  width: 100vw;
-  height: 100vh;
-  background: linear-gradient(to bottom right, #274B74 0%, #c4e4f4 50%, #00bceb 100%);
-  font-family: "Montserrat", sans-serif;
-  overflow: hidden;
 }
-
-.container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
- 
-}
-
-input[type=text] {
-  position: absolute;
-  top:3rem;
-  padding: 15px 40px 15px 20px;
-  
-  color: #525252;
-  
-  font-size: 16px;
-  font-weight: 100;
-  letter-spacing: 2px;
-  border: none;
-  border-radius: 5px;
-  background: linear-gradient(to right, #FFFFFF 0%, #464747 #F9F9F9 100%);
-  transition: width 0.4s ease;
-  outline: none;
-}
-
-input[type=button] {
-  position: absolute;
-  top:3rem;
-  right:15rem;
-  padding: 15px 40px 15px 20px;
-  width: 100px;
-  color: #525252;
-  
-  font-size: 16px;
-  font-weight: 100;
-  letter-spacing: 2px;
-  border: none;
-  border-radius: 5px;
-  background: linear-gradient(to right, #FFFFFF 0%, #464747 #F9F9F9 100%);
-  transition: width 0.4s ease;
-  outline: none;
-}
+</style>
 
 
-
-.autocomplete-suggestion
-{
-  padding: 10px 30px 10px 10px;
-  margin:0.2rem;
-  width: 400px;
-  color: #525252;
-  font-family: "Montserrat", sans-serif;
-  font-size: 13px;
-  font-weight: 100;
-  letter-spacing: 2px;
-  border: none;
-  border-radius: 5px;
-  background: white;
-  
-  outline: none;
-}
-
-#submit:hover
-{
-cursor:pointer;
-background-color: gainsboro;
-}
-.autocomplete-suggestion:hover
-{
-  cursor:pointer;
-  background:#cff1fa;
-  
-  outline: none;
-}
-
-.autocomplete-selected
-{
-  cursor:pointer;
-  background:#cff1fa;
-  
-  outline: none;
-}
-
-        </style>
+       
     </head>
     <body>
-<div class="container">
-      <input type="text"  name="country" style="width:500px" id="autocomplete"/>
-      <input type="button" id="submit" name="Submit"  style="width:100px" value="Submit"/>
-      <div class="output" style="background-color: white;">
-        <p id="out"></p>
-      </div>
-
-</div>
+      <link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600,800,900" rel="stylesheet" type="text/css">
+      <div id="container"></div>
+    
 
 </body>
    <script type="text/javascript">
  
- var countries = [
-   { value: 'data' },
-   { value: 'data.msg' },
-   { value: 'data.msg.callid' },
-   { value: 'dns.sequence' },
-   { value: 'dns.sequence.jj' },
-   {value:'DNIS'},
-   {value:'ANI'},
-   {value:'rckey'}
-];
-let re  = /and\s|or\s|&&\s|\|\|\s/gi;
-$('#autocomplete').autocomplete({
-    lookup: countries,
-    delimiter:re,
-    onSelect: function (suggestion) {
-       // alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
-        
-    },
-    beforeRender: function (container) {
-      console.log(document.getElementById("autocomplete").value)
+// progressbar.js@1.0.0 version is used
+// Docs: http://progressbarjs.readthedocs.org/en/1.0.0/
+
+// progressbar.js@1.0.0 version is used
+// Docs: http://progressbarjs.readthedocs.org/en/1.0.0/
+
+var bar = new ProgressBar.Circle(container, {
+  color: '#aaa',
+  // This has to be the same size as the maximum width to
+  // prevent clipping
+  strokeWidth: 4,
+  trailWidth: 1,
+  easing: 'easeInOut',
+  duration: 1400,
+  text: {
+    autoStyleContainer: false
+  },
+  from: { color: '#aaa', width: 1 },
+  to: { color: '#333', width: 4 },
+  // Set default step function for all animate calls
+  step: function(state, circle) {
+    circle.path.setAttribute('stroke', state.color);
+    circle.path.setAttribute('stroke-width', state.width);
+
+    var value = Math.round(circle.value() * 100);
+    if (value === 0) {
+      circle.setText('');
+    } else {
+      circle.setText("0/1");
     }
-});
 
-$('#submit').click(function()
-{
-  //alert("ggg")
-  var p=document.getElementById("autocomplete").value
-  console.log(p)
-  var person = {
-            filter: p
-        }
-
-  $.ajax({
-            url: 'http://127.0.0.1:8000/call-filter',
-            type: 'post',
-            dataType: 'json',
-            contentType: 'application/json',
-            success: function (data) {
-              temp=data.guids.toString().replace(/,/g,"<br>")
-                document.getElementById("out").innerHTML=temp
-            },
-            data: JSON.stringify(person)
-        });
+  }
 });
+bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+bar.text.style.fontSize = '2rem';
+
+bar.animate(0.3);  // Number from 0.0 to 1.0
+
 </script>
 </html>

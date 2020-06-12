@@ -6,6 +6,7 @@
 <script src="{{url_for('static' ,filename='dropzone-5.7.0/dropzone-5.7.0/dist/dropzone.js')}}"></script>
 <link href="{{url_for('static', filename='css/index.css')}}" rel="stylesheet" type="text/css">
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 {% endblock%}
 
 {%block content %}
@@ -27,24 +28,46 @@
         </div>
             
         </div>
-        <div class="col col-md-8.5">
+        <div class="col-md-2">
             <div class="item">
-                <h4 style="margin-bottom: 20px;">Files History</h4>
-                <table id="table_id" style="width:100%" class="table">
-
-                </table>
+                <link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600,800,900" rel="stylesheet" type="text/css">
+                <div id="container"></div>
+                <div class="info" style="color:#0852a6 ;">Log files</div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="item">
+               
+                <div id="container1"></div>
+                <p class="info" style="color:#23a525 ;">Success</p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="item">
+               
+                <div id="container2"></div>
+                <p class="info" style="color: #dfc81d ;">Fail</p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="item">
+               
+                <div id="container3"></div>
+                <p class="info" style="color:#df371d ;">Alert</p>
             </div>
         </div>
     </div>
+    <div class="container-fluid">
     
     <div class="row">
-        <div class="col-6">
+        <div class="col-md-6">
             <figure class="highcharts-figure">
                 <div id="calls"></div>
                 <p class="highcharts-description">
                 </p>
             </figure>
         </div>
+        
         <div class="col-6">
             <figure class="highcharts-figure">
                 <div id="licenses"></div>
@@ -52,6 +75,7 @@
                 </p>
             </figure>
 		</div>
+    </div>
     </div>
 </div>
 
@@ -90,6 +114,7 @@
 {%endblock %}
 
 {%block script%}
+<script src="{{url_for('static',filename="progressbar.js-master/progressbar.js-master/dist/progressbar.js")}}"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
@@ -100,4 +125,5 @@
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 <script src="{{url_for('static' ,filename='js/index.js')}}"></script>
+
 {%endblock%}

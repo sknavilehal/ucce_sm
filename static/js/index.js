@@ -157,3 +157,137 @@ $.ajax({
         Highcharts.chart('licenses', data);
     }
 });
+
+
+document.getElementById("home").style.color="#ff4a7c"
+ 
+   
+    
+    var bar = new ProgressBar.Circle(container, {
+      color: '#0852a6',
+      // This has to be the same size as the maximum width to
+      // prevent clipping
+      strokeWidth: 4,
+      trailWidth: 1,
+      easing: 'easeInOut',
+      duration: 1400,
+      text: {
+        autoStyleContainer: false
+      },
+      from: { color: '#0852a6', width: 2 },
+      to: { color: '#4c89cf', width: 4 },
+      // Set default step function for all animate calls
+      step: function(state, circle) {
+        circle.path.setAttribute('stroke', state.color);
+        circle.path.setAttribute('stroke-width', state.width);
+    
+        var value = Math.round(circle.value() * 100);
+        if (value === 0) {
+          circle.setText('');
+        } else {
+          circle.setText("10/10");
+        }
+    
+      }
+    });
+    bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+    bar.text.style.fontSize = '1.5rem';
+    
+    bar.animate(1);  // Number from 0.0 to 1.0
+
+    var bar1 = new ProgressBar.Circle(container1, {
+      color: '#23a525',
+      // This has to be the same size as the maximum width to
+      // prevent clipping
+      strokeWidth: 4,
+      trailWidth: 1,
+      easing: 'easeInOut',
+      duration: 1400,
+      text: {
+        autoStyleContainer: false
+      },
+      from: { color: '#23a525', width: 3 },
+      to: { color: '#333', width: 4 },
+      // Set default step function for all animate calls
+      step: function(state, circle) {
+        circle.path.setAttribute('stroke', state.color);
+        circle.path.setAttribute('stroke-width', state.width);
+    
+        var value = Math.round(circle.value() * 100);
+        if (value === 0) {
+          circle.setText('');
+        } else {
+          circle.setText("4/10");
+        }
+    
+      }
+    });
+    bar1.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+    bar1.text.style.fontSize = '1.5rem';
+    
+    bar1.animate(0.4);  // Number from 0.0 to 1.0
+
+    var bar2 = new ProgressBar.Circle(container2, {
+      color: '#dfc81d',
+      // This has to be the same size as the maximum width to
+      // prevent clipping
+      strokeWidth: 4,
+      trailWidth: 1,
+      easing: 'easeInOut',
+      duration: 1400,
+      text: {
+        autoStyleContainer: false
+      },
+      from: { color: '#dfc81d', width: 3},
+      to: { color: '#333', width: 4 },
+      // Set default step function for all animate calls
+      step: function(state, circle) {
+        circle.path.setAttribute('stroke', state.color);
+        circle.path.setAttribute('stroke-width', state.width);
+    
+        var value = Math.round(circle.value() * 100);
+        if (value === 0) {
+          circle.setText('');
+        } else {
+          circle.setText("3/10");
+        }
+    
+      }
+    });
+    bar2.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+    bar2.text.style.fontSize = '1.5rem';
+    
+    bar2.animate(0.3);  // Number from 0.0 to 1.0
+
+    var bar3 = new ProgressBar.Circle(container3, {
+      color: '#df371d',
+      // This has to be the same size as the maximum width to
+      // prevent clipping
+      strokeWidth: 4,
+      trailWidth: 1,
+      easing: 'easeInOut',
+      duration: 1400,
+      text: {
+        autoStyleContainer: false
+      },
+      from: { color: '#df371d', width: 3},
+      to: { color: '#333', width: 4 },
+      // Set default step function for all animate calls
+      step: function(state, circle) {
+        circle.path.setAttribute('stroke', state.color);
+        circle.path.setAttribute('stroke-width', state.width);
+    
+        var value = Math.round(circle.value() * 100);
+        if (value === 0) {
+          circle.setText('');
+        } else {
+          circle.setText("3/10");
+        }
+    
+      }
+    });
+    bar3.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+    bar3.text.style.fontSize = '1.5rem';
+    
+    bar3.animate(0.3);  // Number from 0.0 to 1.0
+    
