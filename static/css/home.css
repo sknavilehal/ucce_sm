@@ -1,0 +1,95 @@
+body
+{
+    background-color:#d3d5d62b;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    
+}
+.navbar-brand
+{
+    font-size: 1.5rem;
+    
+}
+.navbar-nav > li > a
+{
+    font-size: 0.9rem;
+    margin: 0.6rem;
+    font-weight: 550;
+    color:#6c6a6a;
+}
+
+.navbar-nav > li > p
+{
+    font-size: 0.9rem;
+    margin: 0.6rem;
+    font-weight: 550;
+   
+}
+
+.navbar-nav > li > a:hover
+{
+    color:#ff4a7c;
+}
+.navbar-nav>.active>a
+{
+    background-color:#cccccc40;
+    color: #ff4a7c;
+}
+.navbar
+{
+    height: 4rem;
+    -webkit-box-shadow: 0 3px 6px -6px #999;
+    -moz-box-shadow: 0 3px 6px -6px #999;
+    box-shadow: 0 3px 6px -6px #999;
+}
+
+.profile
+{
+    position: absolute;;
+    right: 0;
+    top:0
+    
+}
+#logo
+{
+    position:absolute;
+    top:0;
+    margin-left: 25%;
+}
+
+.col
+{
+    
+    background-color: white;
+    margin:0.6rem;
+    -moz-box-shadow: 0 0 3px #ccc;
+-webkit-box-shadow: 0 0 3px #ccc;
+box-shadow: 0 0 8px #e9e9ed;
+height: fit-content;
+    
+    
+}
+.item
+{
+    padding: 1rem;
+}
+
+
+   
+.box {
+    border-radius: 25px;
+    
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    background-color: white;
+    padding-top: 60px; 
+    text-align: center;
+    width: 240px;
+    height: 185px;  
+    font-size: 2.6rem;
+  }
+  
+  .box:hover {
+    box-shadow: 0 0 11px rgba(33,33,33,.2); 
+    transform: scale(1.03);
+    cursor: pointer;
+  }

@@ -123,7 +123,7 @@ def log_analyzer():
 
 @bp.route("/home")
 def home():
-    return render_template("index.html", resources=CDN.render())
+    return render_template("try.html", resources=CDN.render())
 
 @bp.route("/call-summary")
 def call_summary():
