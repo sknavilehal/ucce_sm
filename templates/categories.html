@@ -11,7 +11,8 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css" rel="stylesheet">
   <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <link href="{{url_for('static', filename='css/home.css')}}" rel="stylesheet" type="text/css">
   <link href="{{url_for('static', filename='css/style.css')}}" rel="stylesheet" type="text/css">
   <title>UCCE Solution Manager</title>
@@ -21,82 +22,93 @@
 <body id="body">
 
   <div class="wrapper d-flex align-items-stretch">
-    
 
-    
-  
-    <div id="content" >
-      
-        <nav class="navbar navbar-expand-lg" style="background-color:white">
-          
-          
-          <a class="navbar-brand ml-5" href="#">UCCE Solution Manager</a>
-            <div>
-              
-            <ul class="navbar-nav ml-4 mr-auto nav-pills">
-              
-              <li id="home" class="nav-item active">
+
+
+
+    <div id="content">
+
+      <nav class="navbar navbar-expand-lg" style="background-color:white">
+
+
+        <a class="navbar-brand ml-5" href="#">UCCE Solution Manager</a>
+        <div>
+
+          <ul class="navbar-nav ml-4 mr-auto nav-pills">
+
+            <li id="home" class="nav-item active">
               <a class="nav-link" href="/home">Home</a>
-              </li>
-             
-            </ul>
-            <ul class="navbar-nav  nav-pills">
-              <li id="logo" class="nav-item">
-                <a class="nav-link" >
-                  <img src="{{url_for('static' ,filename='cisco.png')}}" height="30rem" alt="">
-                </a>
-              </li>
-              <li class="nav-item profile">
-                
-                  <p class="nav-link"  >
-                    <span  id="log"></span>
-                  </p>
-              </li>
-            </ul>
-            </div>
-          </nav>
-      <div class="container-fluid">  
-        <div class="row p-4 m-4" >
-          <div class="col-3" style="margin:3.5rem;margin-left: 5rem;"> <a href="/home" style="text-decoration: none;"> <h1 class="box">CVP</h1></a></div>
-          <div class="col-3" style="margin:3.5rem">    <h1 class="box" style="color: #FF5722;">VVB</h1></div>
-         
-          <div class="col-3" style="margin:3.5rem">  <h1 class="box" style="color: #9c27b0;">FINESSE</h1></div>
-          <div class="col-3"></div>
-          <div class="col-3" >  <h1 class="box" style="color: #8BC34A;">Router WIP</h1></div>
-          <div class="col-4">    <h1 class="box" style="color: #FFC107;">PG WIP</h1></div>
-          </div></div>
+            </li>
+
+          </ul>
+          <ul class="navbar-nav  nav-pills">
+            <li id="logo" class="nav-item">
+              <a class="nav-link">
+                <img src="{{url_for('static' ,filename='cisco.png')}}" height="30rem" alt="">
+              </a>
+            </li>
+            <li class="nav-item profile">
+
+              <p class="nav-link">
+                <span id="log"></span>
+              </p>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="container-fluid">
+        <div class="row p-4 m-4">
+          <div class="col-3" style="margin:3.5rem;margin-left: 5rem;"> <a href="/home" style="text-decoration: none;">
+              <h1 class="box">CVP</h1>
+            </a></div>
+          <div class="col-3" style="margin:3.5rem">
+            <h1 class="box" style="color: #FF5722;">VVB</h1>
           </div>
-          
-      
-        </body>
-        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
-   
-   <script type="text/javascript">
-var username=sessionStorage.getItem("session")
-    document.getElementById("log").innerHTML="Hi ,"+username+` <img src="https://image.flaticon.com/icons/svg/1738/1738691.svg" width="40" height="40" class="rounded-circle ml-2 mr-2">
-    `+`<i class="fa fa-2x fa-sign-out" aria-hidden="true" title="Sign Out" onclick="logout()" style="cursor:pointer;position:relative;top:0.2rem;color:#0b519b"></i>`
+
+          <div class="col-3" style="margin:3.5rem">
+            <h1 class="box" style="color: #9c27b0;">FINESSE</h1>
+          </div>
+          <div class="col-3" style="margin:3.5rem">
+            <h1 class="box" style="color: #8BC34A;">Router WIP</h1>
+          </div>
+          <!-- <div class="col-4"> -->
+            <!-- <h1 class="box" style="color: #FFC107;">PG WIP</h1> -->
+          <!-- </div> -->
+        </div>
+      </div>
+    </div>
 
 
-    function logout()
-{
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+  integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+  integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+
+<script type="text/javascript">
+  var username = sessionStorage.getItem("session")
+  document.getElementById("log").innerHTML = "Hi ," + username + ` <img src="https://image.flaticon.com/icons/svg/1738/1738691.svg" width="40" height="40" class="rounded-circle ml-2 mr-2">
+    `+ `<i class="fa fa-2x fa-sign-out" aria-hidden="true" title="Sign Out" onclick="logout()" style="cursor:pointer;position:relative;top:0.2rem;color:#0b519b"></i>`
+
+
+  function logout() {
     sessionStorage.removeItem("session")
     $.ajax({
-        type: 'GET',
-        url: `/clearSession`,
-        success: function(data){
-            //window.alert(`${username} session set`)
-            //initial()
-            location.href="/"
-        }
+      type: 'GET',
+      url: `/clearSession`,
+      success: function (data) {
+        //window.alert(`${username} session set`)
+        //initial()
+        location.href = "/"
+      }
     })
-    
-}</script>
-  
 
- 
-  
+  }</script>
+
+
+
+
 
 </html>
