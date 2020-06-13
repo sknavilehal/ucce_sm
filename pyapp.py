@@ -324,6 +324,10 @@ def delete_file():
     path = os.path.join(current_app.instance_path, g.username, device, filename)
     if os.path.exists(path):
         os.remove(path)
+    
+    path = os.path.join(current_app.instance_path, g.username)
+    if len(os.listdir(os.path.join(path, device))) == 0:
+        os.remove(os.path.join(path, 'series.pickle'))
 
     return jsonify(unique_files),200
 
@@ -346,11 +350,16 @@ def download_eventlog():
 @bp.route("/plot")
 def graph():
     path = os.path.join(current_app.instance_path, g.username, 'series.pickle')
-    with open(path, 'rb') as f:
-        series = pickle.load(f)
+    
     with open('graph_template.json', 'rb') as f:
         chart_obj = json.load(f)
     series_name = request.args.get('series')
+
+    try:
+        with open(path, 'rb') as f:
+            series = pickle.load(f)
+    except:
+        return chart_obj
 
     chart_obj["xAxis"]["title"]["text"] = "Time"
     if series_name == 'licenses':
