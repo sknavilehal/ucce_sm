@@ -117,8 +117,6 @@ def threaded_task(_g, app, filename, contents):
 def login():
     return render_template("login.html")
 
-
-
 @bp.route("/categories")
 def cat():
     return render_template("categories.html")
@@ -127,9 +125,13 @@ def cat():
 def log_analyzer():
     return render_template("log_analyzer.html")
 
+@bp.route("/alerts")
+def alerts():
+    return render_template("alerts.html")
+
 @bp.route("/home")
 def home():
-    return render_template("index.html", resources=CDN.render())
+    return render_template("index.html")
 
 @bp.route("/call-summary")
 def call_summary():
@@ -372,3 +374,18 @@ def graph():
         chart_obj["title"]["text"] = 'CVP Call Analysis'
 
     return chart_obj
+
+@bp.route("/get-system-alerts")
+def system_alerts():
+    return jsonify([])
+
+@bp.route("/get-feature-alerts")
+def feature_alerts():
+    cursor = client["UCCE_Global"].signatures.find({"category": "feature", "$or":[{"user":g.username},{"published":True}]})
+    filters = [(res["filter"],res["description"], 'TYPE PLACEHOLDER') for res in cursor]
+    results = []
+    for filter in filters:
+        query = query_parser(filter[0])
+        count = g.db.msgs.distinct("GUID", query).count()
+        results.append(filters[0], filters[1], filters[3], count)
+    return jsonify(results)
