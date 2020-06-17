@@ -16,7 +16,8 @@ $('#signature').autocomplete({
 $('#add').click(function () {
     var p = {
         signature: document.getElementById("signature").value,
-        description: document.getElementById("description").value
+        description: document.getElementById("description").value,
+        checkpoint: document.getElementById("checkpoint").value
     }
     if (document.getElementById("table_id").innerHTML != "") {
         var table1 = $('#table_id').DataTable();
