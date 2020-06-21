@@ -17,17 +17,19 @@ from query_parser import query_parser
 from log_parser.parser_main import parser_main
 from flask import jsonify, Blueprint, render_template, request, Response, current_app, send_file, session, g, redirect
 
-from bokeh.resources import CDN
-from bokeh.embed import json_item
-
 bp = Blueprint("bp", __name__)
 
 client = MongoClient("mongodb://localhost:27017")
 
-@bp.route('/setSession/<string:username>')
-def setSession(username):
+@bp.route('/setSession', methods=['POST'])
+def setSession():
     # username here is name of the database
+    username = request.get_json()["username"]
+    password = request.get_json()["password"]
     session["username"] = "UCCE_" + username
+    
+    if not client["UCCE_Global"].users.find_one({"login":username, "password":password}):
+        return "Incorrect credentials", 400
 
     return "Session set", 200
     
@@ -119,7 +121,7 @@ def login():
 
 @bp.route("/home")
 def home():
-    return render_template("index.html", resources=CDN.render())
+    return render_template("index.html")
 
 @bp.route("/call-summary")
 def call_summary():
@@ -226,7 +228,7 @@ def upload_files():
     else:
         return "Invalid file type", 400
     
-    return render_template("index.html", resources=CDN.render()), 200
+    return render_template("index.html"), 200
 
 @bp.route('/diagram-page',methods=["GET"])
 def diagram_page():
