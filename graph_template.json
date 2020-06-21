@@ -3,7 +3,7 @@
         "type": "spline"
     },
     "title": {
-        "text": "Title"
+        "text": "No Data"
     },
     "subtitle": {
         "text": ""
@@ -15,12 +15,12 @@
             "year": "%b"
         },
         "title": {
-            "text": "x-axis Date"
+            "text": "No Data"
         }
     },
     "yAxis": {
         "title": {
-            "text": "y-axis text"
+            "text": "No Data"
         },
         "min": 0
     },

@@ -329,20 +329,18 @@ def download_file():
     file.seek(0)
     return send_file(file, attachment_filename=os.path.basename(filename), mimetype='text/plain', as_attachment=True)
 
-@bp.route("/download-eventlog")
-def download_eventlog():
-    file = os.path.join(current_app.instance_path, 'event_log.csv')
-
-    return send_file(file, attachment_filename=os.path.basename(file), mimetype='text/plain', as_attachment=True)
-
 @bp.route("/plot")
 def graph():
     path = os.path.join(current_app.instance_path, g.username, 'series.pickle')
-    with open(path, 'rb') as f:
-        series = pickle.load(f)
     with open('graph_template.json', 'rb') as f:
         chart_obj = json.load(f)
     series_name = request.args.get('series')
+
+    try:
+        with open(path, 'rb') as f:
+            series = pickle.load(f)
+    except:
+        return chart_obj
 
     chart_obj["xAxis"]["title"]["text"] = "Time"
     if series_name == 'licenses':
