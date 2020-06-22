@@ -86,8 +86,7 @@ def parse_sip_msg(sip_msg):
     msg["sent"] = False
     msg["exchange"] = parse_exchange(line)
     lines = sip_msg.splitlines()
-    #msg["datetime"] = parse_datetime(lines[0])
-    #msg["error_code"] = 0
+    content_len = 0
 
     for line in lines:
         if "Via:" in line: via.append(parse_via(line))
