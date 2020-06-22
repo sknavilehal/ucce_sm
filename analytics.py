@@ -32,13 +32,13 @@ def analytics(path):
     calls_series = []
     licenses_series = []
     App_series = pd.DataFrame(application)
-    calls_series.append({"name":"SIP_Active", "data":f_keys["STATS_SIP_ACTIVE_CALLS="]})
-    calls_series.append({"name":"ICM_Active","data":f_keys["STATS_ICM_ACTIVE_CALLS="]})
-    calls_series.append({"name":"ICM_VRU_Active", "data":f_keys["STATS_ICM_ACTIVE_VRU_LEGS="]})
-    calls_series.append({"name": "IVR_Active", "data": f_keys["STATS_IVR_ACTIVE_CALLS="]})
+    calls_series.append({"name":"SIP_Active", "data": sorted(f_keys["STATS_SIP_ACTIVE_CALLS="], key=lambda x: x[0])})
+    calls_series.append({"name":"ICM_Active","data": sorted(f_keys["STATS_ICM_ACTIVE_CALLS="], key = lambda x: x[0])})
+    calls_series.append({"name":"ICM_VRU_Active", "data": sorted(f_keys["STATS_ICM_ACTIVE_VRU_LEGS="], key = lambda x: x[0])})
+    calls_series.append({"name": "IVR_Active", "data": sorted(f_keys["STATS_IVR_ACTIVE_CALLS="], key = lambda x: x[0])})
 
-    licenses_series.append({"name": "CVP_License_InUse", "data": licenses["STATS_RT_PORT_LICENSES_IN_USE="]})
-    licenses_series.append({"name": "CVP_License_Available", "data": licenses["STATS_RT_PORT_LICENSES_AVAILABLE="]})
+    licenses_series.append({"name": "CVP_License_InUse", "data": sorted(licenses["STATS_RT_PORT_LICENSES_IN_USE="], key = lambda x: x[0])})
+    licenses_series.append({"name": "CVP_License_Available", "data": sorted(licenses["STATS_RT_PORT_LICENSES_AVAILABLE="], key = lambda x: x[0])})
     
     application_series = App_series.pivot_table(index=['application='], aggfunc='size')
 
