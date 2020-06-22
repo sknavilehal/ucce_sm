@@ -318,7 +318,8 @@ def match_signtures():
 @bp.route("/Files-History/delete")
 def delete_file():
     filename = request.args.get('filename', None)
-    device = g.db.files.find_one({"_id": filename}, {"device"})["device"]
+
+    device = g.db.files.find_one({"_id": filename}, {"device":1})["device"]
     g.db.files.delete_one({"_id": filename})
     g.db.GUIDs.delete_many({"_id.filename":filename})  
     g.db.msgs.delete_many({"_id.filename":filename})
