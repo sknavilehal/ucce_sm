@@ -1,5 +1,4 @@
 import re
-from pprint import pprint
 
 def parse_media(keys):
     codecs = {}
@@ -49,7 +48,8 @@ def parse_origin(keys):
     return  (username,sess_version)
 
 def sdp_parser(body):
-    keys = {}
+    keys = {}; attrs = {}; modes = []; codecs = {}; connections = []
+    username = 'N/A'; sess_version = 'N/A'
     for line in body.splitlines():
         if line.find("=") == 1:
             parts = line.split('=')
@@ -58,9 +58,12 @@ def sdp_parser(body):
             keys[key].append(value)
     if not keys: return {}
     medias, codecs = parse_media(keys)
-    codecs, attrs, modes = parse_codecs(keys, codecs)
-    connections = parse_connection(keys)
-    username, sess_version = parse_origin(keys)
+    if 'a' in keys:
+        codecs, attrs, modes = parse_codecs(keys, codecs)
+    if 'c' in keys:
+        connections = parse_connection(keys)
+    if 'o' in keys:
+        username, sess_version = parse_origin(keys)
 
     for k,v in codecs.items():
         v["code"] = k
