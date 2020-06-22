@@ -15,7 +15,7 @@
 <body>
 	<div class="login-page">
 		<div class="form">
-			<form class="login-form" onsubmit="return login()">
+			<form class="login-form" onsubmit="return false">
 				<input type="text" id="username" placeholder="Username" />
 				<input type="password" id="password" placeholder="Password" />
 				<button onclick="login()">login</button>
@@ -47,7 +47,8 @@
 				location.href = "/home"
 			},
 			error: function(){
-				location.href = "/"
+				// location.href = "/"
+				alert('Incorrect credentials!')
 			}
 		})
 

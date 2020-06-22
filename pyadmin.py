@@ -122,7 +122,7 @@ if not db.users.find_one({"login":"admin"},{"_id":1}):
     db.users.insert_one({"login":"admin", "password":"admin", "role":"admin"})
 
 # Add administrative views here
-admin = Admin(name='UCCE Admin Site', index_view=DashboardView(), base_template='my_master.html')
+admin = Admin(name='UCCE SM Admin Site', index_view=DashboardView(), base_template='my_master.html')
 admin.add_view(UserView(db.users, 'User'))
 admin.add_view(SignatureView(db.signatures, 'Signature'))
 admin.add_view(EventView(db.event_log, 'Event Log'))
