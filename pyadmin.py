@@ -23,10 +23,6 @@ class User(UserMixin):
         object_id = self.user_json.get('_id')
         return str(object_id)
 
-class MyModelView(ModelView):
-    def is_accessible(self):
-        return current_user.is_authenticated
-
 # User admin
 class UserForm(form.Form):
     login = fields.StringField('Login')
