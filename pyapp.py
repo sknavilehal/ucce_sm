@@ -430,12 +430,16 @@ def log_reader():
 def system_alert():
     result = []
     filename = request.args.get('filename', None)
-    sig_matches = g.db.files.find_one({"_id": filename}, {"alerts":1})['alerts']
+    if filename is not None:
+        cursor = g.db.files.find({"_id": filename})
+    else:
+        cursor = g.db.files.find({})
     count = 1
-    for sig in sig_matches.keys():
-        for byte in sig_matches[sig]:
-            result.append([count, sig, "<a href='/log-snippet?filename="+filename+"&byte="+str(byte)+"'>View log snippet</a>"])
-            count += 1
+    for res in cursor:
+        for _sig,_bytes in res['alerts'].items():
+            for _byte in _bytes:
+                result.append([count, _sig, "<a href='/log-snippet?filename="+res['_id']+"&byte="+str(_byte)+"'>View log snippet</a>"])
+                count += 1
 
     return jsonify(result), 200
 
