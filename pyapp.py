@@ -337,7 +337,7 @@ def delete_signature():
 
 @bp.route("/get-signatures")
 def get_signatures():
-    cursor = client["UCCE_Global"].signatures.find({"$or":[{"user":g.username},{"published":True}]})
+    cursor = client["UCCE_Global"].signatures.find({"$or":[{"user":g.username}]})
     result = [[res["filter"], res["description"], res["category"], res["checkpoint"]] for res in cursor]
 
     return jsonify(result)
