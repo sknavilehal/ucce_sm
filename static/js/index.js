@@ -17,7 +17,7 @@ function initial() {
         if (data[i][5].length == 0)
           errors_html = "";
         else
-          errors_html = `<i class='fa fa-exclamation-circle fa-2x' data-toggle='modal' data-target='#error_modal' style='color:#FFC107;margin-left:5px;cursor:pointer' title='Errors' onclick='errors(${i})' aria-hidden='true'></i>`;
+          errors_html = `<i class='fa fa-exclamation-circle fa-2x' style='color:#FFC107;margin-left:5px;cursor:pointer' title='Errors' onclick='errors(${i})' aria-hidden='true'></i>`;
         if (data[i][4] === "Processed")
           files[i] = [data[i][0], data[i][1], data[i][2], data[i][3], `<button type='button' class='btn btn-primary btn-sm btn-success processed' disabled >${data[i][4]}</button>`,
           "<div class='btn-group' role='group' aria-label='Basic example'><i class='fa fa-play-circle fa-2x ' style='color:#28a745;cursor:pointer' title='View Details' aria-hidden='true' onclick='analyse(" + i + ")'></i><i class='fa fa-minus-circle fa-2x' style='color:#dc3545;margin-left:5px;cursor:pointer' title='Remove' aria-hidden='true' onclick='del(" + i + ")'></i><i class='fa fa-arrow-circle-down fa-2x' style='color:#FFC107;margin-left:5px;cursor:pointer' title='Download' onclick='download(" + i + ")' aria-hidden='true'></i>" + errors_html + "</div>",
@@ -111,12 +111,8 @@ function del(i) {
 }
 
 function errors(i) {
-  var data = $('#table_id').DataTable().rows(i).data()[0][7];
-  var temp = "<ol>"
-  for (var i = 0; i < data.length; i++)
-    temp = temp + `<li>${data[i]}</li>`
-  temp = temp + "</ol>"
-  document.getElementById("prelim_sigs").innerHTML = temp
+  var data = $('#table_id').DataTable().rows(i).data()[0][0]
+  location.href = `/log-reader?filename=${data}`
 }
 
 function sign(data) {

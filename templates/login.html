@@ -15,9 +15,9 @@
 <body>
 	<div class="login-page">
 		<div class="form">
-			<form class="login-form" onsubmit="return login()">
+			<form class="login-form" onsubmit="return false">
 				<input type="text" id="username" placeholder="Username" />
-				<input type="password" placeholder="Password" />
+				<input type="password" id="password" placeholder="Password" />
 				<button onclick="login()">login</button>
 			</form>
 		</div>
@@ -35,15 +35,22 @@
 
 	function login() {
 		var username = document.getElementById("username").value
+		var password = document.getElementById("password").value
+		var data = {username: username, password: password}
 		sessionStorage.setItem("session", username)
 		$.ajax({
-			type: 'GET',
-			url: `/setSession/${username}`,
+			type: 'POST',
+			url: `/setSession`,
+			contentType: 'application/json',
+        	data: JSON.stringify(data),
 			success: function (data) {
 				location.href = "/categories"
+			},
+			error: function(data){
+				alert('Incorrect credentials')
 			}
 		})
 
-		return false
+		return true
 	}
 </script>

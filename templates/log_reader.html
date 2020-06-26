@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{%block css%}
+<meta id="flaskvar" filename="{{filename}}">
+{% endblock%}
+
+{%block content %}
+<div class="container-fluid">
+    <div class="row justify-content-md-center">
+       
+        <div class="col col-md-8">
+            <div class="item">
+                <h4 style="margin-bottom: 20px;">System Alerts</h4>
+                <div id="no-sign">
+                    <table id="system_alerts" style="width:100%;" class=" table"> </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+{%endblock %}
+
+{%block script%}
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.10/jquery.autocomplete.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+<script src="{{url_for('static' ,filename='js/log_reader.js')}}" type="module"></script>
+{%endblock%}

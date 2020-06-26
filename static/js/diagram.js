@@ -8,6 +8,7 @@ $.ajax({
     url: `/Call-Summary/details?filename=${filename}&guid=${guid}`,
     success: function (re) {
         var s = re.svg
+        var oids_set = new Set(re.oids)
         //parse the svg string and convert it to HTML DOM
         var parser = new DOMParser();
         var doc = parser.parseFromString(s, "image/svg+xml");
@@ -17,6 +18,10 @@ $.ajax({
         for (var i = 0, max = all.length; i < max; i++) {
             //remove the href elements to prevent hover
             msg_id = all[i].getAttribute("xlink:title")
+            if(oids_set.has(msg_id)){
+                var text = all[i].firstElementChild.innerHTML
+                all[i].firstElementChild.innerHTML = '! ' + text
+            }
             // all[i].removeAttribute("xlink:title")
             all[i].removeAttribute("xlink:href")
             all[i].removeAttribute("href")

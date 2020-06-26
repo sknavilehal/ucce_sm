@@ -17,17 +17,31 @@ from query_parser import query_parser
 from log_parser.parser_main import parser_main
 from flask import jsonify, Blueprint, render_template, request, Response, current_app, send_file, session, g, redirect
 
-from bokeh.resources import CDN
-from bokeh.embed import json_item
-
 bp = Blueprint("bp", __name__)
 
 client = MongoClient("mongodb://localhost:27017")
 
-@bp.route('/setSession/<string:username>')
-def setSession(username):
+import requests
+def get_sso_cookie(username, password):
+    ''' Get an up-to-date cookie for the BDB API calls '''
+    req_cookie = requests.get(url='https://scripts.cisco.com/api/v2/auth/login',
+    auth=(username, password),
+    timeout=15)
+    req_cookie.raise_for_status()
+
+    #cookie_data = {'ObSSOCookie': req_cookie.headers['Set-Cookie'][12:]}
+    return (req_cookie.headers['Set-Cookie'][12:])
+
+@bp.route('/setSession', methods=['POST'])
+def setSession():
+    username = request.get_json()['username']
+    password = request.get_json()['password']
     # username here is name of the database
     session["username"] = "UCCE_" + username
+    try:
+        session['ObSSOCookie'] = get_sso_cookie(username, password)
+    except:
+        return "incorrect credentials", 400
 
     return "Session set", 200
     
@@ -87,14 +101,14 @@ def before_request():
 
     return None
 
-def threaded_task(_g, app, filename, contents):
+def threaded_task(_g, session, app, filename, contents):
     # _g and app are flask objects required for threaded task running outside application context
-    _g.db.files.insert_one({"_id":filename,"device":"unknown", "status": "Processing...", "alerts": [], "start_time": "-", "end_time": "-"})
+    _g.db.files.insert_one({"_id":filename,"device":"unknown", "status": "Processing...", "alerts": {}, "start_time": "-", "end_time": "-"})
 
     alerts = client["UCCE_Global"].signatures.distinct("filter", {"category" : "system"})
     try:
-        device,guids,alerts,time_data = parser_main(filename, contents, alerts)
-        _g.db.files.update({"_id":filename},  {"$set": {"status": "Processed", "device": device, "alerts": alerts, "start_time": time_data[0], "end_time":time_data[1]}})
+        device,guids,sig_matches,time_data = parser_main(filename, contents, alerts)
+        _g.db.files.update({"_id":filename},  {"$set": {"status": "Processed", "device": device, "alerts": sig_matches, "start_time": time_data[0], "end_time":time_data[1]}})
 
         for guid in guids.keys():
             _g.db.GUIDs.insert_one(guids[guid]["doc"])
@@ -103,11 +117,15 @@ def threaded_task(_g, app, filename, contents):
         
         if device == "CVP":
             path = os.path.join(app.instance_path, _g.username, "CVP", filename)
-            with open(path, 'wb') as f:
-                f.write(contents.getvalue())
             series = analytics(os.path.dirname(path))
             with open(os.path.join(app.instance_path, _g.username ,'series.pickle'), 'wb') as f:
                 pickle.dump(series, f)
+            with open(path, 'wb') as f:
+                f.write(contents.getvalue())
+
+                #files = {'file': (filename, contents)}
+                #_session = requests.Session()
+                #r = _session.post('https://scripts.cisco.com/api/v2/files', files=files,cookies={'ObSSOCookie':session['ObSSOCookie']}, headers={'Accept': 'application/json'})
             
     except Exception:
         app.logger.error(traceback.format_exc())
@@ -177,20 +195,42 @@ def get_calls():
     #GUIDs = [[res["_id"]["guid"], res["from"], res["to"]] for res in cursor]
     return table,200
 
+def get_oids(sequence):
+    oids = []
+    for line in sequence.splitlines():
+        if '[[{' in line:
+            oids.append(line.split('[[{')[1].split('}')[0])
+    return oids
+
+def get_call_filters():
+    cursor = client["UCCE_Global"].signatures.find({"category": "feature", "$or":[{"user":g.username},{"published":True}]})
+    filters = [(res["filter"],res["description"]) for res in cursor]
+
+    return filters
+
 @bp.route("/Call-Summary/details")
 def ladder_diagram():
+    oids_set = set()
     filename = request.args.get('filename', None)
     guid = request.args.get('guid', None)
     _id = {"filename":filename, "guid":guid}
     sequence = g.db.GUIDs.find_one({"_id":_id},{"sequence":1})
     sequence = sequence["sequence"]
+    oids = get_oids(sequence)
+    filters = get_call_filters()
+    for filter in filters:
+        query = query_parser(filter[0])
+        query["_id.oid"] = {"$in": oids}
+        cursor = g.db.msgs.find(query, {"_id": 1})
+        for res in cursor:
+            oids_set.add(res["_id"]["oid"])
     try:
         svg = render(sequence, engine="plantuml", format="svg")
         svg = svg[0].decode('utf-8')
     except Exception as e:
         return str(e), 403
 
-    return {"svg":svg},200
+    return {"svg":svg, "oids": list(oids_set)},200
 
 @bp.route("/Call-Summary/message")
 def get_message():
@@ -204,6 +244,7 @@ def upload_files():
     file = request.files['file']
     app = current_app._get_current_object()
     _g = g._get_current_object()
+    _session = session._get_current_object()
     files=g.db.files.distinct("_id")
     
     if file.filename.endswith('.zip'):
@@ -226,7 +267,7 @@ def upload_files():
                 contents.write(zipfile.read(_file))
             filename = file.filename + '~' + _dir + '.log'
             filename = filename.replace(" ", "")
-            Thread(target=threaded_task, args=(_g, app, filename, contents)).start()
+            Thread(target=threaded_task, args=(_g, _session, app, filename, contents)).start()
 
     elif file.filename.endswith('.log') or file.filename.endswith('.txt'):
         contents = BytesIO()
@@ -234,11 +275,11 @@ def upload_files():
         file.seek(0)
         if ( file.filename in files):
             return "Exists",400
-        Thread(target=threaded_task, args=(_g, app, file.filename, contents)).start()
+        Thread(target=threaded_task, args=(_g, _session, app, file.filename, contents)).start()
     else:
         return "Invalid file type", 400
     
-    return render_template("index.html", resources=CDN.render()), 200
+    return render_template("index.html"), 200
 
 @bp.route('/diagram-page',methods=["GET"])
 def diagram_page():
@@ -248,8 +289,12 @@ def diagram_page():
 
 @bp.route("/files")
 def get_files():
+    files = []
     cursor = g.db.files.find({})
-    files = [[res["_id"], res["device"], res["start_time"], res["end_time"], res["status"], res["alerts"]] for res in cursor]
+    for res in cursor:
+        no_of_alerts = len(res['alerts'].keys())
+        files.append([res["_id"], res["device"], res["start_time"], res["end_time"], res["status"], no_of_alerts])
+
     return jsonify(files),200
 
 @bp.route("/Call-Summary/filter", methods=["POST"])
@@ -329,7 +374,7 @@ def delete_file():
         os.remove(path)
     
     path = os.path.join(current_app.instance_path, g.username)
-    if len(os.listdir(os.path.join(path, device))) == 0:
+    if len(os.listdir(os.path.join(path, device))) == 0 and os.path.exists(os.path.join(path,'series.pickle')):
         os.remove(os.path.join(path, 'series.pickle'))
 
     return jsonify(unique_files),200
@@ -376,9 +421,35 @@ def graph():
 
     return chart_obj
 
-@bp.route("/get-system-alerts")
-def system_alerts():
-    return jsonify([])
+@bp.route("/log-reader")
+def log_reader():
+    filename = request.args.get('filename', None)
+    return render_template('log_reader.html', filename=filename)
+
+@bp.route("/system-alerts")
+def system_alert():
+    result = []
+    filename = request.args.get('filename', None)
+    sig_matches = g.db.files.find_one({"_id": filename}, {"alerts":1})['alerts']
+    count = 1
+    for sig in sig_matches.keys():
+        for byte in sig_matches[sig]:
+            result.append([count, sig, "<a href='/log-snippet?filename="+filename+"&byte="+str(byte)+"'>View log snippet</a>"])
+            count += 1
+
+    return jsonify(result), 200
+
+@bp.route("/log-snippet")
+def log_snippet():
+    filename = request.args.get('filename')
+    byte = int(request.args.get('byte'))
+    file = BytesIO()
+    with open(os.path.join(current_app.instance_path, g.username, 'CVP', filename), 'rb') as f:
+        f.seek(byte - 2000)
+        file.write(f.read(4000))
+
+    file.seek(0)
+    return send_file(file, attachment_filename=os.path.basename(filename), mimetype='text/plain')
 
 @bp.route("/get-feature-alerts")
 def feature_alerts():
